@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Shuttler</string>
+    <string name="miss_shuttle">Don\'t Miss The Shuttle Any More!</string>
+    <string name="login_content_description">Shuttler icon</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
 </resources>
