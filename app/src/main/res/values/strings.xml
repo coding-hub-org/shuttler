@@ -5,4 +5,5 @@
     <string name="login_content_description">Shuttler icon</string>
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
+    <string name="btn_sign_in">Sign In</string>
 </resources>
