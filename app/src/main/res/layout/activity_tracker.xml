@@ -11,8 +11,8 @@
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="426dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_weight="4"
         app:layout_constraintBottom_toTopOf="@+id/cardView3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,13 +24,14 @@
     <android.support.v7.widget.CardView
         android:id="@+id/cardView3"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="120dp"
         android:layout_weight="1"
         app:cardBackgroundColor="#FFF"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map"
-        tools:layout_editor_absoluteX="16dp">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/map">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -38,6 +39,7 @@
             android:weightSum="2">
 
             <android.support.v7.widget.CardView
+                app:cardCornerRadius="7dp"
                 android:id="@+id/cardView2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -57,26 +59,39 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:id="@+id/textView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:gravity="center"
                         android:text="Next Stop"
-                        tools:layout_editor_absoluteX="45dp"
-                        tools:layout_editor_absoluteY="16dp" />
+                        android:textColor="@color/colorPrimary"
+                        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <ImageView
-                        android:layout_width="40dp"
+                        android:id="@+id/imageView2"
+                        android:layout_width="25dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/filter"
-                        tools:layout_editor_absoluteX="56dp"
-                        tools:layout_editor_absoluteY="35dp" />
+                        android:src="@drawable/ic_shuttler"
+                        app:layout_constraintBottom_toTopOf="@+id/textView2"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
                     <TextView
+                        android:id="@+id/textView2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
                         android:text="Target"
-                        tools:layout_editor_absoluteX="56dp"
-                        tools:layout_editor_absoluteY="75dp" />
+                        android:textColor="@color/colorPrimary"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
                 </android.support.constraint.ConstraintLayout>
 
@@ -84,6 +99,7 @@
 
             <android.support.v7.widget.CardView
                 android:id="@+id/cardView"
+                app:cardCornerRadius="7dp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="20dp"
@@ -102,10 +118,28 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:id="@+id/textView3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Estimated Time" />
+                        android:textColor="@color/colorPrimary"
+                        android:text="Estimated Time"
+                        app:layout_constraintBottom_toTopOf="@+id/textView4"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:text="6 mins"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="20sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView3" />
                 </android.support.constraint.ConstraintLayout>
 
             </android.support.v7.widget.CardView>
