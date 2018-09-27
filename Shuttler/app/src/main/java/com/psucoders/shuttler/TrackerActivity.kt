@@ -75,10 +75,11 @@ class TrackerActivity : AppCompatActivity(), OnMapReadyCallback, Animation.Anima
             mMap.setOnMapClickListener {
                 //Warning because need to work on Landscape mode as well
                 if (constraintLayoutBottomCard.visibility == View.INVISIBLE) {
-                    val mAlphaAnim = AnimationUtils.loadAnimation(this, R.anim.fade_in_screen)
+                    val mAlphaAnim = AnimationUtils.loadAnimation(this, R.anim.fade_in_screen_from_bottom)
+                    val mAlphaAnim2 = AnimationUtils.loadAnimation(this, R.anim.fade_in_screen_from_top)
                     mAlphaAnim.setAnimationListener(this)
                     constraintLayoutBottomCard.startAnimation(mAlphaAnim)
-                    toolbar_activity_tracker.startAnimation(mAlphaAnim)
+                    toolbar_activity_tracker.startAnimation(mAlphaAnim2)
                 } else {
                     val mAlphaAnim = AnimationUtils.loadAnimation(this, R.anim.fade_out_of_screen_top)
                     val mAlphaAnim2 = AnimationUtils.loadAnimation(this, R.anim.fade_out_of_screen_bottom)
