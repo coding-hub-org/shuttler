@@ -1,5 +1,6 @@
 package com.psucoders.shuttler
 
+import android.content.res.Resources
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 
@@ -9,6 +10,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import android.content.res.Resources.NotFoundException
+import android.util.Log
+import com.google.android.gms.maps.model.MapStyleOptions
+
+
 
 class TrackerActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -34,6 +40,21 @@ class TrackerActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
+
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            val success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json))
+
+            if (!success) {
+                Log.e("MAPS FAIL", "Style parsing failed.")
+            }
+        } catch (e: Resources.NotFoundException) {
+            Log.e("STYLE FAIL", "Can't find style. Error: ", e)
+        }
+
 
         // Add a marker in Sydney and move the camera
         val plattsburgh = LatLng(44.693255, -73.475114)
