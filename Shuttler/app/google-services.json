@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "571374342123",
+    "firebase_url": "https://shuttler-p001.firebaseio.com",
+    "project_id": "shuttler-p001",
+    "storage_bucket": "shuttler-p001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:571374342123:android:bb4a9807efa520f1",
+        "android_client_info": {
+          "package_name": "com.psucoders.shuttler"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "571374342123-fjivgfhs9mo3v9h34772j3vku72cfk9p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.psucoders.shuttler",
+            "certificate_hash": "2b2a1a573db3a74285fae80cd835979f4b624441"
+          }
+        },
+        {
+          "client_id": "571374342123-r5drd5t87rqiilcs8j1uvr1om1vt0kdp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwrQEWxay6uhNfNIyLPsnh1w4dk6RF9ss"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "571374342123-r5drd5t87rqiilcs8j1uvr1om1vt0kdp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
