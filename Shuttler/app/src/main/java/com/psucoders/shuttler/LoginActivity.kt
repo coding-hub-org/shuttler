@@ -7,6 +7,9 @@ import android.util.Log
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+
+
 
 
 class LoginActivity : AppCompatActivity() {
@@ -20,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
         mAuth = FirebaseAuth.getInstance()
 
         // Sing out user
-        mAuth.signOut()
+       // mAuth.signOut()
 
         btnSignIn.setOnClickListener {
             val email = edtUser.text.toString()
@@ -29,10 +32,12 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun signIn(email: String, password: String) {
-//        val intent = Intent(this, TrackerActivity::class.java)
-//        startActivity(intent)
+    public override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+    }
 
+    private fun signIn(email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
             if (it.isSuccessful) {
                 Log.d("FIREBASE REGISTRATION", "success to create user UID: ${it.result.user.uid}")
