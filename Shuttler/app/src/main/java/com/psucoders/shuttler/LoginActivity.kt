@@ -26,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
+
         // Get current user
         val currentUser = mAuth.currentUser
 
