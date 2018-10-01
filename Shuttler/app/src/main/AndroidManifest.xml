@@ -8,6 +8,7 @@
 
     <application
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -39,7 +40,14 @@
 
         <activity
             android:name=".TrackerActivity"
-            android:label="@string/title_activity_tracker"></activity>
+            android:label="@string/title_activity_tracker">
+
+        </activity>
+        <activity android:name=".SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".TrackerActivity" />
+        </activity>
         <activity android:name=".AuthenticationActivity"></activity>
     </application>
 

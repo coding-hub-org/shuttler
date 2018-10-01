@@ -1,10 +1,14 @@
 package com.psucoders.shuttler
 
+import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -16,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_tracker.*
+import org.jetbrains.anko.toast
 import java.lang.Exception
 
 
@@ -92,6 +97,23 @@ class TrackerActivity : AppCompatActivity(), OnMapReadyCallback, Animation.Anima
         } catch (e: Exception) {
             //Landscape mode.. Need to work on
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        //         Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.maps_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item!!.itemId
+        if (id == R.id.settings_maps) {
+            val intent = Intent(this@TrackerActivity, SettingsActivity::class.java)
+            startActivity(intent)
+            baseContext.toast("clicked settings")
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     //Some animations
