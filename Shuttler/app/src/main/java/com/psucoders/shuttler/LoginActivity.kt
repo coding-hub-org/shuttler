@@ -26,16 +26,20 @@ class LoginActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // Get current user
         val currentUser = mAuth.currentUser
 
+        // User is not logged in
         if (currentUser == null) {
+            Toast.makeText(this@LoginActivity, "NO USER", Toast.LENGTH_SHORT).show()
+            // Add Sign in / Sign Up button
             btnSignIn.setOnClickListener {
                 val email = edtUser.text.toString()
                 val password = edtPassword.text.toString()
                 signInUp(email, password)
             }
         }
+        // User is logged in
         else {
             Toast.makeText(this@LoginActivity, currentUser.email, Toast.LENGTH_SHORT).show()
             currentUser.reload()
@@ -68,6 +72,12 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
             else {
+                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
+                    if(it.isSuccessful) {
+                        Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY", Toast.LENGTH_SHORT).show()
+
+                    }
+                }
                 Toast.makeText(this@LoginActivity, "FAIL TO CREATE ACCOUNT", Toast.LENGTH_SHORT).show()
                 return@addOnCompleteListener
             }
