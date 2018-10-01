@@ -14,4 +14,6 @@
         <item>Pharmacy</item>
         <item>Campus</item>
     </string-array>
+    <string name="authenticate">Please authenticate your account, I you have please click on the button below</string>
+    <string name="done">Done</string>
 </resources>
