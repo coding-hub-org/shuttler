@@ -106,12 +106,12 @@ class TrackerActivity : AppCompatActivity(), OnMapReadyCallback, Animation.Anima
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        val id = item!!.itemId
-        if (id == R.id.settings_maps) {
+//        val id = item!!.itemId
+//        if (id == R.id.settings_maps) {
             val intent = Intent(this@TrackerActivity, SettingsActivity::class.java)
             startActivity(intent)
             baseContext.toast("clicked settings")
-        }
+//        }
 
         return super.onOptionsItemSelected(item)
     }

@@ -8,9 +8,12 @@ import android.widget.Spinner
 import kotlinx.android.synthetic.main.activity_settings.*
 import android.support.v4.app.NavUtils
 import android.view.MenuItem
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class SettingsActivity : AppCompatActivity() {
+    lateinit var username: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -40,6 +43,23 @@ class SettingsActivity : AppCompatActivity() {
         buttonPlus.setOnClickListener {
             mins.text = (Integer.parseInt(mins.text.toString()) + 1).toString()
         }
+
+        button_apply.setOnClickListener {
+            val locationForNotification = locationsSpinner.selectedItem.toString()
+            val timeAhead = mins.text.toString()
+            val enableNotifications = notification_enabled.isChecked
+
+            val database = FirebaseDatabase.getInstance()
+            val myRef = database.getReference("greye003")
+            myRef.child("notifications").child("enabled").setValue(enableNotifications.toString())
+            myRef.child("notifications").child("notifyLocation").setValue(locationForNotification)
+            myRef.child("notifications").child("timeAhead").setValue(timeAhead)
+        }
+
+    }
+
+    private fun getValues() {
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

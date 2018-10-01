@@ -26,29 +26,32 @@ class LoginActivity : AppCompatActivity() {
 
     public override fun onStart() {
         super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = mAuth.currentUser
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        val currentUser = mAuth.currentUser
+//
+//        if (currentUser == null) {
+//            btnSignIn.setOnClickListener {
+//                val email = edtUser.text.toString()
+//                val password = edtPassword.text.toString()
+//                signInUp(email, password)
+//            }
+//        }
+//        else {
+//            Toast.makeText(this@LoginActivity, currentUser.email, Toast.LENGTH_SHORT).show()
+//            currentUser.reload()
+//            currentUser.getIdToken(true)
+//            if (currentUser.isEmailVerified) {
+//                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
+//                Toast.makeText(this@LoginActivity, "VERIFIED", Toast.LENGTH_SHORT).show()
+//            }
+//            else {
+//                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
+//                Toast.makeText(this@LoginActivity, "NOT VERIFIED", Toast.LENGTH_SHORT).show()
+//            }
+//        }
 
-        if (currentUser == null) {
-            btnSignIn.setOnClickListener {
-                val email = edtUser.text.toString()
-                val password = edtPassword.text.toString()
-                signInUp(email, password)
-            }
-        }
-        else {
-            Toast.makeText(this@LoginActivity, currentUser.email, Toast.LENGTH_SHORT).show()
-            currentUser.reload()
-            currentUser.getIdToken(true)
-            if (currentUser.isEmailVerified) {
-                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
-                Toast.makeText(this@LoginActivity, "VERIFIED", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
-                Toast.makeText(this@LoginActivity, "NOT VERIFIED", Toast.LENGTH_SHORT).show()
-            }
-        }
+        val intent = Intent(this@LoginActivity, TrackerActivity::class.java)
+        startActivity(intent)
 
     }
 
