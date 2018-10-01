@@ -43,13 +43,18 @@ class LoginActivity : AppCompatActivity() {
             if (currentUser.isEmailVerified) {
                 //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
                 Toast.makeText(this@LoginActivity, "VERIFIED", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, TrackerActivity::class.java)
+                startActivity(intent)
+                finish()
             }
             else {
                 //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
                 Toast.makeText(this@LoginActivity, "NOT VERIFIED", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, AuthenticationActivity::class.java)
+                startActivity(intent)
+                finish()
             }
         }
-
     }
 
     private fun signInUp(email: String, password: String) {
@@ -59,7 +64,6 @@ class LoginActivity : AppCompatActivity() {
                 val user = mAuth.currentUser
                 user!!.sendEmailVerification().addOnCompleteListener {
                     val intent = Intent(this, AuthenticationActivity::class.java)
-
                     startActivity(intent)
                 }
             }
