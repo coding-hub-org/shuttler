@@ -41,18 +41,16 @@ class LoginActivity : AppCompatActivity() {
         }
         // User is logged in
         else {
-            Toast.makeText(this@LoginActivity, currentUser.email, Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@LoginActivity, "USER LOGGED", Toast.LENGTH_SHORT).show()
             currentUser.reload()
             currentUser.getIdToken(true)
             if (currentUser.isEmailVerified) {
-                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
                 Toast.makeText(this@LoginActivity, "VERIFIED", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, TrackerActivity::class.java)
                 startActivity(intent)
                 finish()
             }
             else {
-                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
                 Toast.makeText(this@LoginActivity, "NOT VERIFIED", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, AuthenticationActivity::class.java)
                 startActivity(intent)
@@ -64,7 +62,6 @@ class LoginActivity : AppCompatActivity() {
     private fun signInUp(email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
             if (it.isSuccessful) {
-                Log.d("FIREBASE REGISTRATION", "success to create user UID: ${it.result.user.uid}")
                 val user = mAuth.currentUser
                 user!!.sendEmailVerification().addOnCompleteListener {
                     val intent = Intent(this, AuthenticationActivity::class.java)
@@ -74,12 +71,25 @@ class LoginActivity : AppCompatActivity() {
             else {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
                     if(it.isSuccessful) {
-                        Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY", Toast.LENGTH_SHORT).show()
+                        val currentUser = mAuth.currentUser
+                        if (currentUser?.isEmailVerified == true) {
+                            Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND VERIFIED", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, TrackerActivity::class.java)
+                            intent.putExtra("user", currentUser)
+                            startActivity(intent)
+                        }
+                        else {
+                            Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND NOT VERIFIED", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, AuthenticationActivity::class.java)
+                            startActivity(intent)
+                        }
 
                     }
+                    else {
+                        Toast.makeText(this@LoginActivity, "FAIL TO CREATE ACCOUNT", Toast.LENGTH_SHORT).show()
+                        return@addOnCompleteListener
+                    }
                 }
-                Toast.makeText(this@LoginActivity, "FAIL TO CREATE ACCOUNT", Toast.LENGTH_SHORT).show()
-                return@addOnCompleteListener
             }
         }
 
