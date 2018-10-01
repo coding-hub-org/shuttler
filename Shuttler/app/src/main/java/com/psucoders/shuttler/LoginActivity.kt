@@ -22,31 +22,47 @@ class LoginActivity : AppCompatActivity() {
 
         mAuth = FirebaseAuth.getInstance()
 
-        // Sing out user
-       // mAuth.signOut()
-
-        btnSignIn.setOnClickListener {
-            val email = edtUser.text.toString()
-            val password = edtPassword.text.toString()
-            signIn(email, password)
-        }
     }
 
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = mAuth.currentUser
+
+        if (currentUser == null) {
+            btnSignIn.setOnClickListener {
+                val email = edtUser.text.toString()
+                val password = edtPassword.text.toString()
+                signInUp(email, password)
+            }
+        }
+        else {
+            Toast.makeText(this@LoginActivity, currentUser.email, Toast.LENGTH_SHORT).show()
+            currentUser.reload()
+            currentUser.getIdToken(true)
+            if (currentUser.isEmailVerified) {
+                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
+                Toast.makeText(this@LoginActivity, "VERIFIED", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                //Log.d("IS VERIFIED: ", currentUser.isEmailVerified.toString())
+                Toast.makeText(this@LoginActivity, "NOT VERIFIED", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
-    private fun signIn(email: String, password: String) {
+    private fun signInUp(email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
             if (it.isSuccessful) {
                 Log.d("FIREBASE REGISTRATION", "success to create user UID: ${it.result.user.uid}")
                 val user = mAuth.currentUser
                 user!!.sendEmailVerification().addOnCompleteListener {
-                    Toast.makeText(this@LoginActivity, "Verify Email", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, AuthenticationActivity::class.java)
+
+                    startActivity(intent)
                 }
             }
-
             else {
                 Toast.makeText(this@LoginActivity, "FAIL TO CREATE ACCOUNT", Toast.LENGTH_SHORT).show()
                 return@addOnCompleteListener
