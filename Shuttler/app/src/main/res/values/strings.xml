@@ -6,4 +6,12 @@
     <string name="hint_username">Username</string>
     <string name="hint_password">Password</string>
     <string name="btn_sign_in">Sign In</string>
+    <string name="maps_menu_settings">Settings</string>
+    <string-array name="locations_array">
+        <item>Walmart</item>
+        <item>Target</item>
+        <item>Market32</item>
+        <item>Pharmacy</item>
+        <item>Campus</item>
+    </string-array>
 </resources>
