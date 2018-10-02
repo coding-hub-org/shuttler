@@ -1,9 +1,10 @@
 package com.psucoders.shuttler
 
+import android.Manifest
 import android.content.Intent
 import android.content.res.Resources
+import android.location.*
 import android.os.Bundle
-import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -12,6 +13,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -19,14 +22,17 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import io.vrinda.kotlinpermissions.PermissionCallBack
+import io.vrinda.kotlinpermissions.PermissionsActivity
 import kotlinx.android.synthetic.main.activity_tracker.*
 import org.jetbrains.anko.toast
-import java.lang.Exception
+import java.util.*
 
 
 class TrackerActivity : AppCompatActivity(), OnMapReadyCallback, Animation.AnimationListener {
 
-
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var locationManager: LocationManager? = null
     private lateinit var mMap: GoogleMap
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +48,7 @@ class TrackerActivity : AppCompatActivity(), OnMapReadyCallback, Animation.Anima
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
     }
+
 
     /**
      * Manipulates the map once available.
@@ -108,9 +115,9 @@ class TrackerActivity : AppCompatActivity(), OnMapReadyCallback, Animation.Anima
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
 //        val id = item!!.itemId
 //        if (id == R.id.settings_maps) {
-            val intent = Intent(this@TrackerActivity, SettingsActivity::class.java)
-            startActivity(intent)
-            baseContext.toast("clicked settings")
+        val intent = Intent(this@TrackerActivity, SettingsActivity::class.java)
+        startActivity(intent)
+        baseContext.toast("clicked settings")
 //        }
 
         return super.onOptionsItemSelected(item)
@@ -135,5 +142,79 @@ class TrackerActivity : AppCompatActivity(), OnMapReadyCallback, Animation.Anima
 //            constraintLayoutBottomCard.visibility = View.VISIBLE
 //            toolbar_activity_tracker.visibility = View.VISIBLE
         }
+    }
+
+//    fun checkLocationPermission() {
+//        requestPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, object : PermissionCallBack {
+//            override fun permissionGranted() {
+//                super.permissionGranted()
+//                Log.v("Call permissions", "Granted")
+//                getLocation()
+//                try {
+//                    fusedLocationClient.lastLocation
+//                            .addOnSuccessListener {
+//                                // Got last known location. In some rare situations this can be null.
+//                            }
+//                } catch (e: SecurityException) {
+//                    e.printStackTrace()
+//                }
+//            }
+//
+//            override fun permissionDenied() {
+//                super.permissionDenied()
+//                Log.v("Call permissions", "Denied")
+//            }
+//        })
+//    }
+
+    //Get current location updates
+    fun getLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        var addresses: List<Address>? = null
+        try {
+            fusedLocationClient.lastLocation
+                    .addOnSuccessListener { location: Location? ->
+                        val gcd = Geocoder(this@TrackerActivity, Locale.getDefault())
+
+                        try {
+                            addresses = gcd.getFromLocation(location!!.latitude, location.longitude, 1)
+                        } catch (e: java.lang.Exception) {
+                            e.printStackTrace()
+                        }
+
+                        try {
+                            if (addresses!!.isNotEmpty()) {
+                                val finalAreaOfRouter = addresses!![0].subLocality
+                                val finalCityOfRouter = addresses!![0].locality
+                                val finalCountryOfRouter = addresses!![0].countryName
+
+                                Log.d("LIFE IS",finalAreaOfRouter.toString())
+                            }
+                        } catch (e: Throwable) {
+                            e.printStackTrace()
+                        }
+                    }
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
+        try {
+            locationManager = getSystemService(LOCATION_SERVICE) as LocationManager?
+            locationManager?.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, locationListener)
+        } catch (e: SecurityException) {
+            e.printStackTrace()
+        }
+    }
+
+    //Listener for location changes of device
+    private val locationListener: LocationListener = object : LocationListener {
+        override fun onLocationChanged(location: Location) {
+            Log.d("Location", ":" + location.latitude + " " + location.longitude)
+            val gcd = Geocoder(this@TrackerActivity, Locale.getDefault())
+            gcd.getFromLocation(location.latitude, location.longitude, 1)
+        }
+
+        override fun onStatusChanged(provider: String, status: Int, extras: Bundle) {}
+        override fun onProviderEnabled(provider: String) {}
+        override fun onProviderDisabled(provider: String) {}
     }
 }

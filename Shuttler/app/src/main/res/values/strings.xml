@@ -16,4 +16,7 @@
     </string-array>
     <string name="authenticate">Please authenticate your account, I you have please click on the button below</string>
     <string name="done">Done</string>
+    <string name="logout_button_text_settings">Logout</string>
+    <string name="apply_button_settings">APPLY</string>
+    <string name="cancel_button_settings">CANCEL</string>
 </resources>
