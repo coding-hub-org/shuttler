@@ -3,7 +3,6 @@ package com.psucoders.shuttler
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
@@ -63,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
     private fun signInUp(email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
             if (it.isSuccessful) {
+                Toast.makeText(this@LoginActivity, "SIGN UP SUCCESSFULLY", Toast.LENGTH_SHORT).show()
                 val user = mAuth.currentUser
                 user!!.sendEmailVerification().addOnCompleteListener {
                     val intent = Intent(this, AuthenticationActivity::class.java)
