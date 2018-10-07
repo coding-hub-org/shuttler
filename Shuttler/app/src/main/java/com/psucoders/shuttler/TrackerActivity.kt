@@ -75,6 +75,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 super.permissionGranted()
                 mMap.isMyLocationEnabled = true
 
+
                 /*Move location of my location button*/
                 if (mapView.findViewById<View>(Integer.parseInt("1")) != null) {
                     // Get the button view

@@ -15,8 +15,6 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
 
-        //val ss:String = intent.getStringExtra("valor")
-
 
         btnVerified.setOnClickListener {
             if (currentUser?.isEmailVerified == true) {
@@ -24,7 +22,7 @@ class AuthenticationActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             else {
-                Snackbar.make(rootLayoutAuthentication, "Please verify your account", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(rootLayoutAuthentication, "Please verify your account", Snackbar.LENGTH_LONG).show()
             }
         }
     }
