@@ -19,4 +19,5 @@
     <string name="logout_button_text_settings">Logout</string>
     <string name="apply_button_settings">APPLY</string>
     <string name="cancel_button_settings">CANCEL</string>
+    <string name="on_duty_string">Please turn on if you are on duty</string>
 </resources>

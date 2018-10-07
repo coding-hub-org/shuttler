@@ -10,8 +10,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 
 
-
-
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
@@ -50,8 +48,7 @@ class LoginActivity : AppCompatActivity() {
                 val intent = Intent(this, TrackerActivity::class.java)
                 startActivity(intent)
                 finish()
-            }
-            else {
+            } else {
                 Toast.makeText(this@LoginActivity, "NOT VERIFIED", Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, AuthenticationActivity::class.java)
                 startActivity(intent)
@@ -68,25 +65,22 @@ class LoginActivity : AppCompatActivity() {
                     val intent = Intent(this, AuthenticationActivity::class.java)
                     startActivity(intent)
                 }
-            }
-            else {
+            } else {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-                    if(it.isSuccessful) {
+                    if (it.isSuccessful) {
                         val currentUser = mAuth.currentUser
                         if (currentUser?.isEmailVerified == true) {
                             Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND VERIFIED", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, TrackerActivity::class.java)
                             intent.putExtra("user", currentUser)
                             startActivity(intent)
-                        }
-                        else {
+                        } else {
                             Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND NOT VERIFIED", Toast.LENGTH_SHORT).show()
                             val intent = Intent(this, AuthenticationActivity::class.java)
                             startActivity(intent)
                         }
 
-                    }
-                    else {
+                    } else {
                         Toast.makeText(this@LoginActivity, "FAIL TO CREATE ACCOUNT", Toast.LENGTH_SHORT).show()
                         return@addOnCompleteListener
                     }

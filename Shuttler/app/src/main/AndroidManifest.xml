@@ -50,6 +50,7 @@
                 android:value=".TrackerActivity" />
         </activity>
         <activity android:name=".AuthenticationActivity"></activity>
+        <activity android:name=".DriversActivity" />
     </application>
 
 </manifest>
