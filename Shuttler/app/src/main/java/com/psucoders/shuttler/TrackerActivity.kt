@@ -18,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.firebase.messaging.FirebaseMessaging
 import io.vrinda.kotlinpermissions.PermissionCallBack
 import io.vrinda.kotlinpermissions.PermissionsActivity
 import kotlinx.android.synthetic.main.activity_tracker.*
@@ -32,6 +33,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracker)
         checkLocationPermission()
+        FirebaseMessaging.getInstance().isAutoInitEnabled = true
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_activity_tracker)
 
