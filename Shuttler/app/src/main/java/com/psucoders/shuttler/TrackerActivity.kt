@@ -18,6 +18,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import io.vrinda.kotlinpermissions.PermissionCallBack
 import io.vrinda.kotlinpermissions.PermissionsActivity
@@ -28,12 +29,14 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
+    private lateinit var mAuth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracker)
         checkLocationPermission()
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
+        manageTokens()
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_activity_tracker)
 
@@ -44,6 +47,11 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         mapView = mapFragment.view!!
+    }
+
+    private fun manageTokens() {
+        Log.d("Token is", MyFirebaseMessagingService.getToken(applicationContext))
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
