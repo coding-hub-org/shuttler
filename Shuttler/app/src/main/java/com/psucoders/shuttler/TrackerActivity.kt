@@ -80,7 +80,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     * If granted, gets location. Else displays message to ask again. If not granted, app exits
     * */
     private fun checkLocationPermission() {
-        requestPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, object : PermissionCallBack {
+        requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION, object : PermissionCallBack  {
             override fun permissionGranted() {
                 super.permissionGranted()
                 mMap.isMyLocationEnabled = true

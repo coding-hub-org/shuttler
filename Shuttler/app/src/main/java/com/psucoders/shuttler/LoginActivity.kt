@@ -7,6 +7,7 @@ import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import org.jetbrains.anko.toast
 
 
 class LoginActivity : AppCompatActivity() {
@@ -32,9 +33,18 @@ class LoginActivity : AppCompatActivity() {
             Toast.makeText(this@LoginActivity, "NO USER", Toast.LENGTH_SHORT).show()
             // Add Sign in / Sign Up button
             btnSignIn.setOnClickListener {
-                val email = edtUser.text.toString()
+                var email = edtUser.text.toString()
                 val password = edtPassword.text.toString()
-                signInUp(email, password)
+                if (email.contains("@plattsburgh.edu")) {
+                    toast("PLATTSBURGH ACCOUNT")
+                    toast("FIRST " + email)
+                    signInUp(email, password)
+                }
+                else {
+                    email+="@plattsburgh.edu"
+                    toast("SECOND" + email)
+                    signInUp(email, password)
+                }
             }
         }
         // User is logged in
