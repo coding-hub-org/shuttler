@@ -7,13 +7,21 @@ import android.os.Looper
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.drivers_activity.*
 import org.jetbrains.anko.toast
 
 class DriversActivity : AppCompatActivity() {
     private val mAuth = FirebaseAuth.getInstance()!!
+
+    private lateinit var drivers: DatabaseReference
+    private lateinit var geoFire: GeoFire
 
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -37,6 +45,10 @@ class DriversActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drivers_activity)
+
+        // Geofire
+        drivers = FirebaseDatabase.getInstance().getReference("Drivers")
+        geoFire = GeoFire(drivers)
 
         // Check permissions
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
@@ -68,7 +80,6 @@ class DriversActivity : AppCompatActivity() {
                     }
 
                     fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-
                 }
             }
         }
@@ -80,6 +91,9 @@ class DriversActivity : AppCompatActivity() {
                 // Get last location
                 val location = p0!!.locations[p0.locations.size - 1]
                 Toast.makeText(this@DriversActivity, "LATITUDE: ${location.latitude}  LONGITUDE: ${location.longitude}", Toast.LENGTH_LONG).show()
+                geoFire.setLocation(FirebaseAuth.getInstance().currentUser!!.uid, GeoLocation(location.latitude, location.longitude)) { key, error ->
+                    return@setLocation
+                }
             }
         }
     }
