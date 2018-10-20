@@ -66,6 +66,7 @@ class RegisterActivity : AppCompatActivity() {
                 user.username = email.substringBeforeLast("@")
                 user.email = email
                 user.password = password
+                user.setNotifications(true, "Campus", "5")
 
                 // Use UID to key fro database
                 users.child(currUser!!.uid).setValue(user).addOnCompleteListener {
