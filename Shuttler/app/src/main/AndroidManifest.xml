@@ -18,7 +18,6 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -35,13 +34,17 @@
         </service>
         <service android:name=".MyJobService" />
 
-        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages.
-     See README(https://goo.gl/l4GJaQ) for more. -->
+        <!--
+     Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_shuttler" />
-        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
-             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <!--
+             Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -62,7 +65,7 @@
 
         <activity
             android:name=".TrackerActivity"
-            android:label="@string/title_activity_tracker"></activity>
+            android:label="@string/title_activity_tracker" />
         <activity android:name=".SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -70,7 +73,7 @@
         </activity>
         <activity android:name=".AuthenticationActivity" />
         <activity android:name=".DriversActivity" />
-
+        <activity android:name=".RegisterActivity"></activity>
     </application>
 
 </manifest>

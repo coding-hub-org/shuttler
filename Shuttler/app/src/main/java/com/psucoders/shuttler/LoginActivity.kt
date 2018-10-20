@@ -19,31 +19,31 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         mAuth = FirebaseAuth.getInstance()
-
     }
 
     public override fun onStart() {
         super.onStart()
-
         // Get current user
         val currentUser = mAuth.currentUser
 
         // User is not logged in
         if (currentUser == null) {
             Toast.makeText(this@LoginActivity, "NO USER", Toast.LENGTH_SHORT).show()
-            // Add Sign in / Sign Up button
+            // Add Sign in button
             btnSignIn.setOnClickListener {
+                btnSignIn.isEnabled = false
                 var email = edtUser.text.toString()
                 val password = edtPassword.text.toString()
+                // Sign in if account exists
                 if (email.contains("@plattsburgh.edu")) {
                     toast("PLATTSBURGH ACCOUNT")
-                    toast("FIRST " + email)
-                    signInUp(email, password)
+                    toast("FIRST OPTION $email")
+                    signIn(email, password)
                 }
                 else {
                     email+="@plattsburgh.edu"
-                    toast("SECOND" + email)
-                    signInUp(email, password)
+                    toast("SECOND OPTION $email")
+                    signIn(email, password)
                 }
             }
         }
@@ -64,39 +64,39 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        btnToRegister.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
     }
 
-    private fun signInUp(email: String, password: String) {
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
+    private fun signIn(email: String, password: String) {
+        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
-                Toast.makeText(this@LoginActivity, "SIGN UP SUCCESSFULLY", Toast.LENGTH_SHORT).show()
-                val user = mAuth.currentUser
-                user!!.sendEmailVerification().addOnCompleteListener {
+                // Sign-in is successful
+                val currentUser = mAuth.currentUser
+                // Check is the user is verified
+                // If user is verified, redirect to Tracker activity
+                if (currentUser?.isEmailVerified == true) {
+                    Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND VERIFIED", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, TrackerActivity::class.java)
+                    intent.putExtra("user", currentUser)
+                    startActivity(intent)
+                }
+                // If user is not verified send to verification activity
+                else {
+                    Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND NOT VERIFIED", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, AuthenticationActivity::class.java)
                     startActivity(intent)
                 }
-            } else {
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        val currentUser = mAuth.currentUser
-                        if (currentUser?.isEmailVerified == true) {
-                            Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND VERIFIED", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, TrackerActivity::class.java)
-                            intent.putExtra("user", currentUser)
-                            startActivity(intent)
-                        } else {
-                            Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND NOT VERIFIED", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, AuthenticationActivity::class.java)
-                            startActivity(intent)
-                        }
-
-                    } else {
-                        Toast.makeText(this@LoginActivity, "FAIL TO CREATE ACCOUNT", Toast.LENGTH_SHORT).show()
-                        return@addOnCompleteListener
-                    }
-                }
+            }
+            // Error signing user in
+            else {
+                Toast.makeText(this@LoginActivity, "FAIL TO SIGN INTO ACCOUNT", Toast.LENGTH_SHORT).show()
+                btnSignIn.isEnabled = true
+                return@addOnCompleteListener
             }
         }
-
     }
 }

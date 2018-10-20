@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity">
+    tools:context=".RegisterActivity">
 
     <ImageView
         android:id="@+id/imageViewIcon"
@@ -43,13 +43,13 @@
         app:layout_constraintTop_toTopOf="@+id/guideline">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/edtUser"
+            android:id="@+id/edtUserSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_user"
             android:drawablePadding="10dp"
             android:fontFamily="@font/circular_book"
-            android:hint="@string/hint_username"
+            android:hint="@string/hint_username_email"
             android:inputType="textEmailAddress"
             android:translationY="5dp" />
 
@@ -73,7 +73,7 @@
 
         <android.support.design.widget.TextInputEditText
 
-            android:id="@+id/edtPassword"
+            android:id="@+id/edtPasswordSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/ic_lock"
@@ -98,14 +98,14 @@
         app:layout_constraintGuide_percent="0.10" />
 
     <Button
-        android:id="@+id/btnSignIn"
+        android:id="@+id/btnSignUp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/btn_login_background"
         android:fontFamily="@font/circular_book"
-        android:text="@string/btn_sign_in"
+        android:text="@string/btn_register"
         android:textAllCaps="false"
         android:textColor="@color/colorWhite"
         android:textSize="18sp"
@@ -139,14 +139,14 @@
         app:layout_constraintGuide_percent="0.9" />
 
     <Button
-        android:id="@+id/btnToRegister"
+        android:id="@+id/btnToLogin"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:textAllCaps="false"
-        android:text="@string/btn_to_register"
+        android:text="@string/btn_to_login"
         app:layout_constraintBottom_toTopOf="@+id/guideline7"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
