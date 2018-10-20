@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.SwitchCompat
-        android:id="@+id/switchDuty"
+        android:id="@+id/switch_share_pt_progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:thumb="@drawable/switch_thumb"
@@ -21,11 +21,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="28dp"
         android:gravity="center"
         android:text="@string/on_duty_string"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.1" />
+        app:layout_constraintGuide_percent="0.08" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"
@@ -58,7 +57,6 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/btn_login_background"
         android:text="@string/logout_button_text_settings"
         android:textColor="@color/colorWhite"

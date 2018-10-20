@@ -23,7 +23,7 @@
     <string name="logout_button_text_settings">Logout</string>
     <string name="apply_button_settings">APPLY</string>
     <string name="cancel_button_settings">Cancel</string>
-    <string name="on_duty_string">Please turn on if you are on duty</string>
+    <string name="on_duty_string">Dear driver, please turn on if you are on duty. Don\'t forget to turn off once you are out of duty </string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="btn_to_login">Already registered? <font color="#F2014B">Sign-in here</font></string>
 
