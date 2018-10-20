@@ -1,17 +1,95 @@
 package com.psucoders.shuttler
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Looper
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.drivers_activity.*
+import org.jetbrains.anko.toast
 
 class DriversActivity : AppCompatActivity() {
     private val mAuth = FirebaseAuth.getInstance()!!
 
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    private val REQUEST_CODE = 2310
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            REQUEST_CODE -> {
+                if (grantResults.isNotEmpty()) {
+                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                        Toast.makeText(this@DriversActivity, "PERMISSION GRANTED", Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(this@DriversActivity, "NOTs PERMISSION GRANTED", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.drivers_activity)
+
+        // Check permissions
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE)
+        else {
+            buildLocationRequest()
+            buildLocationCallback()
+            // Create FusedProviderClient
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+            // Set event
+            switchDuty.setOnCheckedChangeListener { switch, checked ->
+                if (checked) {
+                    toast("ON DUTY")
+                    if (ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this@DriversActivity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
+                        return@setOnCheckedChangeListener
+                    }
+
+                    fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+                }
+                else {
+                    toast("OFF DUTY")
+                    if (ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                            ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this@DriversActivity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
+                        return@setOnCheckedChangeListener
+                    }
+
+                    fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+
+                }
+            }
+        }
+    }
+
+    private fun buildLocationCallback() {
+        locationCallback = object :LocationCallback() {
+            override fun onLocationResult(p0: LocationResult?) {
+                // Get last location
+                val location = p0!!.locations[p0.locations.size - 1]
+                Toast.makeText(this@DriversActivity, "LATITUDE: ${location.latitude}  LONGITUDE: ${location.longitude}", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun buildLocationRequest() {
+        locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 5000
+        locationRequest.fastestInterval = 3000
+        locationRequest.smallestDisplacement = 10f
     }
 
     override fun onStart() {
