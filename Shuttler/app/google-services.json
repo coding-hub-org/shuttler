@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "571374342123-sugsvhmucv42bph9eaaqfldb0n001f5m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.psucoders.shuttler",
+            "certificate_hash": "39fd46f585d861594dbaf8a466b9630342f741d7"
+          }
+        },
+        {
           "client_id": "571374342123-r5drd5t87rqiilcs8j1uvr1om1vt0kdp.apps.googleusercontent.com",
           "client_type": 3
         }

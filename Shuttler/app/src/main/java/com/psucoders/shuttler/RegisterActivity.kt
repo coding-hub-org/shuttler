@@ -3,24 +3,33 @@ package com.psucoders.shuttler
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.android.synthetic.main.activity_login.*
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.psucoders.shuttler.Model.User
 import kotlinx.android.synthetic.main.activity_register.*
 import org.jetbrains.anko.toast
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var mAuth: FirebaseAuth
-
+    private lateinit var db: FirebaseDatabase
+    private lateinit var users: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
+
         mAuth = FirebaseAuth.getInstance()
+        db = FirebaseDatabase.getInstance()
+        users = db.getReference("Users")
     }
 
     override fun onStart() {
         super.onStart()
+
+        // Sign up new user
         btnSignUp.setOnClickListener {
             btnSignUp.isEnabled = false
             var email = edtUserSignUp.text.toString()
@@ -38,6 +47,7 @@ class RegisterActivity : AppCompatActivity() {
             }
         }
 
+        // Return to login activity
         btnToLogin.setOnClickListener {
             onBackPressed()
         }
@@ -45,14 +55,35 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun register(email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
+            // If account is created send verification email
             if (it.isSuccessful) {
+                // Save user to Database
+
                 Toast.makeText(this@RegisterActivity, "SIGN UP SUCCESSFULLY", Toast.LENGTH_SHORT).show()
-                val user = mAuth.currentUser
-                user!!.sendEmailVerification().addOnCompleteListener {
+                val currUser = mAuth.currentUser
+
+                val user = User()
+                user.username = email.substringBeforeLast("@")
+                user.email = email
+                user.password = password
+
+                // Use UID to key fro database
+                users.child(currUser!!.uid).setValue(user).addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        Snackbar.make(registerRoot, "Register Successful", Snackbar.LENGTH_SHORT).show()
+                    }
+                    else {
+                        Snackbar.make(registerRoot, "Failed ${it.exception}", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+
+                currUser.sendEmailVerification().addOnCompleteListener {
                     val intent = Intent(this, AuthenticationActivity::class.java)
                     startActivity(intent)
                 }
-            } else {
+            }
+            // Stay in the same activity
+            else {
                 btnSignUp.isEnabled = true
                 return@addOnCompleteListener
             }

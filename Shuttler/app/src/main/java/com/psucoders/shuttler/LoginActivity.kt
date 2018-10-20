@@ -3,10 +3,11 @@ package com.psucoders.shuttler
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import org.jetbrains.anko.toast
 
 
@@ -14,10 +15,10 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-
         mAuth = FirebaseAuth.getInstance()
     }
 
@@ -25,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
         super.onStart()
         // Get current user
         val currentUser = mAuth.currentUser
+
 
         // User is not logged in
         if (currentUser == null) {
@@ -79,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
                 // Check is the user is verified
                 // If user is verified, redirect to Tracker activity
                 if (currentUser?.isEmailVerified == true) {
-                    Toast.makeText(this@LoginActivity, "SIGN IN SUCCESSFULLY AND VERIFIED", Toast.LENGTH_SHORT).show()
                     val intent = Intent(this, TrackerActivity::class.java)
                     intent.putExtra("user", currentUser)
                     startActivity(intent)
@@ -93,7 +94,7 @@ class LoginActivity : AppCompatActivity() {
             }
             // Error signing user in
             else {
-                Toast.makeText(this@LoginActivity, "FAIL TO SIGN INTO ACCOUNT", Toast.LENGTH_SHORT).show()
+                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
                 btnSignIn.isEnabled = true
                 return@addOnCompleteListener
             }
