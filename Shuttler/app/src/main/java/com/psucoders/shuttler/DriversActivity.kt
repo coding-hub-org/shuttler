@@ -92,7 +92,7 @@ class DriversActivity : AppCompatActivity() {
                 val location = p0!!.locations[p0.locations.size - 1]
                 Toast.makeText(this@DriversActivity, "LATITUDE: ${location.latitude}  LONGITUDE: ${location.longitude}", Toast.LENGTH_LONG).show()
                 geoFire.setLocation(FirebaseAuth.getInstance().currentUser!!.uid, GeoLocation(location.latitude, location.longitude)) { key, error ->
-                    return@setLocation
+                    Toast.makeText(this@DriversActivity, "Updated location, Drive is ${FirebaseAuth.getInstance().currentUser!!.uid}", Toast.LENGTH_LONG).show()
                 }
             }
         }
