@@ -15,6 +15,8 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
 
+        val customText = "We've send you a confirmation email to ${currentUser?.email}, if you didn't receive it please check in spam . If you already authenticated your account please click on the button below"
+        confirmationTextView.text = customText
 
         btnVerified.setOnClickListener {
             if (currentUser?.isEmailVerified == true) {

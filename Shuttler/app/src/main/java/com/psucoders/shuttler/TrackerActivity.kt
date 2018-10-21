@@ -30,6 +30,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
     private lateinit var mAuth: FirebaseAuth
+    var tokenId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,8 +51,8 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     }
 
     private fun manageTokens() {
-        Log.d("Token is", MyFirebaseMessagingService.getToken(applicationContext))
-
+        tokenId = MyFirebaseMessagingService.getToken(applicationContext)
+        Log.d("Token is", tokenId)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

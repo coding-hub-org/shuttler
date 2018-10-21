@@ -5,10 +5,14 @@ import android.os.Bundle
 import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.MenuItem
 import android.widget.ArrayAdapter
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_settings.*
 
 
@@ -22,6 +26,8 @@ class SettingsActivity : AppCompatActivity() {
         val mAuth = FirebaseAuth.getInstance()
         val toolbar: Toolbar = findViewById(R.id.toolbar_activity_settings)
         setSupportActionBar(toolbar)
+
+        fetchDataFromFirebase()
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -53,10 +59,10 @@ class SettingsActivity : AppCompatActivity() {
             val enableNotifications = notification_enabled.isChecked
 
             val database = FirebaseDatabase.getInstance()
-            val myRef = database.getReference(username)
-            myRef.child("notifications").child("enabled").setValue(enableNotifications.toString())
-            myRef.child("notifications").child("notifyLocation").setValue(locationForNotification)
-            myRef.child("notifications").child("timeAhead").setValue(timeAhead)
+            val myRef = database.getReference("Users").child(username).child("notifications")
+            myRef.child("tokens").child(MyFirebaseMessagingService.getToken(applicationContext)).setValue(enableNotifications)
+            myRef.child("notifyLocation").setValue(locationForNotification)
+            myRef.child("timeAhead").setValue(timeAhead)
         }
 
         button_logout.setOnClickListener {
@@ -66,6 +72,41 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+    }
+
+    private fun fetchDataFromFirebase() {
+        Log.d("reached", "here1$username")
+
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("Users").child(username).child("notifications")
+        // Read from the database
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.d("reached", "here")
+                val post = dataSnapshot.getValue(UserSettingValues::class.java)
+                Log.d("values are1", post!!.timeAhead)
+                Log.d("values are2", post.notifyLocation)
+
+                val testArr = resources.getStringArray(R.array.locations_array)
+                val testArrList = testArr.toList()
+                val index = testArrList.indexOf(post.notifyLocation)
+                val tokens = post.tokens
+
+                val isChecked = tokens[tokens.keys.elementAt(0)]
+
+                Log.d("poooo", index.toString() + " " + isChecked)
+
+                locationsSpinner.setSelection(index)
+
+                notification_enabled.isChecked = isChecked!!
+                mins.text = post.timeAhead
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.d("ERRROR", "reading db")
+            }
+        })
     }
 
     private fun getValues() {

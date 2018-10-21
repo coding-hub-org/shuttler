@@ -4,8 +4,12 @@
     <string name="miss_shuttle">Don\'t Miss The Shuttle Any More!</string>
     <string name="login_content_description">Shuttler icon</string>
     <string name="hint_username">Username</string>
+    <string name="hint_username_email">Username / Email</string>
     <string name="hint_password">Password</string>
     <string name="btn_sign_in">Sign In</string>
+    <string name="btn_register">Register</string>
+    <string name="btn_to_register">First time using Shuttler? <font color="#F2014B">Register here</font></string>
+
     <string name="maps_menu_settings">Settings</string>
     <string-array name="locations_array">
         <item>Walmart</item>
@@ -14,12 +18,14 @@
         <item>Pharmacy</item>
         <item>Campus</item>
     </string-array>
-    <string name="authenticate">Please authenticate your account, I you have please click on the button below</string>
+    <string name="authenticate">Confirmation email</string>
     <string name="done">Done</string>
     <string name="logout_button_text_settings">Logout</string>
     <string name="apply_button_settings">APPLY</string>
     <string name="cancel_button_settings">Cancel</string>
-    <string name="on_duty_string">Please turn on if you are on duty</string>
+    <string name="on_duty_string">Dear driver, please turn on if you are on duty. Don\'t forget to turn off once you are out of duty </string>
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
+    <string name="btn_to_login">Already registered? <font color="#F2014B">Sign-in here</font></string>
+
 
 </resources>
