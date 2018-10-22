@@ -74,6 +74,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_shuttle))
                             .position(LatLng(latDriver as Double, longDriver as Double))
                             .title("Shuttle"))
+
                 }
             }
 
