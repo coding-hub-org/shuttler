@@ -34,7 +34,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
-    //private lateinit var shuttleMarker: Marker
+    private var shuttleMarker: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,18 +54,24 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
         drivers = FirebaseDatabase.getInstance().getReference("Drivers")
 
+        displayLocation()
+    }
+
+    private fun displayLocation() {
         // Read from the database
         val driverListener = object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 if (dataSnapshot.exists()) {
                     //val message = dataSnapshot.getValue(Message::class.java)
-
-
                     val latDriver = dataSnapshot.children.elementAt(0).child("l").child("0").value
                     val longDriver = dataSnapshot.children.elementAt(0).child("l").child("1").value
 
-                    mMap.addMarker(MarkerOptions()
+                    if (shuttleMarker != null) {
+                        shuttleMarker!!.remove()
+                    }
+
+                    shuttleMarker = mMap.addMarker(MarkerOptions()
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_shuttle))
                             .position(LatLng(latDriver as Double, longDriver as Double))
                             .title("Shuttle"))
@@ -79,8 +85,6 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }
 
         drivers.addValueEventListener(driverListener)
-
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
