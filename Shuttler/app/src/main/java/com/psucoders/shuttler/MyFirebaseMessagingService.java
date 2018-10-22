@@ -14,11 +14,22 @@ import android.util.Log;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+//    private static final String PROJECT_ID = "shuttler-p001";
+//    private static final String BASE_URL = "https://fcm.googleapis.com";
+//    private static final String FCM_SEND_ENDPOINT = "/v1/projects/" + PROJECT_ID + "/messages:send";
+//
+//    private static final String MESSAGING_SCOPE = "https://www.googleapis.com/auth/firebase.messaging";
+//    private static final String[] SCOPES = { MESSAGING_SCOPE };
+
+
 
     private static final String TAG = "MyFirebaseMsgService";
 
@@ -30,50 +41,57 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // [START_EXCLUDE]
-        // There are two types of messages data messages and notification messages. Data messages
-        // are handled
-        // here in onMessageReceived whether the app is in the foreground or background. Data
-        // messages are the type
-        // traditionally used with GCM. Notification messages are only received here in
-        // onMessageReceived when the app
-        // is in the foreground. When the app is in the background an automatically generated
-        // notification is displayed.
-        // When the user taps on the notification they are returned to the app. Messages
-        // containing both notification
-        // and data payloads are treated as notification messages. The Firebase console always
-        // sends notification
-        // messages. For more see: https://firebase.google.com/docs/cloud-messaging/concept-options
-        // [END_EXCLUDE]
+//        // TODO(developer): Handle FCM messages here.
+//        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
+//        Log.d(TAG, "From: " + remoteMessage.getFrom());
+//
+//        // Check if message contains a data payload.
+//        if (remoteMessage.getData().size() > 0) {
+//            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+//
+//            if (/* Check if data needs to be processed by long running job */ false) {
+//                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
+//                scheduleJob();
+//            } else {
+//                // Handle message within 10 seconds
+//                handleNow();
+//            }
+//
+//        }
+//
+//        // Check if message contains a notification payload.
+//        if (remoteMessage.getNotification() != null) {
+//            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+//        }
+//
+//        // Also if you intend on generating your own notifications as a result of a received FCM
+//        // message, here is where that should be initiated. See sendNotification method below.
 
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-        Log.d(TAG, "From: " + remoteMessage.getFrom());
-
-        // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
-            if (/* Check if data needs to be processed by long running job */ false) {
-                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
-                scheduleJob();
-            } else {
-                // Handle message within 10 seconds
-                handleNow();
-            }
-
-        }
-
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-        }
-
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,"default");
+        notificationBuilder.setContentTitle("The shuttle is here");
+        notificationBuilder.setAutoCancel(true);
+        notificationBuilder.setSmallIcon(R.drawable.ic_shuttler);
+        notificationBuilder.setContentIntent(pendingIntent);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, notificationBuilder.build());
     }
+
     // [END receive_message]
 
+    public static String getToken(Context context) {
+        return context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty");
+    }
+//
+//    private static String getAccessToken() throws IOException {
+//        GoogleCredential googleCredential = GoogleCredential
+//                .fromStream(new FileInputStream("service-account.json"))
+//                .createScoped(Arrays.asList(SCOPES));
+//        googleCredential.refreshToken();
+//        return googleCredential.getAccessToken();
+//    }
 
     // [START on_new_token]
 
@@ -89,7 +107,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
-        sendRegistrationToServer(token);
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        String username = user.getUid();
+
+        getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", token).apply();
+//        sendRegistrationToServer(token);
     }
     // [END on_new_token]
 
@@ -112,19 +134,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      */
     private void handleNow() {
         Log.d(TAG, "Short lived task is done.");
-        sendNotification("New Notification recei    ved");
+        sendNotification("New Notification received");
     }
 
     /**
      * Persist token to third-party servers.
-     *
+     * <p>
      * Modify this method to associate the user's FCM InstanceID token with any server-side account
      * maintained by your application.
      *
      * @param token The new token.
      */
     private void sendRegistrationToServer(String token) {
-        FirebaseDatabase.getInstance().getReference().child("users/${user.uid}/tokens").child(token).setValue(true);
+        Log.d("new token", "generated"+token);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String username = user.getUid();
+        FirebaseDatabase.getInstance().getReference().child("Users").child(username).child(token).setValue(true);
     }
 
     /**

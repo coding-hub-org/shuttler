@@ -2,27 +2,41 @@ package com.psucoders.shuttler
 
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.app.NavUtils
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import kotlinx.android.synthetic.main.activity_settings.*
-import android.support.v4.app.NavUtils
+import android.util.Log
 import android.view.MenuItem
+import android.widget.ArrayAdapter
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import kotlinx.android.synthetic.main.activity_settings.*
+import org.apache.http.NameValuePair
+import org.apache.http.message.BasicNameValuePair
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
-    lateinit var username: String
+    lateinit var queue: RequestQueue
+    private val jsonParser = JSONParser()
+    private lateinit var username: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
+        username = getUsername()
         val mAuth = FirebaseAuth.getInstance()
         val toolbar: Toolbar = findViewById(R.id.toolbar_activity_settings)
         setSupportActionBar(toolbar)
+        queue = Volley.newRequestQueue(this)
+
+        fetchDataFromFirebase()
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
@@ -54,10 +68,11 @@ class SettingsActivity : AppCompatActivity() {
             val enableNotifications = notification_enabled.isChecked
 
             val database = FirebaseDatabase.getInstance()
-            val myRef = database.getReference("greye003")
-            myRef.child("notifications").child("enabled").setValue(enableNotifications.toString())
-            myRef.child("notifications").child("notifyLocation").setValue(locationForNotification)
-            myRef.child("notifications").child("timeAhead").setValue(timeAhead)
+            val myRef = database.getReference("Users").child(username).child("notifications")
+            Log.d("token is here", "" + MyFirebaseMessagingService.getToken(applicationContext))
+            myRef.child("tokens").child(MyFirebaseMessagingService.getToken(applicationContext)).setValue(enableNotifications)
+            myRef.child("notifyLocation").setValue(locationForNotification)
+            myRef.child("timeAhead").setValue(timeAhead)
         }
 
         button_logout.setOnClickListener {
@@ -67,10 +82,75 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        button_test.setOnClickListener {
+            sendNotif()
+        }
+    }
+
+    private fun sendNotif() {
+        val url = "http://new.beginurrev.com/Shuttler/send_notification_form.php"
+
+        doAsync {
+            try {
+                //building parameters
+                val params = ArrayList<NameValuePair>()
+                params.add(BasicNameValuePair("token", "fdeY5WC9jnY:APA91bElulIAj8cgDld86ilFqfEh9EUMlRmcUBEaUilECxW-ENS2dsfHd2ey8luw-t0cIPii37rygmLWQZEQWbt-W7JWq7C8IlhYlK8SBTi8s_HHfGY30I-mfs9JqQtwaf7e0WA23NSo"))
+                params.add(BasicNameValuePair("title", "TEST"))
+                params.add(BasicNameValuePair("message", "MESSAGE HERE"))
+                jsonParser.makeHttpRequest(url, "POST", params)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            uiThread {
+
+            }
+
+        }
+    }
+
+    private fun fetchDataFromFirebase() {
+        Log.d("reached", "here1$username")
+
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("Users").child(username).child("notifications")
+        // Read from the database
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                Log.d("reached", "here")
+                val post = dataSnapshot.getValue(UserSettingValues::class.java)
+                Log.d("values are1", post!!.timeAhead)
+                Log.d("values are2", post.notifyLocation)
+
+                val testArr = resources.getStringArray(R.array.locations_array)
+                val testArrList = testArr.toList()
+                val index = testArrList.indexOf(post.notifyLocation)
+                val tokens = post.tokens
+
+                val isChecked = tokens[tokens.keys.elementAt(0)]
+
+                Log.d("poooo", index.toString() + " " + isChecked)
+
+                locationsSpinner.setSelection(index)
+
+                notification_enabled.isChecked = isChecked!!
+                mins.text = post.timeAhead
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.d("ERRROR", "reading db")
+            }
+        })
     }
 
     private fun getValues() {
 
+    }
+
+    private fun getUsername(): String {
+        return FirebaseAuth.getInstance().currentUser!!.uid
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

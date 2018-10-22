@@ -1,9 +1,10 @@
 package com.psucoders.shuttler
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -40,6 +41,9 @@ class RegisterActivity : AppCompatActivity() {
                 toast("FIRST OPTION $email")
                 register(email, password)
             }
+//            else {
+//                email += "@plattsburgh.edu"
+//            }
             else {
                 email+="@plattsburgh.edu"
                 toast("SECOND OPTION $email")
@@ -66,7 +70,11 @@ class RegisterActivity : AppCompatActivity() {
                 user.username = email.substringBeforeLast("@")
                 user.email = email
                 user.password = password
-                user.setNotifications(true, "Campus", "5")
+                val notificationToken = MyFirebaseMessagingService.getToken(applicationContext)
+                Log.d("notification token", "is: $notificationToken")
+                val tokens = HashMap<String, Boolean>()
+                tokens[notificationToken] = true
+                user.setNotifications(tokens, "Campus", "5")
 
                 // Use UID to key fro database
                 users.child(currUser!!.uid).setValue(user).addOnCompleteListener {

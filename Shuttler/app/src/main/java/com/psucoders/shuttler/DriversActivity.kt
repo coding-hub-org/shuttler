@@ -11,7 +11,6 @@ import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.google.android.gms.location.*
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.drivers_activity.*
@@ -92,6 +91,7 @@ class DriversActivity : AppCompatActivity() {
                 val location = p0!!.locations[p0.locations.size - 1]
                 Toast.makeText(this@DriversActivity, "LATITUDE: ${location.latitude}  LONGITUDE: ${location.longitude}", Toast.LENGTH_LONG).show()
                 geoFire.setLocation(FirebaseAuth.getInstance().currentUser!!.uid, GeoLocation(location.latitude, location.longitude)) { key, error ->
+                    return@setLocation
                     Toast.makeText(this@DriversActivity, "Updated location, Drive is ${FirebaseAuth.getInstance().currentUser!!.uid}", Toast.LENGTH_LONG).show()
                 }
             }

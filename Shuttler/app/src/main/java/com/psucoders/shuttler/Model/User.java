@@ -1,19 +1,29 @@
 package com.psucoders.shuttler.Model;
 
+import java.util.HashMap;
+
 class Notifications {
     private String notifyLocation, timeAhead;
-    private boolean enabled;
+    private HashMap<String, Boolean> tokens;
+
+    //    private boolean enabled;
     Notifications() {
     }
 
-    public Notifications(boolean enabled, String notifyLocation, String timeAhead) {
-        this.enabled = enabled;
+    public Notifications(HashMap<String, Boolean> tokens, String notifyLocation, String timeAhead) {
+//        this.enabled = enabled;
         this.notifyLocation = notifyLocation;
         this.timeAhead = timeAhead;
+        this.tokens = tokens;
     }
 
     public String getNotifyLocation() {
         return notifyLocation;
+    }
+
+
+    public void setNotificationTokens(HashMap<String, Boolean> tokens) {
+        this.tokens = tokens;
     }
 
     public void setNotifyLocation(String notifyLocation) {
@@ -24,17 +34,21 @@ class Notifications {
         return timeAhead;
     }
 
+    public HashMap<String, Boolean> getTokens() {
+        return tokens;
+    }
+
     public void setTimeAhead(String timeAhead) {
         this.timeAhead = timeAhead;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
+//    public boolean isEnabled() {
+//        return enabled;
+//    }
 
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
+//    public void setEnabled(boolean enabled) {
+//        this.enabled = enabled;
+//    }
 }
 
 public class User {
@@ -75,7 +89,8 @@ public class User {
         return notifications;
     }
 
-    public void setNotifications(boolean b, String n, String t) {
+    public void setNotifications(HashMap<String, Boolean> b, String n, String t) {
+
         this.notifications = new Notifications(b, n, t);
     }
 

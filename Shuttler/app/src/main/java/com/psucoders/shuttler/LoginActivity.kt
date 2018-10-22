@@ -1,12 +1,12 @@
 package com.psucoders.shuttler
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_login.*
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_login.*
 import org.jetbrains.anko.toast
 
 
@@ -19,6 +19,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         mAuth = FirebaseAuth.getInstance()
+
     }
 
     public override fun onStart() {

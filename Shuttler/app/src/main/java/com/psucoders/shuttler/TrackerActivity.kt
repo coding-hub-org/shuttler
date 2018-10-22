@@ -14,12 +14,11 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
-import android.widget.Toast
-import com.firebase.geofire.GeoFire
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.messaging.FirebaseMessaging
 import io.vrinda.kotlinpermissions.PermissionCallBack
@@ -35,12 +34,16 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
     private var shuttleMarker: Marker? = null
+    private lateinit var mAuth: FirebaseAuth
+    var tokenId = ""
+    //private lateinit var shuttleMarker: Marker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracker)
         checkLocationPermission()
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
+        manageTokens()
 
         val toolbar: Toolbar = findViewById(R.id.toolbar_activity_tracker)
 
@@ -85,6 +88,11 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }
 
         drivers.addValueEventListener(driverListener)
+    }
+
+    private fun manageTokens() {
+        tokenId = MyFirebaseMessagingService.getToken(applicationContext)
+        Log.d("Token is", tokenId)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
