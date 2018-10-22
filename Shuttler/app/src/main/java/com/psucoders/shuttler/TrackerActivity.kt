@@ -17,8 +17,12 @@ import android.widget.RelativeLayout
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import com.google.firebase.messaging.FirebaseMessaging
 import io.vrinda.kotlinpermissions.PermissionCallBack
 import io.vrinda.kotlinpermissions.PermissionsActivity
@@ -27,10 +31,14 @@ import org.jetbrains.anko.toast
 
 class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.AnimationListener {
 
+    // Driver database
+    private lateinit var drivers: DatabaseReference
+
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
     private lateinit var mAuth: FirebaseAuth
     var tokenId = ""
+    //private lateinit var shuttleMarker: Marker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +56,35 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         mapView = mapFragment.view!!
+
+        drivers = FirebaseDatabase.getInstance().getReference("Drivers")
+
+        // Read from the database
+        val driverListener = object : ValueEventListener {
+
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    //val message = dataSnapshot.getValue(Message::class.java)
+
+
+                    val latDriver = dataSnapshot.children.elementAt(0).child("l").child("0").value
+                    val longDriver = dataSnapshot.children.elementAt(0).child("l").child("1").value
+
+                    mMap.addMarker(MarkerOptions()
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_shuttle))
+                            .position(LatLng(latDriver as Double, longDriver as Double))
+                            .title("Shuttle"))
+                }
+            }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                // Failed to read value
+            }
+        }
+
+        drivers.addValueEventListener(driverListener)
+
+
     }
 
     private fun manageTokens() {

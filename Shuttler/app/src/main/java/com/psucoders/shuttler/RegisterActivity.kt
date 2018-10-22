@@ -40,8 +40,12 @@ class RegisterActivity : AppCompatActivity() {
                 toast("PLATTSBURGH ACCOUNT")
                 toast("FIRST OPTION $email")
                 register(email, password)
-            } else {
-                email += "@plattsburgh.edu"
+            }
+//            else {
+//                email += "@plattsburgh.edu"
+//            }
+            else {
+                email+="@plattsburgh.edu"
                 toast("SECOND OPTION $email")
                 register(email, password)
             }
@@ -76,7 +80,8 @@ class RegisterActivity : AppCompatActivity() {
                 users.child(currUser!!.uid).setValue(user).addOnCompleteListener {
                     if (it.isSuccessful) {
                         Snackbar.make(registerRoot, "Register Successful", Snackbar.LENGTH_SHORT).show()
-                    } else {
+                    }
+                    else {
                         Snackbar.make(registerRoot, "Failed ${it.exception}", Snackbar.LENGTH_SHORT).show()
                     }
                 }

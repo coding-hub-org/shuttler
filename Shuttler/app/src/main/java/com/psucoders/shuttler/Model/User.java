@@ -21,6 +21,7 @@ class Notifications {
         return notifyLocation;
     }
 
+
     public void setNotificationTokens(HashMap<String, Boolean> tokens) {
         this.tokens = tokens;
     }
@@ -36,7 +37,6 @@ class Notifications {
     public HashMap<String, Boolean> getTokens() {
         return tokens;
     }
-
 
     public void setTimeAhead(String timeAhead) {
         this.timeAhead = timeAhead;
@@ -90,6 +90,7 @@ public class User {
     }
 
     public void setNotifications(HashMap<String, Boolean> b, String n, String t) {
+
         this.notifications = new Notifications(b, n, t);
     }
 

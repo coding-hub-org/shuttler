@@ -8,24 +8,33 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import com.android.volley.RequestQueue
+import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.activity_settings.*
+import org.apache.http.NameValuePair
+import org.apache.http.message.BasicNameValuePair
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import java.util.*
 
 
 class SettingsActivity : AppCompatActivity() {
+    lateinit var queue: RequestQueue
+    private val jsonParser = JSONParser()
     private lateinit var username: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
         username = getUsername()
         val mAuth = FirebaseAuth.getInstance()
         val toolbar: Toolbar = findViewById(R.id.toolbar_activity_settings)
         setSupportActionBar(toolbar)
+        queue = Volley.newRequestQueue(this)
 
         fetchDataFromFirebase()
 
@@ -60,6 +69,7 @@ class SettingsActivity : AppCompatActivity() {
 
             val database = FirebaseDatabase.getInstance()
             val myRef = database.getReference("Users").child(username).child("notifications")
+            Log.d("token is here", "" + MyFirebaseMessagingService.getToken(applicationContext))
             myRef.child("tokens").child(MyFirebaseMessagingService.getToken(applicationContext)).setValue(enableNotifications)
             myRef.child("notifyLocation").setValue(locationForNotification)
             myRef.child("timeAhead").setValue(timeAhead)
@@ -72,6 +82,32 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        button_test.setOnClickListener {
+            sendNotif()
+        }
+    }
+
+    private fun sendNotif() {
+        val url = "http://new.beginurrev.com/Shuttler/send_notification_form.php"
+
+        doAsync {
+            try {
+                //building parameters
+                val params = ArrayList<NameValuePair>()
+                params.add(BasicNameValuePair("token", "fdeY5WC9jnY:APA91bElulIAj8cgDld86ilFqfEh9EUMlRmcUBEaUilECxW-ENS2dsfHd2ey8luw-t0cIPii37rygmLWQZEQWbt-W7JWq7C8IlhYlK8SBTi8s_HHfGY30I-mfs9JqQtwaf7e0WA23NSo"))
+                params.add(BasicNameValuePair("title", "TEST"))
+                params.add(BasicNameValuePair("message", "MESSAGE HERE"))
+                jsonParser.makeHttpRequest(url, "POST", params)
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            uiThread {
+
+            }
+
+        }
     }
 
     private fun fetchDataFromFirebase() {
