@@ -94,7 +94,7 @@ class SettingsActivity : AppCompatActivity() {
             try {
                 //building parameters
                 val params = ArrayList<NameValuePair>()
-                params.add(BasicNameValuePair("token", "ca_WDBSAbBU:APA91bGxKBBCM0WWiBjDYtbEUiIHB6eGK1Qcbgcm8OhlQkdVn_zHcpBHL9JJ39N8vXskE3c6PJiQ9gPHNapwdoburE58ELWqr710HuL82NV_lif973H6tDJZQjXO6b-fPTgdM6h1FMtT"))
+                params.add(BasicNameValuePair("token", "eFvusFj3vzk:APA91bHbFjibqGG29Cs-9VBCkf9LR7R7JQOcxlIC0ehrtU3j4qKu-adCqGFBrp4jrYM4BXpF7Vez7cMvYUbdpllsegdyDN6HYXY4nYHCS2LE6RVb2fenrKCa85c_filK6ku5KFCKDSgV"))
                 params.add(BasicNameValuePair("title", "TEST"))
                 params.add(BasicNameValuePair("message", "MESSAGE HERE"))
                 jsonParser.makeHttpRequest(url, "POST", params)
