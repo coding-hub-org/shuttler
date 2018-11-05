@@ -14,6 +14,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
+import android.widget.Toast
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -25,6 +26,7 @@ import io.vrinda.kotlinpermissions.PermissionCallBack
 import io.vrinda.kotlinpermissions.PermissionsActivity
 import kotlinx.android.synthetic.main.activity_tracker.*
 import org.jetbrains.anko.toast
+import java.util.*
 
 class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.AnimationListener {
 
@@ -41,6 +43,17 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracker)
+
+        // Check if shuttle is working
+        val currTime = Calendar.getInstance()
+        if (currTime.get(Calendar.HOUR_OF_DAY) in 11..20)
+            Toast.makeText(this, currTime.get(Calendar.HOUR_OF_DAY).toString(), Toast.LENGTH_LONG).show()
+        else {
+            val offHourIntent = Intent(this, OffHoursActivity::class.java)
+            startActivity(offHourIntent)
+            finish()
+        }
+
         checkLocationPermission()
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
         manageTokens()
