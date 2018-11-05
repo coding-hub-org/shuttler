@@ -51,7 +51,6 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         else {
             val offHourIntent = Intent(this, OffHoursActivity::class.java)
             startActivity(offHourIntent)
-            finish()
         }
 
         checkLocationPermission()
