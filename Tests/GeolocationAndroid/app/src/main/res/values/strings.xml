@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">GeolocationAndroid</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_geolocation">Map</string>
 </resources>

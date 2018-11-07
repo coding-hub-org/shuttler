@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -15,6 +16,8 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -30,6 +33,13 @@ import java.util.*
 
 class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.AnimationListener {
 
+    // Users location variables
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+    @Suppress("PrivatePropertyName")
+    private val REQUEST_CODE = 2310
+
     // Driver database
     private lateinit var drivers: DatabaseReference
 
@@ -44,15 +54,6 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracker)
 
-        // Check if shuttle is working
-        val currTime = Calendar.getInstance()
-        if (currTime.get(Calendar.HOUR_OF_DAY) in 11..20)
-            Toast.makeText(this, currTime.get(Calendar.HOUR_OF_DAY).toString(), Toast.LENGTH_LONG).show()
-        else {
-            val offHourIntent = Intent(this, OffHoursActivity::class.java)
-            startActivity(offHourIntent)
-        }
-
         checkLocationPermission()
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
         manageTokens()
@@ -66,11 +67,30 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         mapView = mapFragment.view!!
-
         drivers = FirebaseDatabase.getInstance().getReference("Drivers")
 
         displayLocation()
     }
+
+    override fun onStart() {
+        super.onStart()
+        // Check if shuttle is working
+        val currTime = Calendar.getInstance()
+        if (currTime.get(Calendar.HOUR_OF_DAY) in 10..20){
+            Toast.makeText(this, currTime.get(Calendar.HOUR_OF_DAY).toString(), Toast.LENGTH_LONG).show()
+            buildLocationRequest()
+            buildLocationCallBack()
+            // Create FusedLocationProvider
+            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+        }
+        else {
+            val offHourIntent = Intent(this, OffHoursActivity::class.java)
+            startActivity(offHourIntent)
+            finish()
+        }
+    }
+
 
     private fun displayLocation() {
         // Read from the database
@@ -122,6 +142,8 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         } catch (e: Resources.NotFoundException) {
             Log.e("STYLE FAIL", "Can't find style. Error: ", e)
         }
+
+        mMap.isIndoorEnabled = true
 
         mMap.setOnMapClickListener {
             animations()
@@ -223,6 +245,28 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         startActivity(intent)
         baseContext.toast("clicked settings")
         return super.onOptionsItemSelected(item)
+    }
+
+    // User's current position
+    private fun buildLocationCallBack() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(p0: LocationResult?) {
+                // Get last location
+                val location = p0!!.locations[p0.locations.size-1]
+                fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+                val yourPosition = LatLng(location.latitude, location.longitude)
+                mMap.addMarker(MarkerOptions().position(yourPosition).title("YOU"))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(yourPosition, 14f))
+            }
+        }
+    }
+
+    private fun buildLocationRequest() {
+        locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 5000
+        locationRequest.fastestInterval = 3000
+        locationRequest.smallestDisplacement = 10f
     }
 
 }
