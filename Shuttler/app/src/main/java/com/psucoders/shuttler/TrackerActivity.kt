@@ -76,7 +76,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         super.onStart()
         // Check if shuttle is working
         val currTime = Calendar.getInstance()
-        if (currTime.get(Calendar.HOUR_OF_DAY) in 10..20){
+        if (currTime.get(Calendar.HOUR_OF_DAY) in 10..23){
             Toast.makeText(this, currTime.get(Calendar.HOUR_OF_DAY).toString(), Toast.LENGTH_LONG).show()
             buildLocationRequest()
             buildLocationCallBack()
@@ -255,7 +255,6 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 val location = p0!!.locations[p0.locations.size-1]
                 fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                 val yourPosition = LatLng(location.latitude, location.longitude)
-                mMap.addMarker(MarkerOptions().position(yourPosition).title("YOU"))
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(yourPosition, 14f))
             }
         }
