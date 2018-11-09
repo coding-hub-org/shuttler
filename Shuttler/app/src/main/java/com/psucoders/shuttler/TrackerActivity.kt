@@ -3,6 +3,7 @@ package com.psucoders.shuttler
 import android.Manifest
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -16,6 +17,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import android.widget.Toast
+import com.firebase.geofire.GeoFire
+import com.firebase.geofire.GeoLocation
+import com.firebase.geofire.GeoQueryEventListener
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -37,7 +41,6 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    @Suppress("PrivatePropertyName")
     private val REQUEST_CODE = 2310
 
     // Driver database
@@ -48,6 +51,8 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     private var shuttleMarker: Marker? = null
     private lateinit var mAuth: FirebaseAuth
     var tokenId = ""
+    private lateinit var geoFire: GeoFire
+
     //private lateinit var shuttleMarker: Marker
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,6 +74,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         mapView = mapFragment.view!!
         drivers = FirebaseDatabase.getInstance().getReference("Drivers")
 
+        geoFire = GeoFire(drivers)
         displayLocation()
     }
 
@@ -111,6 +117,10 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                             .position(LatLng(latDriver as Double, longDriver as Double))
                             .title("Shuttle"))
 
+                    shuttlerFAB!!.setOnClickListener {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latDriver, longDriver), 10f))
+                    }
+
                 }
             }
 
@@ -130,7 +140,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        try {
+        /*try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
             val success = googleMap.setMapStyle(
@@ -141,9 +151,65 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
             }
         } catch (e: Resources.NotFoundException) {
             Log.e("STYLE FAIL", "Can't find style. Error: ", e)
-        }
+        }*/
 
         mMap.isIndoorEnabled = true
+
+        // Create geofence areas
+        val walmartStop = LatLng(44.692463, -73.485802) // Done
+        val targetStop = LatLng(44.703369, -73.492711) // Done
+        val campusStop = LatLng(44.692917, -73.465922) // Done
+        val priceChopperStop = LatLng(44.695358, -73.492923) // Done
+        val jadeStop = LatLng(44.699042, -73.476645) // Done
+
+        mMap.addCircle(CircleOptions()
+                .center(walmartStop)
+                .radius(250.0)
+                .strokeColor(Color.RED)
+                .fillColor(0X220000FF)
+                .strokeWidth(3.0f)
+        )
+
+        mMap.addCircle(CircleOptions()
+                .center(priceChopperStop)
+                .radius(100.0)
+                .strokeColor(Color.RED)
+                .fillColor(0X220000FF)
+                .strokeWidth(3.0f)
+        )
+
+        mMap.addCircle(CircleOptions()
+                .center(targetStop)
+                .radius(300.0)
+                .strokeColor(Color.RED)
+                .fillColor(0X220000FF)
+                .strokeWidth(3.0f)
+        )
+
+
+        val geoQuery = geoFire.queryAtLocation(GeoLocation(walmartStop.latitude, walmartStop.longitude), 0.5)
+        geoQuery.addGeoQueryEventListener(object : GeoQueryEventListener {
+            // user has been found within the radius:
+            override fun onKeyEntered(key: String, location: GeoLocation) {
+                Toast.makeText(this@TrackerActivity, "ENTER GEOFENCE", Toast.LENGTH_LONG).show()
+            }
+
+            override fun onKeyExited(key: String) {
+                Toast.makeText(this@TrackerActivity, "EXITING GEOFENCE", Toast.LENGTH_LONG).show()
+            }
+
+            override fun onKeyMoved(key: String, location: GeoLocation) {
+
+            }
+
+            // all users within the radius have been identified:
+            override fun onGeoQueryReady() {
+            }
+
+            override fun onGeoQueryError(error: DatabaseError) {
+
+            }
+        })
 
         mMap.setOnMapClickListener {
             animations()

@@ -180,4 +180,16 @@
         android:textSize="16sp"
         app:layout_constraintGuide_percent="0.8" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/shuttlerFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:backgroundTint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_shuttle_cardview" />
+
 </android.support.constraint.ConstraintLayout>
