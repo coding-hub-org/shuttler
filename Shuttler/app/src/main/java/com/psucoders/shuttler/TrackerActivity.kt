@@ -2,7 +2,6 @@ package com.psucoders.shuttler
 
 import android.Manifest
 import android.content.Intent
-import android.content.res.Resources
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -37,6 +36,7 @@ import java.util.*
 
 class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.AnimationListener {
 
+    private var NOTIFY_USERS = "http://new.beginurrev.com/Shuttler/send_notification_form.php"
     // Users location variables
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -58,7 +58,6 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracker)
-
         checkLocationPermission()
         FirebaseMessaging.getInstance().isAutoInitEnabled = true
         manageTokens()
@@ -82,15 +81,14 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         super.onStart()
         // Check if shuttle is working
         val currTime = Calendar.getInstance()
-        if (currTime.get(Calendar.HOUR_OF_DAY) in 10..23){
+        if (currTime.get(Calendar.HOUR_OF_DAY) in 10..23) {
             Toast.makeText(this, currTime.get(Calendar.HOUR_OF_DAY).toString(), Toast.LENGTH_LONG).show()
             buildLocationRequest()
             buildLocationCallBack()
             // Create FusedLocationProvider
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
-        }
-        else {
+        } else {
             val offHourIntent = Intent(this, OffHoursActivity::class.java)
             startActivity(offHourIntent)
             finish()
@@ -135,6 +133,40 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     private fun manageTokens() {
         tokenId = MyFirebaseMessagingService.getToken(applicationContext)
         Log.d("Token is", tokenId)
+        val database = FirebaseDatabase.getInstance()
+        val username = getUsername()
+        val myRef = database.getReference("Users").child(username).child("notifications")
+
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val post = dataSnapshot.getValue(UserSettingValues::class.java)
+                val tokens = post!!.tokens
+                var isChecked = true
+                var oldToken = ""
+
+                try {
+                    isChecked = tokens[tokens.keys.elementAt(0)]!!
+                    myRef.child("tokens").child(MyFirebaseMessagingService.getToken(applicationContext)).setValue(isChecked)
+                    Log.d("is", "checked - $isChecked")
+                    oldToken = tokens.keys.elementAt(0)
+                    Log.d("Token old", oldToken)
+                    if (tokenId == oldToken) {
+                        Log.d("Same tokenss", "happily")
+                    } else {
+                        Log.d("Different tokenss", "sadly")
+                        myRef.child("tokens").removeValue()
+                    }
+                } catch (e: Throwable) {
+                    e.printStackTrace()
+                }
+                myRef.child("tokens").child(tokenId).setValue(isChecked)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.d("ERRROR", "reading db")
+            }
+        })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -192,6 +224,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
             // user has been found within the radius:
             override fun onKeyEntered(key: String, location: GeoLocation) {
                 Toast.makeText(this@TrackerActivity, "ENTER GEOFENCE", Toast.LENGTH_LONG).show()
+                notifyUsers("Walmart")
             }
 
             override fun onKeyExited(key: String) {
@@ -216,12 +249,43 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }
     }
 
+    /*NOTIFY USERS*/
+	/*This method is not complete yet*/
+    fun notifyUsers(location: String) {
+        Log.d("entered", "geofence of $location")
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("Users")
+
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+//                Log.d("value is", ""+post)
+//                for(i in 1..userList.size){
+//                    Log.d("username is" , userList.keys.elementAt(i))
+//                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.d("ERRROR", "reading db")
+            }
+        })
+
+    }
+
+    fun collectNotificationData(value: HashMap<String, Any>) {
+        Log.d("values here", value.toString())
+        var userList = value.keys
+        Log.d("values here", userList.size.toString())
+    }
+
+
     /*
     * EVERYTHING TO DO WITH PERMISSIONS
     * If granted, gets location. Else displays message to ask again. If not granted, app exits
     * */
     private fun checkLocationPermission() {
-        requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION, object : PermissionCallBack  {
+        requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION, object : PermissionCallBack {
             override fun permissionGranted() {
                 super.permissionGranted()
                 mMap.isMyLocationEnabled = true
@@ -318,7 +382,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult?) {
                 // Get last location
-                val location = p0!!.locations[p0.locations.size-1]
+                val location = p0!!.locations[p0.locations.size - 1]
                 fusedLocationProviderClient.removeLocationUpdates(locationCallback)
                 val yourPosition = LatLng(location.latitude, location.longitude)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(yourPosition, 14f))
@@ -334,4 +398,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         locationRequest.smallestDisplacement = 10f
     }
 
+    private fun getUsername(): String {
+        return FirebaseAuth.getInstance().currentUser!!.uid
+    }
 }
