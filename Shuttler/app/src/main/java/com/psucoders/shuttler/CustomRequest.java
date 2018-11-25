@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
-
+//This class needs to be completed
 public class CustomRequest extends Request<JSONObject> {
 
     private Listener<JSONObject> listener;
