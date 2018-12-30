@@ -81,31 +81,18 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         super.onStart()
         // Check if shuttle is working
         val currTime = Calendar.getInstance()
-<<<<<<< HEAD
-//        if (currTime.get(Calendar.HOUR_OF_DAY) in 8..23){
-=======
-        if (currTime.get(Calendar.HOUR_OF_DAY) in 10..23) {
->>>>>>> e463402a121137748fbdd4a0b0560317b15b5a2d
+        if (currTime.get(Calendar.HOUR_OF_DAY) in 1..23) {
             Toast.makeText(this, currTime.get(Calendar.HOUR_OF_DAY).toString(), Toast.LENGTH_LONG).show()
             buildLocationRequest()
             buildLocationCallBack()
             // Create FusedLocationProvider
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
             fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
-<<<<<<< HEAD
-//        }
-//        else {
-//            val offHourIntent = Intent(this, OffHoursActivity::class.java)
-//            startActivity(offHourIntent)
-//            finish()
-//        }
-=======
         } else {
             val offHourIntent = Intent(this, OffHoursActivity::class.java)
             startActivity(offHourIntent)
             finish()
         }
->>>>>>> e463402a121137748fbdd4a0b0560317b15b5a2d
     }
 
 
