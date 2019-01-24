@@ -197,7 +197,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         mMap.addCircle(CircleOptions()
                 .center(walmartStop)
                 .radius(250.0)
-                .strokeColor(Color.RED)
+                .strokeColor(0X220000FF)
                 .fillColor(0X220000FF)
                 .strokeWidth(3.0f)
         )
@@ -205,7 +205,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         mMap.addCircle(CircleOptions()
                 .center(priceChopperStop)
                 .radius(100.0)
-                .strokeColor(Color.RED)
+                .strokeColor(0X220000FF)
                 .fillColor(0X220000FF)
                 .strokeWidth(3.0f)
         )
@@ -213,7 +213,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         mMap.addCircle(CircleOptions()
                 .center(targetStop)
                 .radius(300.0)
-                .strokeColor(Color.RED)
+                .strokeColor(0X220000FF)
                 .fillColor(0X220000FF)
                 .strokeWidth(3.0f)
         )
@@ -313,10 +313,10 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 }
                 builder.setTitle("Permissions Required")
                         .setMessage("We require permissions to provide you with the best experience of the app")
-                        .setPositiveButton(android.R.string.ok) { dialog, which ->
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
                             checkLocationPermission()
                         }
-                        .setNegativeButton(android.R.string.no) { dialog, which ->
+                        .setNegativeButton(android.R.string.no) { _, _ ->
                             finish()
                             applicationContext.toast("Okay")
                         }
