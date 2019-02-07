@@ -95,10 +95,8 @@ class LoginActivity : AppCompatActivity() {
      * @return void.
      */
     fun registerUser(v: View) {
-        v.setOnClickListener {
-            val intent = Intent(this, RegisterActivity::class.java)
-            startActivity(intent)
-        }
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
     }
 
     /**
