@@ -31,29 +31,35 @@ class LoginActivity : AppCompatActivity() {
 
             // TODO: Delete toast for deployment
             Toast.makeText(this@LoginActivity, "NO USER", Toast.LENGTH_SHORT).show()
+
             // Add Sign in button
             btnSignIn.setOnClickListener {
                 btnSignIn.isEnabled = false
                 var email = edtUser.text.toString()
                 val password = edtPassword.text.toString()
 
-                // Check if user is the driver
-                when {
-                    email == "driver@gmail.com" -> signInDriver(email, password)
+                if (validateInput(email, password)) {
+                    // Check if user is the driver
+                    when {
+                        email == "driver@gmail.com" -> signInDriver(email, password)
 
-                    // Sign in if account exists
-                    email.contains("@plattsburgh.edu") -> {
-                        // TODO: Delete toast for deployment
-                        toast("PLATTSBURGH ACCOUNT")
-                        toast("FIRST OPTION $email")
-                        signIn(email, password)
+                        // Sign in if account exists
+                        email.contains("@plattsburgh.edu") -> {
+                            // TODO: Delete toast for deployment
+                            toast("PLATTSBURGH ACCOUNT")
+                            toast("FIRST OPTION $email")
+                            signIn(email, password)
+                        }
+                        else -> {
+                            email+="@plattsburgh.edu"
+                            // TODO: Delete toast for deployment
+                            toast("SECOND OPTION $email")
+                            signIn(email, password)
+                        }
                     }
-                    else -> {
-                        email+="@plattsburgh.edu"
-                        // TODO: Delete toast for deployment
-                        toast("SECOND OPTION $email")
-                        signIn(email, password)
-                    }
+                } else {
+                    Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
+                    btnSignIn.isEnabled = true
                 }
             }
         }
@@ -86,6 +92,21 @@ class LoginActivity : AppCompatActivity() {
                     finish()
                 }
             }
+        }
+    }
+
+    /**
+     * Validate user email and password
+     * @param email User email / username
+     * @param password User password
+     * @return true if input is valid false otherwise.
+     */
+    private fun validateInput(email: String, password: String) : Boolean {
+        // Handle email validation
+        return when {
+            email.isEmpty() || password.isEmpty() -> false
+            password.length < 6 -> false
+            else -> true
         }
     }
 
