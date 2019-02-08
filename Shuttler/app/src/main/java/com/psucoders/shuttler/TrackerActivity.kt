@@ -2,7 +2,6 @@ package com.psucoders.shuttler
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -67,8 +66,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         setSupportActionBar(toolbar)
         supportActionBar!!.title = "Shuttle Status"
 
-        val mapFragment = supportFragmentManager
-                .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         mapView = mapFragment.view!!
         drivers = FirebaseDatabase.getInstance().getReference("Drivers")
@@ -171,7 +169,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        // TODO: Add / remove map style
         /*try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -247,7 +245,17 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         mMap.setOnMapClickListener {
             animations()
         }
+
+//        updateCamera(20f)
     }
+
+    fun updateCamera(bearing: Float) {
+        val currentPlace = CameraPosition.Builder()
+                .target(LatLng(44.6934, -73.4860))
+                .bearing(bearing).tilt(65.5f).build()
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace))
+    }
+
 
     /*NOTIFY USERS*/
 	/*This method is not complete yet*/
@@ -280,10 +288,11 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     }
 
 
-    /*
-    * EVERYTHING TO DO WITH PERMISSIONS
-    * If granted, gets location. Else displays message to ask again. If not granted, app exits
-    * */
+
+    /**
+     * Ask for location permission access
+     * @return void
+     */
     private fun checkLocationPermission() {
         requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION, object : PermissionCallBack {
             override fun permissionGranted() {
@@ -291,17 +300,18 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 mMap.isMyLocationEnabled = true
 
 
-                /*Move location of my location button*/
-                if (mapView.findViewById<View>(Integer.parseInt("1")) != null) {
-                    // Get the button view
-                    val locationButton = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
-                    // and next place it, on bottom right (as Google Maps app)
-                    val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
-                    // position on right bottom
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE)
-                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
-                    layoutParams.setMargins(0, toolbar_activity_tracker.height + 20, 20, 0)
-                }
+
+                // Move location of my location button*/
+//                if (mapView.findViewById<View>(Integer.parseInt("1")) != null) {
+//                    // Get the button view
+//                    val locationButton = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
+//                    // and next place it, on bottom right (as Google Maps app)
+//                    val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
+//                    // position on right bottom
+//                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE)
+//                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+//                    layoutParams.setMargins(0, toolbar_activity_tracker.height + 20, 20, 0)
+//                }
             }
 
             override fun permissionDenied() {
@@ -326,9 +336,12 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         })
     }
 
-    /*
-    * Animations for the toolbar and the bottom layout
-    * */
+
+    /**
+     * Animate the layout when user taps on map
+     * @param
+     * @return void.
+     */
     private fun animations() {
         if (constraintLayoutBottomCard.visibility == View.INVISIBLE) {
             val mAlphaAnim = AnimationUtils.loadAnimation(this, R.anim.fade_in_screen_from_bottom)
@@ -345,7 +358,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }
     }
 
-    //Some animations
+    // Animation helper functions
     override fun onAnimationRepeat(p0: Animation?) {
     }
 
@@ -364,8 +377,12 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }
     }
 
+    /**
+     * Inflate the menu; this adds items to the action bar if it is present.
+     * @param menu Toolbar menu
+     * @return true if menu is inflated false otherwise.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //         Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.maps_menu, menu)
         return true
     }
@@ -373,6 +390,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val intent = Intent(this@TrackerActivity, SettingsActivity::class.java)
         startActivity(intent)
+        // TODO: Delete toast for deployment
         baseContext.toast("clicked settings")
         return super.onOptionsItemSelected(item)
     }
@@ -393,7 +411,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     private fun buildLocationRequest() {
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 5000
+        locationRequest.interval = 2000
         locationRequest.fastestInterval = 3000
         locationRequest.smallestDisplacement = 10f
     }

@@ -170,6 +170,7 @@ class LoginActivity : AppCompatActivity() {
             }
             else {
                 Snackbar.make(loginRoot, it.exception.toString(), Snackbar.LENGTH_LONG).show()
+                btnSignIn.isEnabled = true
             }
         }
     }

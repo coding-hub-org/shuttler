@@ -25,12 +25,12 @@ class DriversActivity : AppCompatActivity() {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private val REQUEST_CODE = 2310
+    private val REQUESTCODE = 2310
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            REQUEST_CODE -> {
+            REQUESTCODE -> {
                 if (grantResults.isNotEmpty()) {
                     if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
                         Toast.makeText(this@DriversActivity, "PERMISSION GRANTED", Toast.LENGTH_SHORT).show()
@@ -51,7 +51,7 @@ class DriversActivity : AppCompatActivity() {
 
         // Check permissions
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
-            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE)
+            ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUESTCODE)
         else {
             buildLocationRequest()
             buildLocationCallback()
@@ -59,12 +59,12 @@ class DriversActivity : AppCompatActivity() {
             fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
             // Set event
-            switchDuty.setOnCheckedChangeListener { switch, checked ->
+            switchDuty.setOnCheckedChangeListener { _, checked ->
                 if (checked) {
                     toast("ON DUTY")
                     if (ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                             ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(this@DriversActivity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
+                        ActivityCompat.requestPermissions(this@DriversActivity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), REQUESTCODE)
                         return@setOnCheckedChangeListener
                     }
 
@@ -74,7 +74,7 @@ class DriversActivity : AppCompatActivity() {
                     toast("OFF DUTY")
                     if (ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                             ActivityCompat.checkSelfPermission(this@DriversActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(this@DriversActivity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
+                        ActivityCompat.requestPermissions(this@DriversActivity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), REQUESTCODE)
                         return@setOnCheckedChangeListener
                     }
 
@@ -90,9 +90,8 @@ class DriversActivity : AppCompatActivity() {
                 // Get last location
                 val location = p0!!.locations[p0.locations.size - 1]
                 Toast.makeText(this@DriversActivity, "LATITUDE: ${location.latitude}  LONGITUDE: ${location.longitude}", Toast.LENGTH_LONG).show()
-                geoFire.setLocation(FirebaseAuth.getInstance().currentUser!!.uid, GeoLocation(location.latitude, location.longitude)) { key, error ->
+                geoFire.setLocation(FirebaseAuth.getInstance().currentUser!!.uid, GeoLocation(location.latitude, location.longitude)) { _, _ ->
                     return@setLocation
-                    Toast.makeText(this@DriversActivity, "Updated location, Drive is ${FirebaseAuth.getInstance().currentUser!!.uid}", Toast.LENGTH_LONG).show()
                 }
             }
         }
