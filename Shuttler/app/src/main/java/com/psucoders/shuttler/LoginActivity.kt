@@ -73,7 +73,7 @@ class LoginActivity : AppCompatActivity() {
                 // TODO: Delete toast for deployment
                 // TODO: Change user Gmail acct.
                 currentUser.email == "driver@gmail.com" -> {
-                    val intent = Intent(this, DriversActivity::class.java)
+                    val intent = Intent(this, DriverActivity::class.java)
                     startActivity(intent)
                     finish()
                 }
@@ -164,7 +164,8 @@ class LoginActivity : AppCompatActivity() {
     private fun signInDriver(email: String, password: String) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener {
             if (it.isSuccessful) {
-                val intent = Intent(this, DriversActivity::class.java)
+//                val intent = Intent(this, DriversActivity::class.java)
+                val intent = Intent(this, DriverActivity::class.java)
                 startActivity(intent)
                 finish()
             }

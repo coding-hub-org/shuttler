@@ -27,6 +27,7 @@
     <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
     <string name="btn_to_login">Already registered? <font color="#F2014B">Sign-in here</font></string>
     <string name="off_hours"><font color="#F2014B">OOPS!</font> The shuttle is not working right now. The Working hours are Sunday to Thursday from 11 am to 10 pm and Friday and Saturday from 10am to 12pm</string>
+    <string name="title_activity_driver">Map</string>
 
 
 </resources>
