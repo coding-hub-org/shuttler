@@ -176,63 +176,6 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
         mMap.isIndoorEnabled = true
 
-        // Create geofence areas
-        val walmartStop = LatLng(44.692463, -73.485802) // Done
-        val targetStop = LatLng(44.703369, -73.492711) // Done
-        val campusStop = LatLng(44.692917, -73.465922) // Done
-        val priceChopperStop = LatLng(44.695358, -73.492923) // Done
-        val jadeStop = LatLng(44.699042, -73.476645) // Done
-
-        mMap.addCircle(CircleOptions()
-                .center(walmartStop)
-                .radius(250.0)
-                .strokeColor(0X220000FF)
-                .fillColor(0X220000FF)
-                .strokeWidth(3.0f)
-        )
-
-        mMap.addCircle(CircleOptions()
-                .center(priceChopperStop)
-                .radius(100.0)
-                .strokeColor(0X220000FF)
-                .fillColor(0X220000FF)
-                .strokeWidth(3.0f)
-        )
-
-        mMap.addCircle(CircleOptions()
-                .center(targetStop)
-                .radius(300.0)
-                .strokeColor(0X220000FF)
-                .fillColor(0X220000FF)
-                .strokeWidth(3.0f)
-        )
-
-
-        val geoQuery = geoFire.queryAtLocation(GeoLocation(walmartStop.latitude, walmartStop.longitude), 0.5)
-        geoQuery.addGeoQueryEventListener(object : GeoQueryEventListener {
-            // user has been found within the radius:
-            override fun onKeyEntered(key: String, location: GeoLocation) {
-                Toast.makeText(this@TrackerActivity, "ENTER GEOFENCE", Toast.LENGTH_LONG).show()
-                notifyUsers("Walmart")
-            }
-
-            override fun onKeyExited(key: String) {
-                Toast.makeText(this@TrackerActivity, "EXITING GEOFENCE", Toast.LENGTH_LONG).show()
-            }
-
-            override fun onKeyMoved(key: String, location: GeoLocation) {
-
-            }
-
-            // all users within the radius have been identified:
-            override fun onGeoQueryReady() {
-            }
-
-            override fun onGeoQueryError(error: DatabaseError) {
-
-            }
-        })
-
         mMap.setOnMapClickListener {
             animations()
         }
@@ -280,6 +223,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
 
 
+
     /**
      * Ask for location permission access
      * @return void
@@ -292,17 +236,17 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
 
 
-                // Move location of my location button*/
-//                if (mapView.findViewById<View>(Integer.parseInt("1")) != null) {
-//                    // Get the button view
-//                    val locationButton = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
-//                    // and next place it, on bottom right (as Google Maps app)
-//                    val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
-//                    // position on right bottom
-//                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE)
-//                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
-//                    layoutParams.setMargins(0, toolbar_activity_tracker.height + 20, 20, 0)
-//                }
+                // Move location of my location button
+                if (mapView.findViewById<View>(Integer.parseInt("1")) != null) {
+                    // Get the button view
+                    val locationButton = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
+                    // and next place it, on bottom right (as Google Maps app)
+                    val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
+                    // position on right bottom
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT, RelativeLayout.TRUE)
+                    layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, RelativeLayout.TRUE)
+                    layoutParams.setMargins(0, toolbar_activity_tracker.height + 20, 20, 0)
+                }
             }
 
             override fun permissionDenied() {

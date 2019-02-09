@@ -13,13 +13,11 @@ import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryEventListener
 import com.google.android.gms.location.*
 
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -89,13 +87,18 @@ class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-//        supportFragmentManager.beginTransaction().hide(mapFragment).commit()
+        supportFragmentManager.beginTransaction().hide(mapFragment).commit()
 
         Toast.makeText(this, "MAP READY", Toast.LENGTH_LONG).show()
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        Toast.makeText(this, sydney.toString(), Toast.LENGTH_LONG).show()
+        val test = LatLng(44.692637, -73.466709) // Done
 
+        mMap.addCircle(CircleOptions()
+                .center(test)
+                .radius(50.0)
+                .strokeColor(0X220000FF)
+                .fillColor(0X220000FF)
+                .strokeWidth(3.0f)
+        )
         // Check permissions
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
             ActivityCompat.requestPermissions(this, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), REQUEST_CODE)
@@ -115,14 +118,7 @@ class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
                         ActivityCompat.requestPermissions(this@DriverActivity, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_CODE)
                         return@setOnCheckedChangeListener
                     }
-                    val test = LatLng(44.692637, -73.466709) // Done
-                    mMap.addCircle(CircleOptions()
-                            .center(test)
-                            .radius(50.0)
-                            .strokeColor(0X220000FF)
-                            .fillColor(0X220000FF)
-                            .strokeWidth(3.0f)
-                    )
+
                     fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
 
                     val geoQuery = geoFire.queryAtLocation(GeoLocation(test.latitude, test.longitude), 0.05)
