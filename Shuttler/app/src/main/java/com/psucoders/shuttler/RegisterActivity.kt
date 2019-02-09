@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
@@ -27,56 +28,79 @@ class RegisterActivity : AppCompatActivity() {
         users = db.getReference("Users")
     }
 
-    override fun onStart() {
-        super.onStart()
+    /**
+     * Handle user registration information
+     * @param v Register button
+     * @return void.
+     */
+    fun handleRegister(v: View) {
+        v.isEnabled =false
+        var email = edtUserSignUp.text.toString()
+        val password = edtPasswordSignUp.text.toString()
 
-        // Sign up new user
-        btnSignUp.setOnClickListener {
-            btnSignUp.isEnabled = false
-            var email = edtUserSignUp.text.toString()
-            val password = edtPasswordSignUp.text.toString()
-            // Sign in if account exists
-            if (email.contains("@plattsburgh.edu")) {
-                toast("PLATTSBURGH ACCOUNT")
-                toast("FIRST OPTION $email")
-                register(email, password)
-            }
-//            else {
-//                email += "@plattsburgh.edu"
-//            }
-            else {
-                email+="@plattsburgh.edu"
-                toast("SECOND OPTION $email")
-                register(email, password)
-            }
-        }
-
-        // Return to login activity
-        btnToLogin.setOnClickListener {
-            onBackPressed()
+        // Check if user used plattsburgh email or username for registration
+        email = if (email.contains("@plattsburgh.edu")) email else "$email@plattsburgh.edu"
+        if (validateInput(email, password)) {
+            processRegister(email, password)
+        } else {
+            v.isEnabled =true
+            Snackbar.make(registerRoot, "Username and/or password don't meet requirement", Snackbar.LENGTH_LONG).show()
         }
     }
 
-    private fun register(email: String, password: String) {
+    /**
+     * Validate user email and password
+     * @param email User email / username
+     * @param password User password
+     * @return true if input is valid false otherwise.
+     */
+    private fun validateInput(email: String, password: String) : Boolean {
+        // Handle email validation
+        return when {
+            email.isEmpty() || password.isEmpty() -> false
+            password.length < 6 -> false
+            else -> true
+        }
+    }
+
+    /**
+     * Send user to registration activity
+     * @param v Button (View) to be click
+     * @return void.
+     */
+    fun returnToLogin(v: View) {
+        onBackPressed()
+    }
+
+    /**
+     * Process user registration information
+     * @param email User plattsburgh email / username
+     * @param password User password
+     * @return void.
+     */
+    private fun processRegister(email: String, password: String) {
         mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { it ->
             // If account is created send verification email
             if (it.isSuccessful) {
                 // Save user to Database
-
+                // TODO: Delete toast for deployment
                 Toast.makeText(this@RegisterActivity, "SIGN UP SUCCESSFULLY", Toast.LENGTH_SHORT).show()
-                val currUser = mAuth.currentUser
 
+                val currUser = mAuth.currentUser
                 val user = User()
                 user.username = email.substringBeforeLast("@")
                 user.email = email
                 user.password = password
+
                 val notificationToken = MyFirebaseMessagingService.getToken(applicationContext)
+
+                // TODO: Delete log for deployment
                 Log.d("notification token", "is: $notificationToken")
                 val tokens = HashMap<String, Boolean>()
                 tokens[notificationToken] = true
                 user.setNotifications(tokens, "Campus", "5")
 
-                // Use UID to key fro database
+                // Use UID to key from database
                 users.child(currUser!!.uid).setValue(user).addOnCompleteListener {
                     if (it.isSuccessful) {
                         Snackbar.make(registerRoot, "Register Successful", Snackbar.LENGTH_SHORT).show()

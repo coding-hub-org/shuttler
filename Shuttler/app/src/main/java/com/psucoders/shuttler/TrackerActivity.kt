@@ -2,7 +2,6 @@ package com.psucoders.shuttler
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -70,32 +69,22 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         setSupportActionBar(toolbar)
         supportActionBar!!.title = "Shuttle Status"
 
-        val mapFragment = supportFragmentManager
-                .findFragmentById(R.id.map) as SupportMapFragment
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
         mapView = mapFragment.view!!
         drivers = FirebaseDatabase.getInstance().getReference("Drivers")
-
         geoFire = GeoFire(drivers)
         displayLocation()
     }
 
     override fun onStart() {
         super.onStart()
-        // Check if shuttle is working
-        val currTime = Calendar.getInstance()
-        if (currTime.get(Calendar.HOUR_OF_DAY) in 10..23) {
-            Toast.makeText(this, currTime.get(Calendar.HOUR_OF_DAY).toString(), Toast.LENGTH_LONG).show()
-            buildLocationRequest()
-            buildLocationCallBack()
-            // Create FusedLocationProvider
-            fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
-        } else {
-            val offHourIntent = Intent(this, OffHoursActivity::class.java)
-            startActivity(offHourIntent)
-            finish()
-        }
+        // TODO: Check if shuttle is working
+        buildLocationRequest()
+        buildLocationCallBack()
+        // Create FusedLocationProvider
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
     }
 
 
@@ -119,7 +108,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                             .title("Shuttle"))
 
                     shuttlerFAB!!.setOnClickListener {
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latDriver, longDriver), 10f))
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(latDriver, longDriver), 15f))
                     }
 
                 }
@@ -174,7 +163,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
+        // TODO: Add / remove map style
         /*try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -190,67 +179,20 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
 
         mMap.isIndoorEnabled = true
 
-        // Create geofence areas
-        val walmartStop = LatLng(44.692463, -73.485802) // Done
-        val targetStop = LatLng(44.703369, -73.492711) // Done
-        val campusStop = LatLng(44.692917, -73.465922) // Done
-        val priceChopperStop = LatLng(44.695358, -73.492923) // Done
-        val jadeStop = LatLng(44.699042, -73.476645) // Done
-
-        mMap.addCircle(CircleOptions()
-                .center(walmartStop)
-                .radius(250.0)
-                .strokeColor(Color.RED)
-                .fillColor(0X220000FF)
-                .strokeWidth(3.0f)
-        )
-
-        mMap.addCircle(CircleOptions()
-                .center(priceChopperStop)
-                .radius(100.0)
-                .strokeColor(Color.RED)
-                .fillColor(0X220000FF)
-                .strokeWidth(3.0f)
-        )
-
-        mMap.addCircle(CircleOptions()
-                .center(targetStop)
-                .radius(300.0)
-                .strokeColor(Color.RED)
-                .fillColor(0X220000FF)
-                .strokeWidth(3.0f)
-        )
-
-
-        val geoQuery = geoFire.queryAtLocation(GeoLocation(walmartStop.latitude, walmartStop.longitude), 0.5)
-        geoQuery.addGeoQueryEventListener(object : GeoQueryEventListener {
-            // user has been found within the radius:
-            override fun onKeyEntered(key: String, location: GeoLocation) {
-                Toast.makeText(this@TrackerActivity, "ENTER GEOFENCE", Toast.LENGTH_LONG).show()
-                notifyUsers("Walmart")
-            }
-
-            override fun onKeyExited(key: String) {
-                Toast.makeText(this@TrackerActivity, "EXITING GEOFENCE", Toast.LENGTH_LONG).show()
-            }
-
-            override fun onKeyMoved(key: String, location: GeoLocation) {
-
-            }
-
-            // all users within the radius have been identified:
-            override fun onGeoQueryReady() {
-            }
-
-            override fun onGeoQueryError(error: DatabaseError) {
-
-            }
-        })
-
         mMap.setOnMapClickListener {
             animations()
         }
+
+//        updateCamera(20f)
     }
+
+    fun updateCamera(bearing: Float) {
+        val currentPlace = CameraPosition.Builder()
+                .target(LatLng(44.6934, -73.4860))
+                .bearing(bearing).tilt(65.5f).build()
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(currentPlace))
+    }
+
 
     /*NOTIFY USERS*/
 	/*This method is not complete yet*/
@@ -296,10 +238,12 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     }
 
 
-    /*
-    * EVERYTHING TO DO WITH PERMISSIONS
-    * If granted, gets location. Else displays message to ask again. If not granted, app exits
-    * */
+
+
+    /**
+     * Ask for location permission access
+     * @return void
+     */
     private fun checkLocationPermission() {
         requestPermissions(Manifest.permission.ACCESS_FINE_LOCATION, object : PermissionCallBack {
             override fun permissionGranted() {
@@ -307,7 +251,8 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 mMap.isMyLocationEnabled = true
 
 
-                /*Move location of my location button*/
+
+                // Move location of my location button
                 if (mapView.findViewById<View>(Integer.parseInt("1")) != null) {
                     // Get the button view
                     val locationButton = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<View>(Integer.parseInt("2"))
@@ -329,10 +274,10 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
                 }
                 builder.setTitle("Permissions Required")
                         .setMessage("We require permissions to provide you with the best experience of the app")
-                        .setPositiveButton(android.R.string.ok) { dialog, which ->
+                        .setPositiveButton(android.R.string.ok) { _, _ ->
                             checkLocationPermission()
                         }
-                        .setNegativeButton(android.R.string.no) { dialog, which ->
+                        .setNegativeButton(android.R.string.no) { _, _ ->
                             finish()
                             applicationContext.toast("Okay")
                         }
@@ -342,9 +287,12 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         })
     }
 
-    /*
-    * Animations for the toolbar and the bottom layout
-    * */
+
+    /**
+     * Animate the layout when user taps on map
+     * @param
+     * @return void.
+     */
     private fun animations() {
         if (constraintLayoutBottomCard.visibility == View.INVISIBLE) {
             val mAlphaAnim = AnimationUtils.loadAnimation(this, R.anim.fade_in_screen_from_bottom)
@@ -361,7 +309,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }
     }
 
-    //Some animations
+    // Animation helper functions
     override fun onAnimationRepeat(p0: Animation?) {
     }
 
@@ -380,8 +328,12 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }
     }
 
+    /**
+     * Inflate the menu; this adds items to the action bar if it is present.
+     * @param menu Toolbar menu
+     * @return true if menu is inflated false otherwise.
+     */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        //         Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.maps_menu, menu)
         return true
     }
@@ -389,6 +341,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val intent = Intent(this@TrackerActivity, SettingsActivity::class.java)
         startActivity(intent)
+        // TODO: Delete toast for deployment
         baseContext.toast("clicked settings")
         return super.onOptionsItemSelected(item)
     }
@@ -409,7 +362,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     private fun buildLocationRequest() {
         locationRequest = LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        locationRequest.interval = 5000
+        locationRequest.interval = 2000
         locationRequest.fastestInterval = 3000
         locationRequest.smallestDisplacement = 10f
     }

@@ -15,6 +15,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/button_cancel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -255,23 +256,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="24dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
                 android:background="@drawable/button_custom"
                 android:paddingStart="30dp"
                 android:paddingEnd="30dp"
                 android:text="@string/logout_button_text_settings"
                 android:textAlignment="textStart"
                 android:textColor="#FFF"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/card_view4" />
 
             <Button xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/button_test"
-                android:layout_width="344dp"
+                android:layout_width="0dp"
                 android:layout_height="50dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="4dp"
@@ -283,7 +282,7 @@
                 android:textAlignment="textStart"
                 android:textColor="#FFF"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintHorizontal_bias="0.51"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/button_logout" />
 
