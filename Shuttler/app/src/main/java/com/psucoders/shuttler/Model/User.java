@@ -10,7 +10,7 @@ class Notifications {
     Notifications() {
     }
 
-    public Notifications(HashMap<String, Boolean> tokens, String notifyLocation, String timeAhead) {
+    Notifications(HashMap<String, Boolean> tokens, String notifyLocation, String timeAhead) {
 //        this.enabled = enabled;
         this.notifyLocation = notifyLocation;
         this.timeAhead = timeAhead;
