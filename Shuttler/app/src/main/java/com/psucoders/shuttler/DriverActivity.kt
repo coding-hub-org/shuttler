@@ -2,28 +2,31 @@ package com.psucoders.shuttler
 
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.support.v4.app.ActivityCompat
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryEventListener
 import com.google.android.gms.location.*
-
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
+import com.psucoders.shuttler.Model.NotifyUser
 import kotlinx.android.synthetic.main.activity_driver.*
+import org.apache.http.NameValuePair
+import org.apache.http.message.BasicNameValuePair
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
 
 class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
 
@@ -38,6 +41,7 @@ class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private val REQUEST_CODE = 2310
+    private val jsonParser = JSONParser()
 
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -74,6 +78,10 @@ class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment = supportFragmentManager
                 .findFragmentById(R.id.mapDriver) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        notifyButton.setOnClickListener {
+            notifyUsers("Market32")
+        }
     }
 
     /**
@@ -90,10 +98,14 @@ class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
         supportFragmentManager.beginTransaction().hide(mapFragment).commit()
 
         Toast.makeText(this, "MAP READY", Toast.LENGTH_LONG).show()
-        val test = LatLng(44.692637, -73.466709) // Done
+        val campus = LatLng(44.692884, -73.465875) // Done
+        val walmart = LatLng(44.692800, -73.486811) // Done
+        val priceChopper = LatLng(44.695457, -73.492659) // Done
+        val target = LatLng(44.703143, -73.492592) // Done
+        val jade = LatLng(44.698763, -73.476522) // Done
 
         mMap.addCircle(CircleOptions()
-                .center(test)
+                .center(campus)
                 .radius(50.0)
                 .strokeColor(0X220000FF)
                 .fillColor(0X220000FF)
@@ -121,31 +133,13 @@ class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
 
                     fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
 
-                    val geoQuery = geoFire.queryAtLocation(GeoLocation(test.latitude, test.longitude), 0.05)
-                    geoQuery.addGeoQueryEventListener(object : GeoQueryEventListener {
-                        // user has been found within the radius:
-                        override fun onKeyEntered(key: String, location: GeoLocation) {
-                            Toast.makeText(this@DriverActivity, "ENTER GEOFENCE", Toast.LENGTH_LONG).show()
-                        }
+                    geoFence(campus, "Campus")
+                    geoFence(walmart, "walmart")
+                    geoFence(priceChopper, "Market32")
+                    geoFence(target, "Target")
+                    geoFence(jade, "Jade")
 
-                        override fun onKeyExited(key: String) {
-                            Toast.makeText(this@DriverActivity, "EXITING GEOFENCE", Toast.LENGTH_LONG).show()
-                        }
-
-                        override fun onKeyMoved(key: String, location: GeoLocation) {
-
-                        }
-
-                        // all users within the radius have been identified:
-                        override fun onGeoQueryReady() {
-                        }
-
-                        override fun onGeoQueryError(error: DatabaseError) {
-
-                        }
-                    })
-                }
-                else {
+                } else {
                     toast("OFF DUTY")
                     if (ActivityCompat.checkSelfPermission(this@DriverActivity, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                             ActivityCompat.checkSelfPermission(this@DriverActivity, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -159,8 +153,98 @@ class DriverActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun geoFence(locat: LatLng, locatName: String) {
+        val geoQuery = geoFire.queryAtLocation(GeoLocation(locat.latitude, locat.longitude), 0.05)
+        geoQuery.addGeoQueryEventListener(object : GeoQueryEventListener {
+            // user has been found within the radius:
+            override fun onKeyEntered(key: String, location: GeoLocation) {
+                Toast.makeText(this@DriverActivity, "ENTER GEOFENCE", Toast.LENGTH_LONG).show()
+
+                //Work with notifications HERE!
+                notifyUsers(locatName)
+
+            }
+
+            override fun onKeyExited(key: String) {
+                Toast.makeText(this@DriverActivity, "EXITING GEOFENCE", Toast.LENGTH_LONG).show()
+            }
+
+            override fun onKeyMoved(key: String, location: GeoLocation) {
+
+            }
+
+            // all users within the radius have been identified:
+            override fun onGeoQueryReady() {
+            }
+
+            override fun onGeoQueryError(error: DatabaseError) {
+
+            }
+        })
+    }
+
+    private fun notifyUsers(key: String) {
+        val url = "http://new.beginurrev.com/Shuttler/send_notification_form.php"
+        fetchDataFromFirebase(url, key)
+    }
+
+    private fun fetchDataFromFirebase(url: String, locationName: String) {
+
+        var tokens = ""
+        /*NOTIFY USERS*/
+        /*This method is not complete yet*/
+        val database = FirebaseDatabase.getInstance()
+        val myRef = database.getReference("Users/")
+
+
+        myRef.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+
+                val users = dataSnapshot.children
+
+                doAsync {
+                    for (child in users) {
+                        val temp = child.getValue(NotifyUser::class.java)
+                        val notifs = temp!!.notifications
+                        if (notifs.notifyLocation == locationName) {
+                            val test = notifs.tokens
+                            for (a: String in test.keys) {
+                                if (test[a] == true) {
+                                    tokens = "$tokens$a "
+                                }
+                            }
+                        }
+                    }
+
+                    uiThread {
+                        doAsync {
+                            try {
+                                Log.d("HERE IS TOKENS", tokens)
+                                //building parameters
+                                val params = ArrayList<NameValuePair>()
+                                params.add(BasicNameValuePair("keys", tokens))
+                                params.add(BasicNameValuePair("title", "SHUTTLER"))
+                                params.add(BasicNameValuePair("message", "The shuttle is arriving soon!"))
+                                jsonParser.makeHttpRequest(url, "POST", params)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                            uiThread {
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.d("ERRROR", "reading db")
+            }
+        })
+    }
+
     private fun buildLocationCallback() {
-        locationCallback = object :LocationCallback() {
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult?) {
                 // Get last location
                 val location = p0!!.locations[p0.locations.size - 1]

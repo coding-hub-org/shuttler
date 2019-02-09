@@ -7,7 +7,7 @@ class NotifyUser {
     lateinit var username: String
     lateinit var email: String
     lateinit var password: String
-    lateinit var notifac: NotifyAll
+    lateinit var notifications: NotifyAll
 
     fun NotifyUser(){
 
@@ -19,6 +19,6 @@ class NotifyUser {
 
     fun setNotifications(b: HashMap<String, Boolean>, n: String, t: String) {
 
-        this.notifac = NotifyAll(b, n, t)
+        this.notifications = NotifyAll()
     }
 }
