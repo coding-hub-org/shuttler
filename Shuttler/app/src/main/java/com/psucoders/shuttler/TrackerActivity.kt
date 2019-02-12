@@ -27,11 +27,14 @@ import com.google.android.gms.maps.model.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.messaging.FirebaseMessaging
+import com.psucoders.shuttler.Model.NotifyUser
 import io.vrinda.kotlinpermissions.PermissionCallBack
 import io.vrinda.kotlinpermissions.PermissionsActivity
 import kotlinx.android.synthetic.main.activity_tracker.*
 import org.jetbrains.anko.toast
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.AnimationListener {
 
@@ -197,15 +200,19 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
     fun notifyUsers(location: String) {
         Log.d("entered", "geofence of $location")
         val database = FirebaseDatabase.getInstance()
-        val myRef = database.getReference("Users")
+        val myRef = database.getReference("Users/")
 
         myRef.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-//                Log.d("value is", ""+post)
-//                for(i in 1..userList.size){
-//                    Log.d("username is" , userList.keys.elementAt(i))
-//                }
+
+                val users = dataSnapshot.children
+
+                for(child in users){
+                    child.getValue(NotifyUser::class.java)
+                    val test = child.value as NotifyUser
+                    Log.d("Life is", "Hard" + test.email)
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -220,6 +227,15 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         Log.d("values here", value.toString())
         var userList = value.keys
         Log.d("values here", userList.size.toString())
+    }
+
+    fun extractDataFromSnapshot(temp: HashMap<Int, Any>){
+        var user = ArrayList<String>()
+        var notifications = HashMap<String, Any>()
+
+        for(i in 0 until temp.size){
+            Log.d("here i am", "" + temp[i])
+        }
     }
 
 
