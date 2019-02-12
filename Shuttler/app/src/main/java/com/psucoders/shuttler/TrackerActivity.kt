@@ -175,6 +175,7 @@ class TrackerActivity : PermissionsActivity(), OnMapReadyCallback, Animation.Ani
         }*/
 
         mMap.isIndoorEnabled = true
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(44.690798, -73.467171), 12f))
 
         mMap.setOnMapClickListener {
             animations()
