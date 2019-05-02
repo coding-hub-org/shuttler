@@ -7,9 +7,9 @@
     tools:layout_editor_absoluteY="25dp">
 
     <include
-        android:visibility="invisible"
         android:id="@+id/toolbar_activity_tracker"
-        layout="@layout/toolbar" />
+        layout="@layout/toolbar"
+        android:visibility="invisible" />
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -23,11 +23,23 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:context=".TrackerActivity" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/shuttlerFAB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:clickable="true"
+        app:backgroundTint="@color/colorWhite"
+        app:layout_constraintBottom_toTopOf="@+id/guideline5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_shuttle_cardview" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutBottomCard"
         android:layout_width="match_parent"
-        android:background="#FFF"
         android:layout_height="0dp"
+        android:background="#FFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
