@@ -1,7 +1,5 @@
 package com.psucoders.shuttler.data.firebase;
 
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
 
 public class FirebaseSingleton {
@@ -30,24 +28,11 @@ public class FirebaseSingleton {
                 }
             }
         }
-
         return instance;
     }
 
     public void logOut() {
-        if(getAuthInstance().getCurrentUser() != null)
-            Log.d("Current user", " is " + getAuthInstance().getCurrentUser().getEmail());
-
-        getAuthInstance().signOut();
-
-        Log.d("After logout", "Life2");
-
-        if(getAuthInstance().getCurrentUser() != null)
-            Log.d("User now", "Life3" + getAuthInstance().getCurrentUser().getEmail());
-        else{
-            Log.d("No", "current User");
-        }
-        //        System.out.println("USER TEST ===========================================" + FirebaseAuth.getInstance().getCurrentUser());
-
+        if (getAuthInstance().getCurrentUser() != null)
+            getAuthInstance().signOut();
     }
 }

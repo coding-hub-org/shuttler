@@ -1,11 +1,12 @@
 package com.psucoders.shuttler.ui.login
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import com.psucoders.shuttler.R
-import com.psucoders.shuttler.data.firebase.FirebaseSingleton
-import kotlinx.android.synthetic.main.login_activity.*
-import org.jetbrains.anko.toast
+import com.psucoders.shuttler.ui.register.RegisterActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -13,15 +14,21 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        loginViewModel.checkIfUserExists()
-
+        observeExistingUser()
         setContentView(R.layout.login_activity)
-
-        logout_test.setOnClickListener {
-            toast("CLICKED")
-            val firebaseObj = FirebaseSingleton.getInstance()
-            firebaseObj.logOut()
-        }
     }
 
+    private fun observeExistingUser() {
+        loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
+            if (userExists) {
+                // Redirect to map page or driver page
+            }
+        })
+        loginViewModel.checkIfUserExists()
+    }
+
+    fun registerUser(v: View) {
+        val intentToRegister = Intent(this, RegisterActivity::class.java)
+        startActivity(intentToRegister)
+    }
 }
