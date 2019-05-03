@@ -105,6 +105,7 @@
         android:background="@drawable/btn_login_background"
         android:text="@string/btn_sign_in"
         android:textAllCaps="false"
+        android:onClick="handleLogin"
         android:textColor="@color/colorWhite"
         android:textSize="18sp"
         android:textStyle="bold"

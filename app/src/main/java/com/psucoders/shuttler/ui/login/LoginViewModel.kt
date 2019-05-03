@@ -3,6 +3,7 @@ package com.psucoders.shuttler.ui.login
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.psucoders.shuttler.data.firebase.FirebaseSingleton
 
 class LoginViewModel {
@@ -25,5 +26,13 @@ class LoginViewModel {
             Log.d(logTag, "Empty User")
             _userLoggedIn.value = false
         }
+    }
+
+    fun loginUser(email: String, password: String) {
+        val firebase = FirebaseSingleton.getInstance()
+        firebase.loginSuccess().observeForever {
+            successful -> _userLoggedIn.value = successful
+        }
+        firebase.login(email, password)
     }
 }
