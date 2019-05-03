@@ -1,9 +1,10 @@
-package com.psucoders.shuttler
+package com.psucoders.shuttler.ui.dashboard
 
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.TextView
+import com.psucoders.shuttler.R
 
 class DashboardActivity : AppCompatActivity() {
 
