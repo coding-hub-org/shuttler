@@ -2,12 +2,11 @@ package com.psucoders.shuttler.ui.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import com.psucoders.shuttler.R
-import com.psucoders.shuttler.data.firebase.FirebaseSingleton
 import com.psucoders.shuttler.ui.LogoutActivityTemp
 import com.psucoders.shuttler.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.login_activity.*
@@ -15,7 +14,6 @@ import kotlinx.android.synthetic.main.login_activity.*
 class LoginActivity : AppCompatActivity() {
 
     private val loginViewModel = LoginViewModel()
-    private val firebaseObj = FirebaseSingleton.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +36,14 @@ class LoginActivity : AppCompatActivity() {
 
     fun handleLogin(v: View) {
         loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
-        v.isClickable = false
+        loginViewModel.validFields.observe(this, Observer { valid ->
+            if (valid != null && !valid) {
+                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
+                loginViewModel.resetValidity()
+            }
+            if (valid != null && valid) {
+                loginViewModel.checkIfUserExists()
+            }
+        })
     }
 }

@@ -11,28 +11,40 @@ class LoginViewModel {
     private val logTag = "Login VM"
 
     private val _userLoggedIn = MutableLiveData<Boolean>()
+    private val _validFields = MutableLiveData<Boolean>()
 
-    val userLoggedIn : LiveData<Boolean>
+    val userLoggedIn: LiveData<Boolean>
         get() = _userLoggedIn
 
-    fun checkIfUserExists(){
-        val firebase = FirebaseSingleton.getInstance()
-        if(firebase.authInstance.currentUser != null) {
-            val currUser = firebase.authInstance.currentUser
-            _userLoggedIn.value = true
-            Log.d(logTag, "User exists " + currUser!!.email)
+    val validFields: LiveData<Boolean>
+        get() = _validFields
 
-        } else {
-            Log.d(logTag, "Empty User")
-            _userLoggedIn.value = false
-        }
+    fun checkIfUserExists() {
+        val firebase = FirebaseSingleton.getInstance()
+        _userLoggedIn.value = firebase.authInstance.currentUser != null
     }
 
     fun loginUser(email: String, password: String) {
         val firebase = FirebaseSingleton.getInstance()
-        firebase.loginSuccess().observeForever {
-            successful -> _userLoggedIn.value = successful
+        firebase.loginSuccess().observeForever { successful ->
+            _validFields.value = successful
         }
-        firebase.login(email, password)
+        if (validateAndLogin(email, password)) {
+            firebase.login(email, password)
+        } else {
+            _validFields.value = false
+        }
+    }
+
+    private fun validateAndLogin(email: String, password: String): Boolean {
+        return when {
+            email.isEmpty() || password.isEmpty() -> false
+            password.length < 6 -> false
+            else -> true
+        }
+    }
+
+    fun resetValidity() {
+        _validFields.value = null
     }
 }

@@ -3,7 +3,6 @@ package com.psucoders.shuttler.data.firebase;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,8 +20,8 @@ public class FirebaseSingleton {
     private MutableLiveData<Boolean> _loginSuccess;
 
     public MutableLiveData<Boolean> loginSuccess() {
-        if(_loginSuccess == null) {
-            _loginSuccess = new MutableLiveData<Boolean>();
+        if (_loginSuccess == null) {
+            _loginSuccess = new MutableLiveData<>();
         }
         return _loginSuccess;
     }
@@ -50,11 +49,21 @@ public class FirebaseSingleton {
         return instance;
     }
 
-    public void login(String email, String password){
+    public void register(String email, String password){
+        getAuthInstance().createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+
+            }
+        });
+    }
+
+    public void login(String email, String password) {
         getAuthInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
+                Log.d("Here is life", "FUCK");
+                if (task.isSuccessful()) {
                     Log.d(logTag, "Logged In Successfully");
                     _loginSuccess.setValue(true);
                 } else {
