@@ -17,8 +17,9 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        observeExistingUser()
         setContentView(R.layout.login_activity)
+        observeExistingUser()
+
     }
 
     private fun observeExistingUser() {
