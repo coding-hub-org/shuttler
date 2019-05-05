@@ -1,0 +1,123 @@
+[33mfd3d2cb[m[33m ([m[1;36mHEAD -> [m[1;32mmaps[m[33m, [m[1;31morigin/maps[m[33m)[m Added navigation
+[33m20c62c7[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m Merge pull request #3 from PSUCoders/firebase
+[33m33ed033[m Validation for login
+[33m4f10018[m Completed Login logic
+[33m843fdd8[m Layouts for register and Login completed in MVVM
+[33m23b1b57[m Completed Singleton class with logout
+[33m21d7eaa[m Merge pull request #2 from PSUCoders/firebase
+[33m410b62c[m Set up firebase singleton
+[33m0ba5460[m Added drawables
+[33m5a08d04[m Implemented MVVM strucutre
+[33m44218f2[m Cleared project
+[33mebd54c0[m Removed unnecessary files
+[33m0eb5828[m Switched to androidx
+[33m085a2a8[m layout switch map problem fixed
+[33m25d6625[m[33m ([m[1;31morigin/androidx[m[33m)[m Switched to androidx
+[33me450611[m migrated to android x
+[33m8b1df1e[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33m0fef224[m Updated gradle
+[33mba8c5c6[m Create Readme
+[33meaa4799[m Removed website file
+[33m50dacc6[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33m764ee16[m Solved merge conflicts
+[33m6ab85e0[m NOTIFICATIONS COMPLETED!
+[33m73e95df[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33mc760c44[m notification changes
+[33m3c00357[m Removed test folder
+[33m3f8adfb[m Reaady to make a service
+[33ma677b66[m Moved geofence to driver's side
+[33m09a737e[m Version before moving driver activity
+[33m680f967[m Handled input errors
+[33m9ea1aa2[m Refactored register activity
+[33m52595a6[m Refactored login activity
+[33m531efa0[m Updated gradle
+[33m5c9e33f[m Updated project
+[33me43e651[m Merged tracker activity
+[33m9976383[m Solved merge conflicts
+[33md1e831a[m Refactored UI
+[33me463402[m Commented code
+[33m9410513[m changed custom request
+[33m193895e[m worked on tracker activity
+[33me9244c9[m Implemented geofences
+[33m5032295[m Updated gradle
+[33m66751fc[m Get users current position
+[33m9044a12[m Fixed off hours bug
+[33mfdbe15e[m Added off hours activity
+[33m59ecbe9[m latest version
+[33m8d515e9[m misc edit
+[33m04981eb[m Fixed conflicts
+[33m698fb23[m Solved merge conflicts:
+[33m75bc56e[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33m8964b69[m notification version 1
+[33m114f9d3[m Solved issue
+[33m778a429[m modified firebase structure
+[33m41a08bd[m Connected drivers position to Geofire and display on user map
+[33m83360a0[m Connected driver to geofire
+[33m3bc65f3[m Get drivers location
+[33m8462010[m Updated drivers activity
+[33m3936e8b[m Completed DB schema
+[33m7e51426[m Connected new user to real time database
+[33m8bb0919[m Updated sign in flow
+[33m71d5ecb[m Improved Authentication activity UX
+[33m13e6e10[m Updated gradle
+[33md4734f8[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33ma1ed9ec[m working on notifications
+[33m68ac9fe[m Update UX login
+[33m0114e79[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33mcda350c[m Solved conflict
+[33m4bc59f4[m Added notification version 1
+[33madfa6c9[m merged manifest
+[33mf775e93[m Working on the drivers activity
+[33m2efe055[m Updated gradle
+[33md4d36d5[m Fixed authentication bug
+[33m4064640[m Updated Login logic
+[33m518c822[m changed the track my location button position and cleaned up code
+[33mf5b1c72[m fixed minor issues
+[33m9710b13[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33m7281d77[m added scrollview to settings activity
+[33m34b916c[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33m0168ef0[m Linked authentication activity
+[33m5424ae3[m merged
+[33m5e00a3c[m settings notification complete with firebase
+[33m97650e4[m Added activity authentication UI
+[33m8d36e79[m Fixed login bug
+[33mb6326dd[m merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33ma89aa2b[m Worked verification email
+[33me217d36[m merge conflict resolved
+[33ma0daac8[m added settings layout
+[33m429e946[m settings layout completed
+[33m2a491a4[m Added menu icon
+[33m4893b50[m Fix logging authentication
+[33ma901f38[m animations fixed.
+[33m1f95fe8[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33md29afb9[m Firebase authentication working
+[33m267b5bb[m added fullscreen mode. Need to fix fade_in animations
+[33m4ed18d3[m Change map color
+[33m7712734[m Added map style
+[33mb798ce3[m Change marker position
+[33m9dc992d[m Linked login and maps activity
+[33mf8b0334[m Added firebase dependencies
+[33m4d6951f[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33mbf04721[m added maps activity
+[33mf2cf3c8[m Added launcher icons
+[33m5e4d6ae[m Updated Login UI landscape
+[33m2b9822d[m Fixed manifest action VIEW
+[33mdc5c5c8[m Fixed show password icon
+[33m247a284[m Update UI Login portrait
+[33m2978597[m Created Shuttler android app
+[33m7261086[m Cleaned up reposity
+[33m8896bc5[m Solved merge conflict
+[33m1f4027d[m Solved merge conflict
+[33m84cd088[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33m71521b0[m added map
+[33m86f2a6b[m Changed launcher icon
+[33mf5c1ffc[m Hooked button and intent
+[33m35a818d[m Added password toggler
+[33mc0bd7c2[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33m332e38a[m Completed login activity
+[33mf7edd4a[m conflict resolved
+[33mfe0f7db[m merge conflicts
+[33me5a5f64[m Merge branch 'master' of https://github.com/PSUCoders/Shuttler
+[33me94dd89[m Added resources for login activity
+[33mfa87b22[m Updated README.md
+[33m2c08166[m First commit

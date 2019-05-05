@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/destination_notifications"
         android:icon="@drawable/notification_ic"
-        android:title="@string/title_home" />
-
-    <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/location_nav_ic"
-        android:title="@string/title_dashboard" />
-
-    <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/settings_ic"
         android:title="@string/title_notifications" />
+
+    <item
+        android:id="@+id/destination_track"
+        android:icon="@drawable/location_nav_ic"
+        android:title="@string/title_shuttle" />
+
+    <item
+        android:id="@+id/destination_settings"
+        android:icon="@drawable/settings_ic"
+        android:title="@string/title_settings" />
 
 </menu>
