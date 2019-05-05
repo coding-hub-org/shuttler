@@ -9,8 +9,8 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.LogoutActivityTemp
+import com.psucoders.shuttler.ui.dashboard.DashboardActivity
 import kotlinx.android.synthetic.main.activity_authentication.*
-import kotlinx.android.synthetic.main.activity_register.*
 
 class AuthenticationActivity : AppCompatActivity() {
 
@@ -19,8 +19,6 @@ class AuthenticationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
-
-//        startActivity(Intent(this, LogoutActivityTemp::class.java))
         checkIfAlreadyVerified()
     }
 
@@ -42,7 +40,7 @@ class AuthenticationActivity : AppCompatActivity() {
         authenticationViewModel.verification.observe(this, Observer { verified ->
             Log.d("Verified status", "" + verified)
             if (verified != null && verified) {
-                startActivity(Intent(this, LogoutActivityTemp::class.java))
+                startActivity(Intent(this, DashboardActivity::class.java))
             }
         })
     }
