@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.LogoutActivityTemp
+import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import com.psucoders.shuttler.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.login_activity.*
 
@@ -24,7 +25,7 @@ class LoginActivity : AppCompatActivity() {
     private fun observeExistingUser() {
         loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
             if (userExists) {
-                startActivity(Intent(this, LogoutActivityTemp::class.java))
+                startActivity(Intent(this, AuthenticationActivity::class.java))
                 finish()
             }
         })

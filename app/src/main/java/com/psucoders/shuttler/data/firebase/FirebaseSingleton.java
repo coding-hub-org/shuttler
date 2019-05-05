@@ -38,14 +38,12 @@ public class FirebaseSingleton {
         }
         return _loginSuccess;
     }
-
     public MutableLiveData<Boolean> getRegistrationSuccess() {
         if (_registrationSuccess == null) {
             _registrationSuccess = new MutableLiveData<>();
         }
         return _registrationSuccess;
     }
-
     public MutableLiveData<Boolean> getAddedToDatabase() {
         if (_addedToDatabase == null) {
             _addedToDatabase = new MutableLiveData<>();
@@ -82,8 +80,6 @@ public class FirebaseSingleton {
             public void onComplete(@NonNull Task<AuthResult> task) {
 
                 if (task.isSuccessful()) {
-                    _registrationSuccess.setValue(true);
-
                     FirebaseUser currUser = getAuthInstance().getCurrentUser();
                     HashMap<String, Boolean> notificationTokens = new HashMap<>();
                     notificationTokens.put("firstToken", true);
@@ -102,6 +98,15 @@ public class FirebaseSingleton {
                                 } else {
                                     Log.d(logTag, "Add new user to db failed");
                                 }
+                            }
+                        });
+                    }
+
+                    if (currUser != null) {
+                        currUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                _registrationSuccess.setValue(true);
                             }
                         });
                     }

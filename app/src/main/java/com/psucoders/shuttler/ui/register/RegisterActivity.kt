@@ -8,6 +8,8 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.ui.LogoutActivityTemp
+import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import com.psucoders.shuttler.ui.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_register.*
 import kotlinx.android.synthetic.main.login_activity.*
@@ -40,6 +42,7 @@ class RegisterActivity : AppCompatActivity() {
         registerViewModel.registrationSuccess.observe(this, Observer { success ->
             if (success) {
                 Toast.makeText(this, "Successfully registered", Toast.LENGTH_SHORT).show()
+                startActivity(Intent(this, AuthenticationActivity::class.java))
             }
         })
         registerViewModel.handleRegister(edtUserSignUp.text.toString(), edtPasswordSignUp.text.toString())
