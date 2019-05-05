@@ -3,16 +3,17 @@ package com.psucoders.shuttler.ui.register
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModel
 import com.psucoders.shuttler.data.firebase.FirebaseSingleton
 
-class RegisterViewModel {
+class RegisterViewModel : ViewModel() {
 
-    val _valid = MutableLiveData<Boolean>()
+    private val _valid = MutableLiveData<Boolean>()
 
     val valid: LiveData<Boolean>
         get() = _valid
 
-    val _registrationSuccess = MutableLiveData<Boolean>()
+    private val _registrationSuccess = MutableLiveData<Boolean>()
 
     val registrationSuccess: LiveData<Boolean>
         get() = _registrationSuccess

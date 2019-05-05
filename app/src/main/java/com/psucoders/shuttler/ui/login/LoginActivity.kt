@@ -7,20 +7,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.psucoders.shuttler.R
-import com.psucoders.shuttler.ui.LogoutActivityTemp
 import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import com.psucoders.shuttler.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.login_activity.*
+import androidx.lifecycle.ViewModelProviders
+
 
 class LoginActivity : AppCompatActivity() {
 
-    private val loginViewModel = LoginViewModel()
+    private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
+        loginViewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
         observeExistingUser()
-
     }
 
     private fun observeExistingUser() {

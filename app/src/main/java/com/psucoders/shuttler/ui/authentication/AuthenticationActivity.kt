@@ -8,18 +8,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.psucoders.shuttler.R
-import com.psucoders.shuttler.ui.LogoutActivityTemp
 import com.psucoders.shuttler.ui.dashboard.DashboardActivity
 import kotlinx.android.synthetic.main.activity_authentication.*
+import androidx.lifecycle.ViewModelProviders
+
 
 class AuthenticationActivity : AppCompatActivity() {
 
-    private val authenticationViewModel = AuthenticationViewModel()
+    private lateinit var authenticationViewModel: AuthenticationViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
+
+        authenticationViewModel = ViewModelProviders.of(this).get(AuthenticationViewModel::class.java)
+
         checkIfAlreadyVerified()
+
     }
 
     private fun observeEmailAddress() {
@@ -31,6 +36,8 @@ class AuthenticationActivity : AppCompatActivity() {
                             "authenticated your account please click on the button below"
             confirmationTextView.text = customText
         })
+
+
     }
 
     private fun checkIfAlreadyVerified() {
