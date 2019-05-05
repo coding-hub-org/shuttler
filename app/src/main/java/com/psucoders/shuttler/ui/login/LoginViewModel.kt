@@ -1,9 +1,7 @@
 package com.psucoders.shuttler.ui.login
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import com.psucoders.shuttler.data.firebase.FirebaseSingleton
 
 class LoginViewModel {

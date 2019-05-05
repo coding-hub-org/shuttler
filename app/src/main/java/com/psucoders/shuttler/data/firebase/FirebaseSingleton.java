@@ -9,6 +9,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.psucoders.shuttler.data.model.NotificationsModel;
+import com.psucoders.shuttler.data.model.UserModel;
+
+import java.util.HashMap;
 
 public class FirebaseSingleton {
 
@@ -17,13 +24,31 @@ public class FirebaseSingleton {
     private static FirebaseAuth mAuth = null;
     private final String logTag = "Firebase Singleton";
 
+    //Firebase Database
+    private FirebaseDatabase db;
+    private DatabaseReference users;
+
     private MutableLiveData<Boolean> _loginSuccess;
+    private MutableLiveData<Boolean> _registrationSuccess;
+    private MutableLiveData<Boolean> _addedToDatabase;
 
     public MutableLiveData<Boolean> loginSuccess() {
         if (_loginSuccess == null) {
             _loginSuccess = new MutableLiveData<>();
         }
         return _loginSuccess;
+    }
+    public MutableLiveData<Boolean> getRegistrationSuccess() {
+        if (_registrationSuccess == null) {
+            _registrationSuccess = new MutableLiveData<>();
+        }
+        return _registrationSuccess;
+    }
+    public MutableLiveData<Boolean> getAddedToDatabase() {
+        if (_addedToDatabase == null) {
+            _addedToDatabase = new MutableLiveData<>();
+        }
+        return _addedToDatabase;
     }
 
     private FirebaseSingleton() {
@@ -49,11 +74,46 @@ public class FirebaseSingleton {
         return instance;
     }
 
-    public void register(String email, String password){
-        getAuthInstance().createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+    public void register(final String email, final String password, final String username) {
+        getAuthInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
 
+                if (task.isSuccessful()) {
+                    FirebaseUser currUser = getAuthInstance().getCurrentUser();
+                    HashMap<String, Boolean> notificationTokens = new HashMap<>();
+                    notificationTokens.put("firstToken", true);
+                    NotificationsModel notificationsModel = new NotificationsModel(notificationTokens, "Walmart", "5");
+                    UserModel newUser = new UserModel(email, password, username, notificationsModel);
+
+                    db = FirebaseDatabase.getInstance();
+                    users = db.getReference("Users");
+
+                    if (currUser != null) {
+                        users.child(currUser.getUid()).setValue(newUser).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d(logTag, "Added new user to db");
+                                } else {
+                                    Log.d(logTag, "Add new user to db failed");
+                                }
+                            }
+                        });
+                    }
+
+                    if (currUser != null) {
+                        currUser.sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                _registrationSuccess.setValue(true);
+                            }
+                        });
+                    }
+
+                } else {
+                    _registrationSuccess.setValue(false);
+                }
             }
         });
     }
