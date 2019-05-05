@@ -25,6 +25,7 @@ class LoginActivity : AppCompatActivity() {
         loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
             if (userExists) {
                 startActivity(Intent(this, LogoutActivityTemp::class.java))
+                finish()
             }
         })
         loginViewModel.checkIfUserExists()
@@ -35,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun handleLogin(v: View) {
+        btnSignIn.isEnabled = false
         loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
         loginViewModel.validFields.observe(this, Observer { valid ->
             if (valid != null && !valid) {
@@ -44,6 +46,7 @@ class LoginActivity : AppCompatActivity() {
             if (valid != null && valid) {
                 loginViewModel.checkIfUserExists()
             }
+            btnSignIn.isEnabled = true
         })
     }
 }
