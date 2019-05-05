@@ -54,6 +54,8 @@
         <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
         <!-- </intent-filter> -->
         <!-- </activity> -->
+        </activity>
+        <activity android:name=".ui.authentication.AuthenticationActivity" />
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />

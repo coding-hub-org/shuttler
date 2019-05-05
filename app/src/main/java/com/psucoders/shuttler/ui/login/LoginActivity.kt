@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import com.google.android.material.snackbar.Snackbar
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.LogoutActivityTemp
+import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import com.psucoders.shuttler.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.login_activity.*
 
@@ -25,7 +26,8 @@ class LoginActivity : AppCompatActivity() {
     private fun observeExistingUser() {
         loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
             if (userExists) {
-                startActivity(Intent(this, LogoutActivityTemp::class.java))
+                startActivity(Intent(this, AuthenticationActivity::class.java))
+                finish()
             }
         })
         loginViewModel.checkIfUserExists()
@@ -36,6 +38,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun handleLogin(v: View) {
+        btnSignIn.isEnabled = false
         loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
         loginViewModel.validFields.observe(this, Observer { valid ->
             if (valid != null && !valid) {
@@ -45,6 +48,7 @@ class LoginActivity : AppCompatActivity() {
             if (valid != null && valid) {
                 loginViewModel.checkIfUserExists()
             }
+            btnSignIn.isEnabled = true
         })
     }
 }
