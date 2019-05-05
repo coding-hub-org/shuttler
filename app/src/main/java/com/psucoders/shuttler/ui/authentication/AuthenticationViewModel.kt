@@ -22,13 +22,17 @@ class AuthenticationViewModel {
     }
 
     fun checkVerification() {
+        resetCurrentUser()
         val verified = FirebaseSingleton.getInstance().authInstance.currentUser!!.isEmailVerified
         _verification.value = verified
-
         Log.d(logTag, "verification status: $verified")
     }
 
     fun resetVerificationCheck() {
         _verification.value = null
+    }
+
+    fun resetCurrentUser() {
+        FirebaseSingleton.getInstance().authInstance.currentUser!!.reload()
     }
 }
