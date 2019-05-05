@@ -2,27 +2,23 @@ package com.psucoders.shuttler
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.pm.PackageManager
+ import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
- import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
+ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
-import java.util.jar.Manifest
-
+import android.widget.RelativeLayout
 
 class TrackFragment : Fragment(), OnMapReadyCallback {
 
@@ -32,6 +28,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var viewModel: TrackViewModel
     private lateinit var mMap: GoogleMap
+    private lateinit var mapView: View
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2310
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -53,21 +50,36 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
+        mapView = mapFragment.view!!
         mapFragment.getMapAsync(this)
         // TODO: Use the ViewModel
     }
 
     override fun onStart() {
-        // Check permission
+        // TODO: Check permissions onStart
         super.onStart()
         Toast.makeText(context, "RESTART", Toast.LENGTH_LONG).show()
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
-        handleLocationPermission()
         mMap.isIndoorEnabled = true
+        mMap.uiSettings.isMyLocationButtonEnabled = true
+        handleLocationPermission()
+
+
+        if (mapView != null && mapView.findViewById<View>(Integer.parseInt("1")) != null) {
+            // Get the button view
+            val locationButton = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<ImageView>(Integer.parseInt("2"))
+            // and next place it, on bottom right (as Google Maps app)
+            val layoutParams = locationButton.layoutParams as RelativeLayout.LayoutParams
+            // position on right bottom
+            locationButton.setImageResource(R.drawable.mylocation_ic)
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
+            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
+            layoutParams.setMargins(0, 0, 0, 30)
+        }
+
     }
 
     private fun handleLocationPermission() {
@@ -75,6 +87,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                 (context!!, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
+
         } else {
             requestLocationPermission()
         }
