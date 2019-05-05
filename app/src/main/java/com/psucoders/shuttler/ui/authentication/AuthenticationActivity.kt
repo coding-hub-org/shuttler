@@ -20,8 +20,8 @@ class AuthenticationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
 
-        startActivity(Intent(this, LogoutActivityTemp::class.java))
-//        checkIfAlreadyVerified()
+//        startActivity(Intent(this, LogoutActivityTemp::class.java))
+        checkIfAlreadyVerified()
     }
 
     private fun observeEmailAddress() {
@@ -55,5 +55,10 @@ class AuthenticationActivity : AppCompatActivity() {
             }
         })
         authenticationViewModel.checkVerification()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        authenticationViewModel.resetCurrentUser()
     }
 }
