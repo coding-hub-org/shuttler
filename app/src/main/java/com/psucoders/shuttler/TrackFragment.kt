@@ -82,11 +82,11 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
             locationButton.setImageResource(R.drawable.mylocation_ic)
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
-            layoutParams.setMargins(0, 0, 0, 30)
+            layoutParams.setMargins(0, 0, 0, 320)
+            locationButton.layoutParams = layoutParams
         }
 
         addStopMarkers(stopList)
-
     }
 
     private fun handleLocationPermission() {

@@ -7,7 +7,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/colorShuttleStopCardDefault"
     app:cardCornerRadius="10dp"
-    android:layout_marginTop="0dp"
+    android:layout_marginBottom="10dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp" >
 
@@ -22,7 +22,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Next Stop"
-            android:textColor="@color/colorHint"
+            android:textColor="@color/colorWhite"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,6 +41,14 @@
             app:layout_constraintStart_toStartOf="@+id/stop_next"
             app:layout_constraintTop_toBottomOf="@+id/stop_next" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/clock_ic"
+            app:layout_constraintBottom_toBottomOf="@+id/stop_time"
+            app:layout_constraintEnd_toStartOf="@+id/stop_time"
+            app:layout_constraintTop_toTopOf="@+id/stop_time" />
         <TextView
             android:id="@+id/stop_time"
             android:layout_width="wrap_content"

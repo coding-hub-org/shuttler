@@ -19,7 +19,7 @@ class StopAdapter(private val stops: ArrayList<String>): RecyclerView.Adapter<St
     override fun onBindViewHolder(holder: StopHolder, position: Int) {
         val stop = stops[position]
         holder.stopName.text = stop
-        holder.stopTime.text = "10"
+        holder.stopTime.text = "10 mins"
     }
 
     class StopHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
