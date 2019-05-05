@@ -1,12 +1,18 @@
 package com.psucoders.shuttler
 
 import android.app.Activity
- import androidx.lifecycle.ViewModelProviders
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.pm.PackageManager
+import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
  import com.google.android.gms.maps.CameraUpdateFactory
@@ -15,10 +21,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import androidx.core.app.ActivityCompat
-import android.content.pm.PackageManager
- import androidx.core.content.ContextCompat
-
+import java.util.jar.Manifest
 
 
 class TrackFragment : Fragment(), OnMapReadyCallback {
@@ -29,6 +32,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var viewModel: TrackViewModel
     private lateinit var mMap: GoogleMap
+    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2310
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -53,14 +57,64 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         // TODO: Use the ViewModel
     }
 
-    override fun onMapReady(googleMap: GoogleMap) {
-        mMap = googleMap
-        mMap.isIndoorEnabled = true
-
-        // Add a marker in Sydney and move the camera
-        val sydney = LatLng(44.693218, -73.465782)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+    override fun onStart() {
+        // Check permission
+        super.onStart()
+        Toast.makeText(context, "RESTART", Toast.LENGTH_LONG).show()
     }
 
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap
+
+        handleLocationPermission()
+        mMap.isIndoorEnabled = true
+    }
+
+    private fun handleLocationPermission() {
+        if (ContextCompat.checkSelfPermission
+                (context!!, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.isMyLocationEnabled = true
+        } else {
+            requestLocationPermission()
+        }
+    }
+
+    private fun requestLocationPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale
+                (activity as Activity, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+            AlertDialog.Builder(context)
+                    .setTitle("Location needed")
+                    .setMessage("In order to provide you with the best user experience " +
+                            "we need to access your device location")
+                    .setPositiveButton("OK") { _, _ ->
+                         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                                PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+                    }
+                    .setNegativeButton("CANCEL") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
+        } else {
+            requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        try {
+            if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    mMap.isMyLocationEnabled = true
+                 } else {
+                    // Send to other activity
+                    Toast.makeText(context, "Need permission", Toast.LENGTH_LONG).show()
+                }
+            }
+        } catch (e: SecurityException) {
+            Toast.makeText(context, "Can't get user location permission", Toast.LENGTH_LONG).show()
+        }
+    }
 }
