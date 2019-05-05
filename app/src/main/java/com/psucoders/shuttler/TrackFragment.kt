@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import android.widget.RelativeLayout
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 class TrackFragment : Fragment(), OnMapReadyCallback {
 
@@ -29,7 +32,9 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: TrackViewModel
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
+    @Suppress("PrivatePropertyName")
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2310
+    val stopList = arrayListOf(LatLng(44.692358, -73.486985), LatLng(44.703424, -73.492683))
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -80,6 +85,8 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
             layoutParams.setMargins(0, 0, 0, 30)
         }
 
+        addStopMarkers(stopList)
+
     }
 
     private fun handleLocationPermission() {
@@ -129,5 +136,18 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         } catch (e: SecurityException) {
             Toast.makeText(context, "Can't get user location permission", Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun addStopMarkers(stopList: ArrayList<LatLng>) {
+        for (stop in stopList) {
+            addMarker(stop)
+        }
+    }
+
+    private fun addMarker(coordinates: LatLng) {
+         mMap.addMarker(MarkerOptions()
+                .position(coordinates)
+                 .title("Stop")
+                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop_marker_ic)))
     }
 }
