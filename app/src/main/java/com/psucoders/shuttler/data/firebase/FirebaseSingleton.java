@@ -31,6 +31,7 @@ public class FirebaseSingleton {
     private MutableLiveData<Boolean> _loginSuccess;
     private MutableLiveData<Boolean> _registrationSuccess;
     private MutableLiveData<Boolean> _addedToDatabase;
+    private MutableLiveData<Boolean> _logout;
 
     public MutableLiveData<Boolean> loginSuccess() {
         if (_loginSuccess == null) {
@@ -38,17 +39,26 @@ public class FirebaseSingleton {
         }
         return _loginSuccess;
     }
+
     public MutableLiveData<Boolean> getRegistrationSuccess() {
         if (_registrationSuccess == null) {
             _registrationSuccess = new MutableLiveData<>();
         }
         return _registrationSuccess;
     }
+
     public MutableLiveData<Boolean> getAddedToDatabase() {
         if (_addedToDatabase == null) {
             _addedToDatabase = new MutableLiveData<>();
         }
         return _addedToDatabase;
+    }
+
+    public MutableLiveData<Boolean> getLogoutStatus() {
+        if (_logout == null) {
+            _logout = new MutableLiveData<>();
+        }
+        return _logout;
     }
 
     private FirebaseSingleton() {
@@ -137,5 +147,6 @@ public class FirebaseSingleton {
     public void logout() {
         if (getAuthInstance().getCurrentUser() != null)
             getAuthInstance().signOut();
+        _logout.setValue(true);
     }
 }

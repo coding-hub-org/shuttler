@@ -2,6 +2,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/my_toolbar"
     android:layout_width="match_parent"
+    android:background="#EEE"
     android:layout_height="?attr/actionBarSize"
     android:elevation="4dp"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
