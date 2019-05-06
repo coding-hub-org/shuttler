@@ -12,6 +12,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.psucoders.shuttler.MyFirebaseMessagingService;
 import com.psucoders.shuttler.data.model.NotificationsModel;
 import com.psucoders.shuttler.data.model.UserModel;
 
@@ -32,6 +37,15 @@ public class FirebaseSingleton {
     private MutableLiveData<Boolean> _registrationSuccess;
     private MutableLiveData<Boolean> _addedToDatabase;
     private MutableLiveData<Boolean> _logout;
+
+    private MutableLiveData<String> _fcmToken;
+
+    public MutableLiveData<String> getFcmToken() {
+        if (_fcmToken == null) {
+            _fcmToken = new MutableLiveData<>();
+        }
+        return _fcmToken;
+    }
 
     public MutableLiveData<Boolean> loginSuccess() {
         if (_loginSuccess == null) {
@@ -88,11 +102,32 @@ public class FirebaseSingleton {
         getAuthInstance().createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-
                 if (task.isSuccessful()) {
-                    FirebaseUser currUser = getAuthInstance().getCurrentUser();
+                    getNotificationToken(email, password, username);
+                } else {
+                    _registrationSuccess.setValue(false);
+                }
+            }
+        });
+    }
+
+    private void getNotificationToken(final String email, final String password, final String username) {
+        final FirebaseUser currUser = getAuthInstance().getCurrentUser();
+        FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+            @Override
+            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                if (!task.isSuccessful()) {
+                    Log.d("Token", "Error!!");
+                } else {
+
+                    if (task.getResult() != null) {
+                        String token = task.getResult().getToken();
+                        Log.d("Token", "FCM: " + token);
+                        _fcmToken.setValue(token);
+                    }
+
                     HashMap<String, Boolean> notificationTokens = new HashMap<>();
-                    notificationTokens.put("firstToken", true);
+                    notificationTokens.put(_fcmToken.getValue(), true);
                     NotificationsModel notificationsModel = new NotificationsModel(notificationTokens, "Walmart", "5");
                     UserModel newUser = new UserModel(email, password, username, notificationsModel);
 
@@ -121,8 +156,6 @@ public class FirebaseSingleton {
                         });
                     }
 
-                } else {
-                    _registrationSuccess.setValue(false);
                 }
             }
         });
@@ -148,5 +181,26 @@ public class FirebaseSingleton {
         if (getAuthInstance().getCurrentUser() != null)
             getAuthInstance().signOut();
         _logout.setValue(true);
+    }
+
+    public void updateSettings(NotificationsModel newNotificationModel) {
+
+        FirebaseUser currUser = getAuthInstance().getCurrentUser();
+        db = FirebaseDatabase.getInstance();
+        users = db.getReference("Users");
+
+        if (currUser != null) {
+            users.child(currUser.getUid()).child("notifications").setValue(newNotificationModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        Log.d(logTag, "Updated the notifications");
+                    } else {
+                        Log.d(logTag, "Failed");
+                    }
+                }
+            });
+        }
+
     }
 }

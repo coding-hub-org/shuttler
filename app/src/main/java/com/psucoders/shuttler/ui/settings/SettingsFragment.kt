@@ -2,6 +2,7 @@ package com.psucoders.shuttler.ui.settings
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.login.LoginActivity
+import org.jetbrains.anko.sdk27.coroutines.onItemSelectedListener
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemSelectedListener
 
 
 class SettingsFragment : Fragment() {
@@ -43,8 +47,22 @@ class SettingsFragment : Fragment() {
         buttonPlus = view.findViewById(R.id.button_plus)
         buttonLogout = view.findViewById(R.id.button_logout)
 
+        settingsViewModel.fetchNewToken()
         loadSpinner()
         listenForEvents()
+
+        locationsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
+            override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) {
+                // your code here
+                Toast.makeText(activity, "Selected: " + locationsSpinner.selectedItem, Toast.LENGTH_SHORT).show()
+                settingsViewModel.updateNotificationLocation(locationsSpinner.selectedItem.toString())
+            }
+
+            override fun onNothingSelected(parentView: AdapterView<*>) {
+                // your code here
+            }
+
+        }
 
         return view
     }
@@ -68,6 +86,7 @@ class SettingsFragment : Fragment() {
 
         cbEnableNotifications.setOnCheckedChangeListener { _, isChecked ->
             Toast.makeText(activity, isChecked.toString(), Toast.LENGTH_SHORT).show()
+            settingsViewModel.updateNotificationEnabled(isChecked)
         }
 
         buttonMinus.setOnClickListener {
@@ -87,5 +106,6 @@ class SettingsFragment : Fragment() {
             settingsViewModel.logout()
 
         }
+
     }
 }
