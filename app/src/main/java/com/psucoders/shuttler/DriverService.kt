@@ -32,7 +32,6 @@ class DriverService : Service() {
         buildLocationCallback()
     }
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val message = "Tracking Shuttle location"
 
@@ -51,7 +50,6 @@ class DriverService : Service() {
             fusedLocationProviderClient
                     .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
         }
-
         return START_NOT_STICKY
     }
 
@@ -60,9 +58,9 @@ class DriverService : Service() {
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
         Toast.makeText(applicationContext, "destroyed", Toast.LENGTH_LONG).show()
     }
+
     override fun onBind(intent: Intent): IBinder {
         TODO("Return the communication channel to the service.")
-
     }
 
     private fun buildLocationRequest() {

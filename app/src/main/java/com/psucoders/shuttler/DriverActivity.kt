@@ -1,26 +1,20 @@
+@file:Suppress("PrivatePropertyName")
+
 package com.psucoders.shuttler
 
-import android.app.Activity
-import android.app.AlertDialog
-import android.app.PendingIntent
-import android.content.Intent
+ import android.app.AlertDialog
+ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
 import kotlinx.android.synthetic.main.activity_driver.*
 import org.jetbrains.anko.toast
 
 class DriverActivity : AppCompatActivity() {
 
-
-     private lateinit var locationRequest: LocationRequest
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2310
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +24,13 @@ class DriverActivity : AppCompatActivity() {
         // Set event
         switchDuty.setOnCheckedChangeListener { _, checked ->
             if (checked) {
-                toast("ON DUTY")
-                startService()
+                if (ActivityCompat.checkSelfPermission(this@DriverActivity,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    toast("ON DUTY")
+                    startService()
+                } else {
+                    requestLocationPermission()
+                }
             } else {
                 toast("OFF DUTY")
                 stopService()
@@ -48,7 +47,6 @@ class DriverActivity : AppCompatActivity() {
         val serviceIntent = Intent(this, DriverService::class.java)
         stopService(serviceIntent)
     }
-
 
     private fun requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale
@@ -73,11 +71,14 @@ class DriverActivity : AppCompatActivity() {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<out String>,
+                                            grantResults: IntArray) {
         try {
             if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(this@DriverActivity, "Permission granted", Toast.LENGTH_LONG).show()
+//                    startService()
                 } else {
                     // Send to other activity
                     Toast.makeText(this@DriverActivity, "Need permission", Toast.LENGTH_LONG).show()
