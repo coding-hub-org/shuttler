@@ -56,28 +56,37 @@ class SettingsFragment : Fragment() {
                 // your code here
                 Toast.makeText(activity, "Selected: " + locationsSpinner.selectedItem, Toast.LENGTH_SHORT).show()
                 settingsViewModel.updateNotificationLocation(locationsSpinner.selectedItem.toString())
+                activity!!.getSharedPreferences("_", MODE_PRIVATE).edit().putString("notifyLocation", locationsSpinner.selectedItem.toString()).apply()
             }
 
             override fun onNothingSelected(parentView: AdapterView<*>) {
                 // your code here
             }
-
         }
 
         return view
     }
 
     private fun fetchCurrentSettingsFromFirebase() {
-        settingsViewModel.getExistingSettings.observe(this, Observer { settings ->
-            settingsViewModel.timeAhead.value = settings.timeAhead
-            val myAdap = locationsSpinner.adapter as ArrayAdapter<String> //cast to an ArrayAdapter
-            val spinnerPosition = myAdap.getPosition(settings.notifyLocation)
-            val enabled = settings.tokens!![settings.tokens.keys.iterator().next()]
-            cbEnableNotifications.isChecked = enabled!!
-//set the default according to value
-            locationsSpinner.setSelection(spinnerPosition)
-        })
-        settingsViewModel.fetchCurrentSettingsFromFirebase()
+//        settingsViewModel.getExistingSettings.observe(this, Observer { settings ->
+//            settingsViewModel.timeAhead.value = settings.timeAhead
+//            val myAdap = locationsSpinner.adapter as ArrayAdapter<String> //cast to an ArrayAdapter
+//            val spinnerPosition = myAdap.getPosition(settings.notifyLocation)
+//            val enabled = settings.tokens!![settings.tokens.keys.iterator().next()]
+//            cbEnableNotifications.isChecked = enabled!!
+////set the default according to value
+//            locationsSpinner.setSelection(spinnerPosition)
+//        })
+//        settingsViewModel.fetchCurrentSettingsFromFirebase()
+        val sharedPreferences = activity!!.getSharedPreferences("_", MODE_PRIVATE)
+        val myAdapter = locationsSpinner.adapter as ArrayAdapter<String>
+        val spinnerPosition = myAdapter.getPosition(sharedPreferences.getString("notifyLocation", "Walmart"))
+        val enabledNotifications = sharedPreferences.getBoolean("notificationsEnabled", true)
+        val timeAhead = sharedPreferences.getString("timeAhead", "5")
+
+        locationsSpinner.setSelection(spinnerPosition)
+        cbEnableNotifications.isChecked = enabledNotifications
+        timeAheadMinutes.text = timeAhead
     }
 
     private fun loadDefaults() {
@@ -90,18 +99,21 @@ class SettingsFragment : Fragment() {
             locationsSpinner.adapter = adapter
         }
         settingsViewModel.notificationsEnabled.value = cbEnableNotifications.isChecked
-        settingsViewModel.timeAhead.value = timeAheadMinutes.text.toString()
+        settingsViewModel.timeAhead.value = activity!!.getSharedPreferences("_", MODE_PRIVATE).getString("timeAhead", "5")
+
     }
 
     private fun listenForEvents() {
 
         settingsViewModel.timeAhead.observe(this, Observer { time ->
             timeAheadMinutes.text = time
+            activity!!.getSharedPreferences("_", MODE_PRIVATE).edit().putString("timeAhead", time).apply()
         })
 
         cbEnableNotifications.setOnCheckedChangeListener { _, isChecked ->
             Toast.makeText(activity, isChecked.toString(), Toast.LENGTH_SHORT).show()
             settingsViewModel.updateNotificationEnabled(isChecked)
+            activity!!.getSharedPreferences("_", MODE_PRIVATE).edit().putBoolean("notificationsEnabled", cbEnableNotifications.isChecked).apply()
         }
 
         buttonMinus.setOnClickListener {

@@ -1,5 +1,6 @@
 package com.psucoders.shuttler.ui.register
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -53,9 +54,19 @@ class RegisterActivity : AppCompatActivity() {
         registerViewModel.registrationSuccess.observe(this, Observer { success ->
             if (success) {
                 Toast.makeText(this, "Successfully registered", Toast.LENGTH_SHORT).show()
+                setDefaultSettingsToSharedPreferences()
                 startActivity(Intent(this, AuthenticationActivity::class.java))
             }
         })
         registerViewModel.handleRegister(edtUserSignUp.text.toString(), edtPasswordSignUp.text.toString())
+    }
+
+    private fun setDefaultSettingsToSharedPreferences() {
+        val sharedPref = getSharedPreferences("_", Context.MODE_PRIVATE)
+        val editor = sharedPref.edit()
+        editor.putString("notifyLocation", "Walmart")
+        editor.putString("timeAhead", "5")
+        editor.putBoolean("notificationsEnabled", true)
+        editor.apply()
     }
 }
