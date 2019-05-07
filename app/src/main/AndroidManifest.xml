@@ -51,7 +51,6 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
 
-        <activity android:name=".ui.LogoutActivityTemp" />
         <activity android:name=".ui.register.RegisterActivity" />
         <activity
             android:name=".ui.dashboard.DashboardActivity"

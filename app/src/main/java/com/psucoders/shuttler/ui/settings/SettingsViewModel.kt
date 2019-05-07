@@ -4,62 +4,70 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.psucoders.shuttler.data.firebase.FirebaseSingleton
+import com.psucoders.shuttler.data.model.NotificationsModel
 
 class SettingsViewModel : ViewModel() {
 
-    val _logoutStatus = MutableLiveData<Boolean>()
-    val _timeAhead = MutableLiveData<String>()
-    val _notificationsEnabled = MutableLiveData<Boolean>()
-    val _locationSelected = MutableLiveData<String>()
+    private val logoutStatus = MutableLiveData<Boolean>()
+    val timeAhead = MutableLiveData<String>()
+    val notificationsEnabled = MutableLiveData<Boolean>()
+    private val locationSelected = MutableLiveData<String>()
+    val currentToken = MutableLiveData<String>()
 
-    val locationSelected: LiveData<String>
-        get() = _locationSelected
+    val existingSettings = MutableLiveData<NotificationsModel>()
 
-    val notificationsEnabled: LiveData<Boolean>
-        get() = _notificationsEnabled
+    val getExistingSettings: LiveData<NotificationsModel>
+        get() = existingSettings
 
-    fun initializeLife() {
-        _timeAhead.value = 5.toString()
-    }
-
-    val logoutStatus: LiveData<Boolean>
-        get() = _logoutStatus
+    val getLogoutStatus: LiveData<Boolean>
+        get() = logoutStatus
 
     fun decreaseTimeCounter(currentCount: Int) {
         if (currentCount > 0)
-            _timeAhead.value = (currentCount - 1).toString()
+            timeAhead.value = (currentCount - 1).toString()
         else {
-            _timeAhead.value = 0.toString()
+            timeAhead.value = 0.toString()
         }
-        updateTimeAhead()
+        updateSettings()
     }
 
     fun increaseTimeCounter(currentCount: Int) {
-        _timeAhead.value = (currentCount + 1).toString()
-        updateTimeAhead()
+        timeAhead.value = (currentCount + 1).toString()
+        updateSettings()
     }
 
     fun logout() {
         FirebaseSingleton.getInstance().logoutStatus.observeForever { status ->
-            _logoutStatus.value = status
+            logoutStatus.value = status
         }
         FirebaseSingleton.getInstance().logout()
     }
 
     fun updateNotificationEnabled(enabled: Boolean) {
-        _notificationsEnabled.value = true
-//        FirebaseSingleton.getInstance().updateSettings()
+        notificationsEnabled.value = enabled
+        updateSettings()
     }
 
     fun updateNotificationLocation(location: String) {
-        _locationSelected.value = location
+        locationSelected.value = location
+        updateSettings()
     }
 
-    fun updateTimeAhead() {
-
+    private fun updateSettings() {
+        val tokens = HashMap<String, Boolean>()
+        tokens[currentToken.value!!] = notificationsEnabled.value!!
+        val notificationsModel = NotificationsModel(tokens, locationSelected.value!!, timeAhead.value!!)
+        FirebaseSingleton.getInstance().updateSettings(notificationsModel)
     }
 
-    fun fetchNewToken() {
-
+    fun fetchCurrentSettingsFromFirebase() {
+        FirebaseSingleton.getInstance().currentSettings.observeForever { settings ->
+            val enabled = settings.tokens!![settings.tokens.keys.iterator().next()]
+            notificationsEnabled.value = enabled
+            existingSettings.value = settings
+            timeAhead.value = settings.timeAhead
+            locationSelected.value = settings.notifyLocation
+        }
+        FirebaseSingleton.getInstance().fetchCurrentUserSettingsFromFirebase()
     }
 }

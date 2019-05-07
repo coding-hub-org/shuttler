@@ -10,8 +10,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -33,12 +36,19 @@ public class FirebaseSingleton {
     private FirebaseDatabase db;
     private DatabaseReference users;
 
+    private MutableLiveData<NotificationsModel> _currentSettings;
     private MutableLiveData<Boolean> _loginSuccess;
     private MutableLiveData<Boolean> _registrationSuccess;
-    private MutableLiveData<Boolean> _addedToDatabase;
     private MutableLiveData<Boolean> _logout;
 
     private MutableLiveData<String> _fcmToken;
+
+    public MutableLiveData<NotificationsModel> getCurrentSettings() {
+        if (_currentSettings == null) {
+            _currentSettings = new MutableLiveData<>();
+        }
+        return _currentSettings;
+    }
 
     public MutableLiveData<String> getFcmToken() {
         if (_fcmToken == null) {
@@ -59,13 +69,6 @@ public class FirebaseSingleton {
             _registrationSuccess = new MutableLiveData<>();
         }
         return _registrationSuccess;
-    }
-
-    public MutableLiveData<Boolean> getAddedToDatabase() {
-        if (_addedToDatabase == null) {
-            _addedToDatabase = new MutableLiveData<>();
-        }
-        return _addedToDatabase;
     }
 
     public MutableLiveData<Boolean> getLogoutStatus() {
@@ -202,5 +205,57 @@ public class FirebaseSingleton {
             });
         }
 
+    }
+
+    public void fetchCurrentUserSettingsFromFirebase() {
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        if (getAuthInstance().getCurrentUser() != null) {
+
+            DatabaseReference myRef = database.getReference("Users").child(getAuthInstance().getCurrentUser().getUid()).child("notifications");
+            myRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    NotificationsModel temp = dataSnapshot.getValue(NotificationsModel.class);
+                    _currentSettings.setValue(temp);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+//        val database = FirebaseDatabase.getInstance()
+//        val myRef = database.getReference("Users").child(username).child("notifications")
+//        // Read from the database
+//        myRef.addValueEventListener(object :ValueEventListener {
+//            override fun onDataChange(dataSnapshot:DataSnapshot){
+//                Log.d("reached", "here")
+//                val post = dataSnapshot.getValue(UserSettingValues:: class.java)
+//                Log.d("values are1", post !!.timeAhead)
+//                Log.d("values are2", post.notifyLocation)
+//
+//                val testArr = resources.getStringArray(R.array.locations_array)
+//                val testArrList = testArr.toList()
+//                val index = testArrList.indexOf(post.notifyLocation)
+//                val tokens = post.tokens
+//
+//                val isChecked = tokens[tokens.keys.elementAt(0)]
+//
+//                Log.d("poooo", index.toString() + " " + isChecked)
+//
+//                locationsSpinner.setSelection(index)
+//
+//                notification_enabled.isChecked = isChecked !!
+//                        mins.text = post.timeAhead
+//            }
+//
+//            override fun onCancelled(error:DatabaseError){
+//                // Failed to read value
+//                Log.d("ERRROR", "reading db")
+//            }
+//        })
     }
 }
