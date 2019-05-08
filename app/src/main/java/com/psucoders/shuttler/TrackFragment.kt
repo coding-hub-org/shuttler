@@ -109,14 +109,12 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         mMap.uiSettings.isMyLocationButtonEnabled = true
 
         db.collection("drivers")
-//                .whereEqualTo("active", true)
                 .addSnapshotListener(EventListener<QuerySnapshot> { snapshots, e ->
                     if (e != null) {
                         Log.w("FAILED SNAPSHOT", "Listen failed.", e)
                         return@EventListener
                     }
-                    lateinit var geoPoint: GeoPoint
-                    for (dc in snapshots!!.documentChanges) {
+                     for (dc in snapshots!!.documentChanges) {
                         if (dc.type == DocumentChange.Type.MODIFIED) {
 
                             if (dc.document.data["active"] == true) {
