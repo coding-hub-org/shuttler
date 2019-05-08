@@ -7,8 +7,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardBackgroundColor="@color/colorShuttleStopCardDefault"
     app:cardCornerRadius="10dp"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="20dp"
     android:layout_marginStart="10dp"
+    android:layout_marginTop="20dp"
     android:layout_marginEnd="10dp" >
 
     <androidx.constraintlayout.widget.ConstraintLayout
