@@ -2,9 +2,10 @@ package com.psucoders.shuttler.ui.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.psucoders.shuttler.data.firebase.FirebaseSingleton
 
-class LoginViewModel {
+class LoginViewModel : ViewModel() {
 
     private val logTag = "Login VM"
 
