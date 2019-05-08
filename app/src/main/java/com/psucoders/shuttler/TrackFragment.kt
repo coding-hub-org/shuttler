@@ -5,6 +5,7 @@ import android.app.AlertDialog
  import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,8 +22,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import android.widget.RelativeLayout
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.firebase.database.*
+import com.google.firebase.firestore.*
 
+@Suppress("PrivatePropertyName")
 class TrackFragment : Fragment(), OnMapReadyCallback {
 
     companion object {
@@ -32,9 +37,16 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     private lateinit var viewModel: TrackViewModel
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
-    @Suppress("PrivatePropertyName")
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2310
-    val stopList = arrayListOf(LatLng(44.692358, -73.486985), LatLng(44.703424, -73.492683))
+    private val stopList = arrayListOf(
+            LatLng(44.692358, -73.486985),
+            LatLng(44.703424, -73.492683),
+            LatLng(44.695382, -73.492342),
+            LatLng(44.698919, -73.476508))
+
+    private lateinit var db: FirebaseFirestore
+    private val markersHashMap:HashMap<String,Marker> = HashMap() //define empty hashmap
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -56,6 +68,10 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapView = mapFragment.view!!
+
+        // Access a Cloud Firestore instance from your Activity
+        db = FirebaseFirestore.getInstance()
+
         mapFragment.getMapAsync(this)
         // TODO: Use the ViewModel
     }
@@ -63,17 +79,73 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     override fun onStart() {
         // TODO: Check permissions onStart
         super.onStart()
-        Toast.makeText(context, "RESTART", Toast.LENGTH_LONG).show()
+
+        // TODO: Might move to onCreate
+        db.collection("drivers")
+                .whereEqualTo("active", true)
+                .get()
+                .addOnSuccessListener { result ->
+
+                    for (document in result) {
+                        Toast.makeText(context, "RESULTS FIRESTORE ${result.size()}", Toast.LENGTH_LONG).show()
+                        if (markersHashMap[document.id] != null) {
+                            markersHashMap[document.id]!!.remove()
+                        }
+                        markersHashMap[document.id] = mMap.addMarker(MarkerOptions()
+                                .position(LatLng((document.data["location"] as GeoPoint).latitude,
+                                        (document.data["location"] as GeoPoint).longitude))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
+                                .title("Stop"))
+                    }
+                }
+                .addOnFailureListener { exception ->
+                    Log.w("RESULT EXCEPTION", "Error getting documents.", exception)
+                }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         mMap.isIndoorEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
-        handleLocationPermission()
 
+        db.collection("drivers")
+                .addSnapshotListener(EventListener<QuerySnapshot> { snapshots, e ->
+                    if (e != null) {
+                        Log.w("FAILED SNAPSHOT", "Listen failed.", e)
+                        return@EventListener
+                    }
+                     for (dc in snapshots!!.documentChanges) {
+                        if (dc.type == DocumentChange.Type.MODIFIED) {
 
-        if (mapView != null && mapView.findViewById<View>(Integer.parseInt("1")) != null) {
+                            if (dc.document.data["active"] == true) {
+                                Toast.makeText(context, "STATUS ACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
+                                if (markersHashMap[dc.document.id] != null) {
+                                    markersHashMap[dc.document.id]!!.remove()
+                                }
+                                markersHashMap[dc.document.id] = mMap.addMarker(MarkerOptions()
+                                        .position(LatLng((dc.document.data["location"] as GeoPoint).latitude,
+                                                (dc.document.data["location"] as GeoPoint).longitude))
+                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
+                                        .title("Stop"))
+                            } else {
+                                Toast.makeText(context, "STATUS INACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
+                                if (markersHashMap[dc.document.id] != null) {
+                                    markersHashMap[dc.document.id]!!.remove()
+                                }
+                            }
+                        }
+                    }
+                })
+
+        if (ContextCompat.checkSelfPermission
+                (context!!, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.isMyLocationEnabled = true
+        } else {
+            requestLocationPermission()
+        }
+
+        if (mapView.findViewById<View>(Integer.parseInt("1")) != null) {
             // Get the button view
             val locationButton = (mapView.findViewById<View>(Integer.parseInt("1")).parent as View).findViewById<ImageView>(Integer.parseInt("2"))
             // and next place it, on bottom right (as Google Maps app)
@@ -82,22 +154,10 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
             locationButton.setImageResource(R.drawable.mylocation_ic)
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0)
             layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE)
-            layoutParams.setMargins(0, 0, 0, 320)
+            layoutParams.setMargins(0, 0, 0, 30)
             locationButton.layoutParams = layoutParams
         }
-
         addStopMarkers(stopList)
-    }
-
-    private fun handleLocationPermission() {
-        if (ContextCompat.checkSelfPermission
-                (context!!, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMap.isMyLocationEnabled = true
-
-        } else {
-            requestLocationPermission()
-        }
     }
 
     private fun requestLocationPermission() {
@@ -128,7 +188,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
             if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mMap.isMyLocationEnabled = true
-                 } else {
+                } else {
                     // Send to other activity
                     Toast.makeText(context, "Need permission", Toast.LENGTH_LONG).show()
                 }
