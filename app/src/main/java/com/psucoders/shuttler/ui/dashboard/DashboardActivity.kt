@@ -9,10 +9,10 @@ import com.psucoders.shuttler.R
 import kotlinx.android.synthetic.main.activity_dashboard.*
 
 class DashboardActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
+        setSupportActionBar(findViewById(R.id.my_toolbar))
 
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
         setUpBottomNavMenu(navController)
@@ -23,4 +23,6 @@ class DashboardActivity : AppCompatActivity() {
             NavigationUI.setupWithNavController(it, navController)
         }
     }
+
+
 }
