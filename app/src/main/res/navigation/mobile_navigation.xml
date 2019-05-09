@@ -12,7 +12,7 @@
         tools:layout="@layout/track_fragment" />
     <fragment
         android:id="@+id/destination_settings"
-        android:name="com.psucoders.shuttler.SettingsFragment"
+        android:name="com.psucoders.shuttler.ui.settings.SettingsFragment"
         android:label="settings_fragment"
         tools:layout="@layout/settings_fragment" />
     <fragment

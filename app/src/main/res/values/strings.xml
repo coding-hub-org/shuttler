@@ -9,6 +9,14 @@
     <string name="btn_sign_in">Sign In</string>
     <string name="btn_register">Register</string>
     <string name="btn_to_register">First time using Shuttler? <font color="#F2014B">Register here</font></string>
+    <string name="enable_notification_title">Enable notifications</string>
+    <string name="enable_notification_description">Enable this option if you would like to receive notification from the Shuttler</string>
+
+    <string name="notify_me_title">Notify me when the shuttle is at</string>
+    <string name="notify_me_description">In which stop would you like to notified?</string>
+
+    <string name="time_ahead_title">Time ahead</string>
+    <string name="time_ahead_description">In which stop would you like to be notified?</string>
 
     <string name="maps_menu_settings">Settings</string>
     <string-array name="locations_array">
@@ -33,6 +41,6 @@
     <string name="title_shuttle">Shuttle</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_maps">Map</string>
-
+    <string name="coding_hub">Developed with ❤ by Coding Hub</string>
 
 </resources>

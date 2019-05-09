@@ -3,9 +3,10 @@ package com.psucoders.shuttler.ui.authentication
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.psucoders.shuttler.data.firebase.FirebaseSingleton
 
-class AuthenticationViewModel {
+class AuthenticationViewModel : ViewModel() {
     private val _email = MutableLiveData<String>()
     val logTag = "Authentication VM"
 
