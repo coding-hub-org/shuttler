@@ -2,14 +2,15 @@
 
 package com.psucoders.shuttler
 
- import android.app.AlertDialog
- import android.content.Intent
+import android.app.AlertDialog
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.psucoders.shuttler.ui.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_driver.*
 import org.jetbrains.anko.toast
 
@@ -21,11 +22,15 @@ class DriverActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driver)
 
+        btnLogoutDriver.setOnClickListener {
+            stopService()
+            startActivity(Intent(this, LoginActivity::class.java))
+        }
         // Set event
         switchDuty.setOnCheckedChangeListener { _, checked ->
             if (checked) {
                 if (ActivityCompat.checkSelfPermission(this@DriverActivity,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     toast("ON DUTY")
                     startService()
                 } else {

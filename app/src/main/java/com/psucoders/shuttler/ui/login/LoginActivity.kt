@@ -11,6 +11,8 @@ import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import com.psucoders.shuttler.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import androidx.lifecycle.ViewModelProviders
+import com.psucoders.shuttler.DriverActivity
+import java.sql.Driver
 
 
 class LoginActivity : AppCompatActivity() {
@@ -40,16 +42,27 @@ class LoginActivity : AppCompatActivity() {
 
     fun handleLogin(v: View) {
         btnSignIn.isEnabled = false
-        loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
-        loginViewModel.validFields.observe(this, Observer { valid ->
-            if (valid != null && !valid) {
-                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
-                loginViewModel.resetValidity()
-            }
-            if (valid != null && valid) {
-                loginViewModel.checkIfUserExists()
-            }
-            btnSignIn.isEnabled = true
-        })
+        if (!isDriver(edtUser.text.toString(), edtPassword.text.toString())) {
+            loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
+            loginViewModel.validFields.observe(this, Observer { valid ->
+                if (valid != null && !valid) {
+                    Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
+                    loginViewModel.resetValidity()
+                }
+                if (valid != null && valid) {
+                    loginViewModel.checkIfUserExists()
+                }
+                btnSignIn.isEnabled = true
+            })
+        } else {
+            startActivity(Intent(this, DriverActivity::class.java))
+        }
+    }
+
+    private fun isDriver(email: String, password: String): Boolean {
+        if (email == "driver@gmail.com" && password == "driver") {
+            return true
+        }
+        return false
     }
 }
