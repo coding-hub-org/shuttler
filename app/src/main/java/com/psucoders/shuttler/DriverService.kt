@@ -9,10 +9,10 @@ import android.location.Location
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationResult
- import android.util.Log
- import android.app.*
+import android.util.Log
+import android.app.*
 import android.content.pm.PackageManager
- import android.os.*
+import android.os.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.firebase.geofire.GeoFire
