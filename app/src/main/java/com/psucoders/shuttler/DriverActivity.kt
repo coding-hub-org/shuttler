@@ -10,7 +10,9 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.main.activity_driver.*
+ import com.google.android.gms.location.Geofence
+ import com.google.android.gms.location.Geofence.NEVER_EXPIRE
+ import kotlinx.android.synthetic.main.activity_driver.*
 import org.jetbrains.anko.toast
 
 class DriverActivity : AppCompatActivity() {

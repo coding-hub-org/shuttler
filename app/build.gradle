@@ -46,7 +46,7 @@ dependencies {
 
     // External Libraries
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'com.google.android.material:material:1.1.0-alpha06'
 
     // Firebase
     implementation 'com.google.firebase:firebase-firestore:19.0.0'
