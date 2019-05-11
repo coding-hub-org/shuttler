@@ -9,21 +9,21 @@ import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
- import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import android.widget.RelativeLayout
- import com.google.android.gms.location.*
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -208,7 +208,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                     .setMessage("In order to provide you with the best user experience " +
                             "we need to access your device location")
                     .setPositiveButton("OK") { _, _ ->
-                         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                        requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
                     }
                     .setNegativeButton("CANCEL") { dialog, _ ->
@@ -245,10 +245,10 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addMarker(coordinates: LatLng) {
-         mMap.addMarker(MarkerOptions()
+        mMap.addMarker(MarkerOptions()
                 .position(coordinates)
-                 .title("Stop")
-                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop_marker_ic)))
+                .title("Stop")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop_marker_ic)))
     }
 
     private fun buildLocationRequest() {
