@@ -277,20 +277,23 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                     mPreviousLocation = mCurrentLocation
                     mCurrentLocation = locationResult!!.lastLocation
                 }
-
                 val bearing = mPreviousLocation.bearingTo(mCurrentLocation)
-//                testMarker?.remove()
+                testMarker!!.rotation = bearing
+                AnimationMarkerHelper.animateMarkerToGB(testMarker!!,
+                        LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude),
+                        Spherical())
+/*                testMarker?.remove()
 //                testMarker = mMap.addMarker(MarkerOptions()
 //                        .position(LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude))
 //                        .title("Stop")
 //                        .flat(true)
 //                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
 //                        .anchor(0.5f, 0.5f)
-//                        .rotation(bearing))
+//                        .rotation(bearing))*/
 
-                val posTest = LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude)
-                testMarker!!.position = posTest
-                testMarker!!.rotation = bearing
+//                val posTest = LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude)
+//                testMarker!!.position = posTest
+//                testMarker!!.rotation = bearing
 
                 Log.d("LOCATION RESULT DBUG", locationResult.toString())
                 Toast.makeText(context, "CURRENT LATITUDE: ${mCurrentLocation.latitude}  " +
