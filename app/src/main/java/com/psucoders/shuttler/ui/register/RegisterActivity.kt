@@ -3,16 +3,13 @@ package com.psucoders.shuttler.ui.register
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.iid.FirebaseInstanceId
-import com.psucoders.shuttler.MyFirebaseMessagingService
+import com.psucoders.shuttler.utils.notifications.MyFirebaseMessagingService
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import com.psucoders.shuttler.ui.login.LoginActivity

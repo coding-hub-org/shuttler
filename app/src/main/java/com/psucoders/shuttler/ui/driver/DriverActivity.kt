@@ -1,6 +1,6 @@
 @file:Suppress("PrivatePropertyName")
 
-package com.psucoders.shuttler
+package com.psucoders.shuttler.ui.driver
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.login.LoginActivity
 import kotlinx.android.synthetic.main.activity_driver.*
 import org.jetbrains.anko.toast

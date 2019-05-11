@@ -1,4 +1,4 @@
-package com.psucoders.shuttler;
+package com.psucoders.shuttler.utils.notifications;
 
 import com.psucoders.shuttler.data.model.NotificationSentModel;
 

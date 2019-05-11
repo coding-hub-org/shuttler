@@ -16,7 +16,7 @@
         android:required="true" />
 
     <application
-        android:name=".App"
+        android:name=".utils.App"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -25,10 +25,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".DriverActivity" />
-        <service android:name=".DriverService" />
+        <activity android:name=".ui.driver.DriverActivity" />
+        <service android:name=".ui.driver.DriverService" />
         <service
-            android:name=".MyFirebaseMessagingService"
+            android:name=".utils.notifications.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

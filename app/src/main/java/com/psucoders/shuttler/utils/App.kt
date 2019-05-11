@@ -1,4 +1,4 @@
-package com.psucoders.shuttler
+package com.psucoders.shuttler.utils
 
 import android.app.Application
 import android.app.NotificationChannel

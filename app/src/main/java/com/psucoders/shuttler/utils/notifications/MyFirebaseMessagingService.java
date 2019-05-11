@@ -1,4 +1,4 @@
-package com.psucoders.shuttler;
+package com.psucoders.shuttler.utils.notifications;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,6 +17,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+import com.psucoders.shuttler.R;
 import com.psucoders.shuttler.ui.login.LoginActivity;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {

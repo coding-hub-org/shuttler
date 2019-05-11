@@ -11,8 +11,7 @@ import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import com.psucoders.shuttler.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import androidx.lifecycle.ViewModelProviders
-import com.psucoders.shuttler.DriverActivity
-import java.sql.Driver
+import com.psucoders.shuttler.ui.driver.DriverActivity
 
 
 class LoginActivity : AppCompatActivity() {

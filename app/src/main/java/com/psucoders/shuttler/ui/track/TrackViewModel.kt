@@ -1,4 +1,4 @@
-package com.psucoders.shuttler
+package com.psucoders.shuttler.ui.track
 
 import androidx.lifecycle.ViewModel;
 

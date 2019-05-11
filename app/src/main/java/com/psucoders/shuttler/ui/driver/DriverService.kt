@@ -1,8 +1,8 @@
-package com.psucoders.shuttler
+package com.psucoders.shuttler.ui.driver
 
 import android.content.Intent
 import androidx.core.app.NotificationCompat
-import com.psucoders.shuttler.App.Companion.CHANNEL_ID
+import com.psucoders.shuttler.utils.App.Companion.CHANNEL_ID
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import android.location.Location
@@ -23,7 +23,9 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
+import com.psucoders.shuttler.R
 import com.psucoders.shuttler.data.model.NotificationSentModel
+import com.psucoders.shuttler.utils.notifications.NotificationService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
