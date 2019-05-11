@@ -12,14 +12,20 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.psucoders.shuttler.NotificationService
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.login.LoginActivity
+import retrofit2.Call
+import retrofit2.Retrofit
 
 
 class SettingsFragment : Fragment() {
 
     private lateinit var locationsSpinner: Spinner
-    private lateinit var cbEnableNotifications: CheckBox
+    private lateinit var cbEnableNotifications: Switch
     private lateinit var buttonLogout: Button
 
     companion object {
@@ -35,7 +41,7 @@ class SettingsFragment : Fragment() {
         val view = inflater.inflate(R.layout.settings_fragment, container, false)
 
         locationsSpinner = view.findViewById(R.id.locationsSpinner)
-        cbEnableNotifications = view.findViewById(R.id.checkbox_enable_notifications)
+        cbEnableNotifications = view.findViewById(R.id.switchEnableNotifications)
         buttonLogout = view.findViewById(R.id.button_logout)
 
         loadSpinnerData()
@@ -53,6 +59,14 @@ class SettingsFragment : Fragment() {
             override fun onNothingSelected(parentView: AdapterView<*>) {
                 // your code here
             }
+        }
+
+        val sendNotif = view.findViewById<Button>(R.id.sendNotifTest)
+
+        sendNotif.setOnClickListener {
+            val retrofit = Retrofit.Builder().baseUrl("https://us-central1-shuttler-p001.cloudfunctions.net").build()
+            val notificationService = retrofit.create(NotificationService::class.java)
+            notificationService.sendNotification("Jade")
         }
 
         return view

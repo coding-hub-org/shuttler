@@ -2,29 +2,28 @@ package com.psucoders.shuttler
 
 import android.app.Activity
 import android.app.AlertDialog
- import android.content.pm.PackageManager
-import androidx.lifecycle.ViewModelProviders
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
- import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import android.widget.RelativeLayout
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.database.*
 import com.google.firebase.firestore.*
 
 @Suppress("PrivatePropertyName")
@@ -45,7 +44,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
             LatLng(44.698919, -73.476508))
 
     private lateinit var db: FirebaseFirestore
-    private val markersHashMap:HashMap<String,Marker> = HashMap() //define empty hashmap
+    private val markersHashMap: HashMap<String, Marker> = HashMap() //define empty hashmap
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -114,7 +113,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                         Log.w("FAILED SNAPSHOT", "Listen failed.", e)
                         return@EventListener
                     }
-                     for (dc in snapshots!!.documentChanges) {
+                    for (dc in snapshots!!.documentChanges) {
                         if (dc.type == DocumentChange.Type.MODIFIED) {
 
                             if (dc.document.data["active"] == true) {
@@ -168,7 +167,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                     .setMessage("In order to provide you with the best user experience " +
                             "we need to access your device location")
                     .setPositiveButton("OK") { _, _ ->
-                         requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
+                        requestPermissions(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
                                 PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
                     }
                     .setNegativeButton("CANCEL") { dialog, _ ->
@@ -205,9 +204,9 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     }
 
     private fun addMarker(coordinates: LatLng) {
-         mMap.addMarker(MarkerOptions()
+        mMap.addMarker(MarkerOptions()
                 .position(coordinates)
-                 .title("Stop")
-                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop_marker_ic)))
+                .title("Stop")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop_marker_ic)))
     }
 }
