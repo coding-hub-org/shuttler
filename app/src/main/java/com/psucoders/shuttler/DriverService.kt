@@ -23,6 +23,11 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
+import com.psucoders.shuttler.data.model.NotificationSentModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class DriverService : Service() {
@@ -46,7 +51,11 @@ class DriverService : Service() {
         db.collection("drivers").document(driver).update("active", true)
         val drivers = FirebaseDatabase.getInstance().getReference("Drivers")
         geoFire = GeoFire(drivers)
-        geoFence(LatLng(44.692884, -73.465875), "Target")
+        geoFence(LatLng(44.692800, -73.486811), "Walmart")
+        geoFence(LatLng(44.703143, -73.492592), "Target")
+        geoFence(LatLng(44.695457, -73.492659), "Market32")
+        geoFence(LatLng(44.698763, -73.476522), "Jade")
+        geoFence(LatLng(44.692884, -73.465875), "Campus")
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -75,8 +84,25 @@ class DriverService : Service() {
         geoQuery.addGeoQueryEventListener(object : GeoQueryEventListener {
             // user has been found within the radius:
             override fun onKeyEntered(key: String, location: GeoLocation) {
-                Toast.makeText(applicationContext, "ENTER GEOFENCE - GEOFIRE:  $location ----> LOCATION: ", Toast.LENGTH_LONG).show()
 
+                Toast.makeText(applicationContext, "KEY -> $key LOCATION -> $location" +
+                        " ", Toast.LENGTH_LONG).show()
+
+                val retrofit = Retrofit.Builder().baseUrl("https://us-central1-shuttler-p001.cloudfunctions.net/").addConverterFactory(GsonConverterFactory.create()).build()
+                val notificationService = retrofit.create(NotificationService::class.java)
+                val call = notificationService.sendNotification(locationName)
+
+
+                call.enqueue(object : Callback<NotificationSentModel> {
+                    override fun onResponse(call: Call<NotificationSentModel>, response: retrofit2.Response<NotificationSentModel>) {
+                        Log.d("test", "test$response")
+                    }
+
+                    override fun onFailure(call: Call<NotificationSentModel>?, t: Throwable?) {
+                        // failure
+                        Log.d("test", "test${t.toString()}")
+                    }
+                })
                 //Work with notifications HERE!
                 //notifyUsers(locatName)
             }
@@ -127,6 +153,9 @@ class DriverService : Service() {
                 val geoPoint = GeoPoint(mCurrentLocation.latitude, mCurrentLocation.longitude)
                 db.collection("drivers").document(driver).update("location", geoPoint)
                 Toast.makeText(applicationContext, "LATITUDE: ${mCurrentLocation.latitude}  LONGITUDE: ${mCurrentLocation.longitude}", Toast.LENGTH_LONG).show()
+                geoFire.setLocation(driver, GeoLocation(mCurrentLocation.latitude, mCurrentLocation.longitude)) { _, _ ->
+                    return@setLocation
+                }
             }
         }
     }

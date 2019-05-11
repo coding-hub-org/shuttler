@@ -3,6 +3,7 @@ package com.psucoders.shuttler.ui.settings
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,9 +18,12 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.psucoders.shuttler.NotificationService
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.data.model.NotificationSentModel
 import com.psucoders.shuttler.ui.login.LoginActivity
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SettingsFragment : Fragment() {
@@ -61,13 +65,7 @@ class SettingsFragment : Fragment() {
             }
         }
 
-        val sendNotif = view.findViewById<Button>(R.id.sendNotifTest)
-
-        sendNotif.setOnClickListener {
-            val retrofit = Retrofit.Builder().baseUrl("https://us-central1-shuttler-p001.cloudfunctions.net").build()
-            val notificationService = retrofit.create(NotificationService::class.java)
-            notificationService.sendNotification("Jade")
-        }
+//        val sendNotif = view.findViewById<Button>(R.id.sendNotifTest)
 
         return view
     }

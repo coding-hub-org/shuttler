@@ -37,7 +37,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, "default");
         notificationBuilder.setContentTitle("The shuttle is here");
         notificationBuilder.setAutoCancel(true);
-        notificationBuilder.setSmallIcon(R.drawable.shuttler_logo);
+        notificationBuilder.setSmallIcon(R.drawable.shuttler_notif_icon);
         notificationBuilder.setContentIntent(pendingIntent);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notificationBuilder.build());
