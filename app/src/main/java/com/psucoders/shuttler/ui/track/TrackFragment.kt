@@ -1,4 +1,4 @@
-package com.psucoders.shuttler
+package com.psucoders.shuttler.ui.track
 
 
 import android.app.Activity
@@ -29,6 +29,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.*
+import com.psucoders.shuttler.R
+import com.psucoders.shuttler.utils.adapters.StopAdapter
+import com.psucoders.shuttler.utils.helpers.AnimationMarkerHelper
+import com.psucoders.shuttler.utils.helpers.Spherical
 import kotlinx.android.synthetic.main.track_fragment.*
 
 @Suppress("PrivatePropertyName")

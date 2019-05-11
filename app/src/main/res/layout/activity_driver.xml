@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DriverActivity">
+    tools:context=".ui.driver.DriverActivity">
     <!--TODO: Remove visibility attribute-->
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/switchDuty"

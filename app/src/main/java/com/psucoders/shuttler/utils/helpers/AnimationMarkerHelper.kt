@@ -1,4 +1,4 @@
-package com.psucoders.shuttler
+package com.psucoders.shuttler.utils.helpers
 
 import android.os.Handler
 import android.os.SystemClock
