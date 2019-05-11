@@ -26,6 +26,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.database.*
 import com.google.firebase.firestore.*
+import kotlinx.android.synthetic.main.track_fragment.*
 
 @Suppress("PrivatePropertyName")
 class TrackFragment : Fragment(), OnMapReadyCallback {
@@ -72,6 +73,12 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance()
 
+        button_update_rv.setOnClickListener {
+            testArr.add(testArr.size ,testArr[0])
+            testArr.removeAt(0)
+            adapter.notifyItemRemoved(0)
+            adapter.notifyItemInserted(testArr.size)
+        }
         mapFragment.getMapAsync(this)
         // TODO: Use the ViewModel
     }

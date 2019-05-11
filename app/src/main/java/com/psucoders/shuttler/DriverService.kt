@@ -75,7 +75,9 @@ class DriverService : Service() {
         geoQuery.addGeoQueryEventListener(object : GeoQueryEventListener {
             // user has been found within the radius:
             override fun onKeyEntered(key: String, location: GeoLocation) {
-                Toast.makeText(applicationContext, "ENTER GEOFENCE - GEOFIRE:  $location ----> LOCATION: ", Toast.LENGTH_LONG).show()
+
+                Toast.makeText(applicationContext, "KEY -> $key LOCATION -> $location"  +
+                        " ", Toast.LENGTH_LONG).show()
 
                 //Work with notifications HERE!
                 //notifyUsers(locatName)
@@ -127,6 +129,9 @@ class DriverService : Service() {
                 val geoPoint = GeoPoint(mCurrentLocation.latitude, mCurrentLocation.longitude)
                 db.collection("drivers").document(driver).update("location", geoPoint)
                 Toast.makeText(applicationContext, "LATITUDE: ${mCurrentLocation.latitude}  LONGITUDE: ${mCurrentLocation.longitude}", Toast.LENGTH_LONG).show()
+                geoFire.setLocation(driver, GeoLocation(mCurrentLocation.latitude, mCurrentLocation.longitude)) { _, _ ->
+                    return@setLocation
+                }
             }
         }
     }

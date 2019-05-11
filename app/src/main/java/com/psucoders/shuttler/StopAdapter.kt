@@ -23,7 +23,7 @@ class StopAdapter(private val stops: ArrayList<String>): RecyclerView.Adapter<St
     }
 
     class StopHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val stopName = itemView.findViewById<TextView>(R.id.stop_name)
-        val stopTime = itemView.findViewById<TextView>(R.id.stop_time)
+        val stopName: TextView = itemView.findViewById(R.id.stop_name)
+        val stopTime: TextView = itemView.findViewById(R.id.stop_time)
     }
 }
