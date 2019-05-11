@@ -1,10 +1,13 @@
 package com.psucoders.shuttler
 
+
 import android.app.Activity
 import android.app.AlertDialog
- import android.content.pm.PackageManager
+import android.content.pm.PackageManager
+import android.location.Location
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -20,11 +23,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import android.widget.RelativeLayout
+ import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.database.*
 import com.google.firebase.firestore.*
 import kotlinx.android.synthetic.main.track_fragment.*
 
@@ -34,6 +37,15 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     companion object {
         fun newInstance() = TrackFragment()
     }
+
+    // LOCATION
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var mCurrentLocation: Location
+    private lateinit var mPreviousLocation: Location
+    private var isFirstLocationRequest = true
+
 
     private lateinit var viewModel: TrackViewModel
     private lateinit var mMap: GoogleMap
@@ -47,7 +59,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var db: FirebaseFirestore
     private val markersHashMap:HashMap<String,Marker> = HashMap() //define empty hashmap
-
+    private var testMarker: Marker? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -65,6 +77,11 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         recyclerView?.layoutManager = layoutManager
         val adapter = StopAdapter(testArr)
         recyclerView?.adapter = adapter
+
+        // LOCATION
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
+        buildLocationRequest()
+        buildLocationCallback()
 
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
@@ -94,7 +111,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                 .addOnSuccessListener { result ->
 
                     for (document in result) {
-                        Toast.makeText(context, "RESULTS FIRESTORE ${result.size()}", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(context, "RESULTS FIRESTORE ${result.size()}", Toast.LENGTH_LONG).show()
                         if (markersHashMap[document.id] != null) {
                             markersHashMap[document.id]!!.remove()
                         }
@@ -108,6 +125,14 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                 .addOnFailureListener { exception ->
                     Log.w("RESULT EXCEPTION", "Error getting documents.", exception)
                 }
+
+        if (ContextCompat.checkSelfPermission
+                (context!!, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient
+                    .requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper())
+        }
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -121,7 +146,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                         Log.w("FAILED SNAPSHOT", "Listen failed.", e)
                         return@EventListener
                     }
-                     for (dc in snapshots!!.documentChanges) {
+                    for (dc in snapshots!!.documentChanges) {
                         if (dc.type == DocumentChange.Type.MODIFIED) {
 
                             if (dc.document.data["active"] == true) {
@@ -166,6 +191,14 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         }
         addStopMarkers(stopList)
     }
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        Toast.makeText(context, "destroyed", Toast.LENGTH_LONG).show()
+    }
+
 
     private fun requestLocationPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale
@@ -216,5 +249,55 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                 .position(coordinates)
                  .title("Stop")
                  .icon(BitmapDescriptorFactory.fromResource(R.drawable.stop_marker_ic)))
+    }
+
+    private fun buildLocationRequest() {
+        locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 5000
+        locationRequest.fastestInterval = 3000
+        locationRequest.smallestDisplacement = 10f
+    }
+
+    private fun buildLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult?) {
+                super.onLocationResult(locationResult)
+                if (isFirstLocationRequest) {
+                    mCurrentLocation = locationResult!!.lastLocation
+                    mPreviousLocation = locationResult.lastLocation
+                    isFirstLocationRequest = false
+                    testMarker = mMap.addMarker(MarkerOptions()
+                            .position(LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude))
+                            .title("Stop")
+                            .flat(true)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
+                            .anchor(0.5f, 0.5f) )
+                } else {
+                    mPreviousLocation = mCurrentLocation
+                    mCurrentLocation = locationResult!!.lastLocation
+                }
+
+                val bearing = mPreviousLocation.bearingTo(mCurrentLocation)
+//                testMarker?.remove()
+//                testMarker = mMap.addMarker(MarkerOptions()
+//                        .position(LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude))
+//                        .title("Stop")
+//                        .flat(true)
+//                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
+//                        .anchor(0.5f, 0.5f)
+//                        .rotation(bearing))
+
+                val posTest = LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude)
+                testMarker!!.position = posTest
+                testMarker!!.rotation = bearing
+
+                Log.d("LOCATION RESULT DBUG", locationResult.toString())
+                Toast.makeText(context, "CURRENT LATITUDE: ${mCurrentLocation.latitude}  " +
+                        "PREVIOUS LATITUDE: ${mPreviousLocation.latitude}" +
+                        " CURRENT LONGITUDE: ${mCurrentLocation.longitude} PREVIOUS LONGITUDE: " +
+                        "${mPreviousLocation.longitude}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 }
