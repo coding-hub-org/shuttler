@@ -60,10 +60,14 @@ dependencies {
     implementation 'com.android.volley:volley:1.1.1'
 
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
 
     // Navigation
     implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
     implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
+
+    // Lottie
+    implementation "com.airbnb.android:lottie:3.0.1"
+
 }
 apply plugin: 'com.google.gms.google-services'
