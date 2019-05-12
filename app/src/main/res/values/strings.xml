@@ -42,5 +42,6 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_maps">Map</string>
     <string name="coding_hub">Developed with ❤ by Coding Hub</string>
+    <string name="no_notifications">No Notifications</string>
 
 </resources>
