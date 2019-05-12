@@ -12,9 +12,13 @@ class SettingsViewModel : ViewModel() {
     val notificationsEnabled = MutableLiveData<Boolean>()
     private val locationSelected = MutableLiveData<String>()
     val currentToken = MutableLiveData<String>()
+    private val currentUserEmail = MutableLiveData<String>()
 
     val getLogoutStatus: LiveData<Boolean>
         get() = logoutStatus
+
+    val getCurrentUserEmail: LiveData<String>
+        get() = currentUserEmail
 
     fun logout() {
         FirebaseSingleton.getInstance().logoutStatus.observeForever { status ->
@@ -40,4 +44,7 @@ class SettingsViewModel : ViewModel() {
         FirebaseSingleton.getInstance().updateSettings(notificationsModel)
     }
 
+    fun fetchCurrentUser() {
+        currentUserEmail.value = FirebaseSingleton.getInstance().authInstance.currentUser!!.email
+    }
 }
