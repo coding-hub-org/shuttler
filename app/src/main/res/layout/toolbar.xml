@@ -3,6 +3,7 @@
     android:id="@+id/my_toolbar"
     android:layout_width="match_parent"
     android:background="#EEE"
+    app:titleTextColor="@color/colorTitles"
     android:layout_height="?attr/actionBarSize"
     android:elevation="4dp"
     android:theme="@style/ThemeOverlay.AppCompat.ActionBar"

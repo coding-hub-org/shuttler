@@ -10,22 +10,31 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.login.LoginActivity
+import com.psucoders.shuttler.ui.login.LoginViewModel
 import kotlinx.android.synthetic.main.activity_driver.*
 import org.jetbrains.anko.toast
 
 class DriverActivity : AppCompatActivity() {
 
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2310
+    private lateinit var driversViewModel: DriverActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_driver)
+        driversViewModel = ViewModelProviders.of(this).get(DriverActivityViewModel::class.java)
 
         btnLogoutDriver.setOnClickListener {
             stopService()
-            startActivity(Intent(this, LoginActivity::class.java))
+            driversViewModel.getLogoutStatus.observe(this, Observer { loggedOut ->
+                if (loggedOut) startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+            })
+            driversViewModel.logout()
         }
         // Set event
         switchDuty.setOnCheckedChangeListener { _, checked ->
