@@ -51,7 +51,8 @@
 
         <activity
             android:name=".ui.dashboard.DashboardActivity"
-            android:label="@string/title_activity_dashboard" >
+            android:label="@string/title_activity_dashboard"
+            android:screenOrientation="portrait">
 
         </activity>
 

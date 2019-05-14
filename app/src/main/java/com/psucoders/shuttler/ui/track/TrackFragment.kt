@@ -24,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.location.*
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
@@ -47,8 +48,6 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationCallback: LocationCallback
     private lateinit var mCurrentLocation: Location
-    private lateinit var mPreviousLocation: Location
-    private var isFirstLocationRequest = true
 
 
     private lateinit var viewModel: TrackViewModel
@@ -62,8 +61,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
             LatLng(44.698919, -73.476508))
 
     private lateinit var db: FirebaseFirestore
-    private val markersHashMap:HashMap<String,Marker> = HashMap() //define empty hashmap
-    private var testMarker: Marker? = null
+    private val markersHashMap:HashMap<String,Marker> = HashMap()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -113,17 +111,22 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                 .whereEqualTo("active", true)
                 .get()
                 .addOnSuccessListener { result ->
-
                     for (document in result) {
-//                        Toast.makeText(context, "RESULTS FIRESTORE ${result.size()}", Toast.LENGTH_LONG).show()
                         if (markersHashMap[document.id] != null) {
-                            markersHashMap[document.id]!!.remove()
+                            markersHashMap[document.id]!!.rotation = (document.data["bearing"] as Double).toFloat()
+                            AnimationMarkerHelper.animateMarkerToGB(markersHashMap[document.id]!!,
+                                    LatLng((document.data["location"] as GeoPoint).latitude,
+                                            (document.data["location"] as GeoPoint).longitude),
+                                    Spherical())
+                        } else {
+                            markersHashMap[document.id] = mMap.addMarker(MarkerOptions()
+                                    .position(LatLng((document.data["location"] as GeoPoint).latitude,
+                                            (document.data["location"] as GeoPoint).longitude))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
+                                    .flat(true)
+                                    .anchor(0.5f, 0.5f)
+                                    .title("Stop"))
                         }
-                        markersHashMap[document.id] = mMap.addMarker(MarkerOptions()
-                                .position(LatLng((document.data["location"] as GeoPoint).latitude,
-                                        (document.data["location"] as GeoPoint).longitude))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
-                                .title("Stop"))
                     }
                 }
                 .addOnFailureListener { exception ->
@@ -143,7 +146,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
         mMap.isIndoorEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
-
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(44.698974, -73.477146), 14f))
         db.collection("drivers")
                 .addSnapshotListener(EventListener<QuerySnapshot> { snapshots, e ->
                     if (e != null) {
@@ -156,17 +159,25 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                             if (dc.document.data["active"] == true) {
                                 Toast.makeText(context, "STATUS ACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
                                 if (markersHashMap[dc.document.id] != null) {
-                                    markersHashMap[dc.document.id]!!.remove()
+                                    markersHashMap[dc.document.id]!!.rotation = (dc.document.data["bearing"] as Double).toFloat()
+                                    AnimationMarkerHelper.animateMarkerToGB(markersHashMap[dc.document.id]!!,
+                                            LatLng((dc.document.data["location"] as GeoPoint).latitude,
+                                                    (dc.document.data["location"] as GeoPoint).longitude),
+                                            Spherical())
+                                } else {
+                                    markersHashMap[dc.document.id] = mMap.addMarker(MarkerOptions()
+                                            .position(LatLng((dc.document.data["location"] as GeoPoint).latitude,
+                                                    (dc.document.data["location"] as GeoPoint).longitude))
+                                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
+                                            .flat(true)
+                                            .anchor(0.5f, 0.5f)
+                                            .title("Stop"))
                                 }
-                                markersHashMap[dc.document.id] = mMap.addMarker(MarkerOptions()
-                                        .position(LatLng((dc.document.data["location"] as GeoPoint).latitude,
-                                                (dc.document.data["location"] as GeoPoint).longitude))
-                                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
-                                        .title("Stop"))
                             } else {
                                 Toast.makeText(context, "STATUS INACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
                                 if (markersHashMap[dc.document.id] != null) {
                                     markersHashMap[dc.document.id]!!.remove()
+                                    markersHashMap.remove(dc.document.id)
                                 }
                             }
                         }
@@ -267,26 +278,12 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 super.onLocationResult(locationResult)
-                if (isFirstLocationRequest) {
-                    mCurrentLocation = locationResult!!.lastLocation
-                    mPreviousLocation = locationResult.lastLocation
-                    isFirstLocationRequest = false
-                    testMarker = mMap.addMarker(MarkerOptions()
-                            .position(LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude))
-                            .title("Stop")
-                            .flat(true)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.shuttle_car_ic))
-                            .anchor(0.5f, 0.5f) )
-                } else {
-                    mPreviousLocation = mCurrentLocation
-                    mCurrentLocation = locationResult!!.lastLocation
-                }
-                val bearing = mPreviousLocation.bearingTo(mCurrentLocation)
-                testMarker!!.rotation = bearing
-                AnimationMarkerHelper.animateMarkerToGB(testMarker!!,
-                        LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude),
-                        Spherical())
-/*                testMarker?.remove()
+                mCurrentLocation = locationResult!!.lastLocation
+
+
+//                val bearing = mPreviousLocation.bearingTo(mCurrentLocation)
+//                testMarker!!.rotation = bearing
+//
 //                testMarker = mMap.addMarker(MarkerOptions()
 //                        .position(LatLng(mCurrentLocation.latitude, mCurrentLocation.longitude))
 //                        .title("Stop")
@@ -300,10 +297,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 //                testMarker!!.rotation = bearing
 
                 Log.d("LOCATION RESULT DBUG", locationResult.toString())
-                Toast.makeText(context, "CURRENT LATITUDE: ${mCurrentLocation.latitude}  " +
-                        "PREVIOUS LATITUDE: ${mPreviousLocation.latitude}" +
-                        " CURRENT LONGITUDE: ${mCurrentLocation.longitude} PREVIOUS LONGITUDE: " +
-                        "${mPreviousLocation.longitude}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "CURRENT LATITUDE: ${mCurrentLocation.latitude}   CURRENT LONGITUDE: ${mCurrentLocation.longitude}", Toast.LENGTH_LONG).show()
             }
         }
     }
