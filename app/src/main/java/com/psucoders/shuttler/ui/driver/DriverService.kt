@@ -25,6 +25,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.data.model.NotificationSentModel
+import com.psucoders.shuttler.utils.notifications.MyFirebaseMessagingService
 import com.psucoders.shuttler.utils.notifications.NotificationService
 import retrofit2.Call
 import retrofit2.Callback
@@ -90,23 +91,8 @@ class DriverService : Service() {
                 Toast.makeText(applicationContext, "KEY -> $key LOCATION -> $location" +
                         " ", Toast.LENGTH_LONG).show()
 
-                val retrofit = Retrofit.Builder().baseUrl("https://us-central1-shuttler-p001.cloudfunctions.net/").addConverterFactory(GsonConverterFactory.create()).build()
-                val notificationService = retrofit.create(NotificationService::class.java)
-                val call = notificationService.sendNotification(locationName)
+                MyFirebaseMessagingService.sendNotification(locationName)
 
-
-                call.enqueue(object : Callback<NotificationSentModel> {
-                    override fun onResponse(call: Call<NotificationSentModel>, response: retrofit2.Response<NotificationSentModel>) {
-                        Log.d("test", "test$response")
-                    }
-
-                    override fun onFailure(call: Call<NotificationSentModel>?, t: Throwable?) {
-                        // failure
-                        Log.d("test", "test${t.toString()}")
-                    }
-                })
-                //Work with notifications HERE!
-                //notifyUsers(locatName)
             }
 
             override fun onKeyExited(key: String) {

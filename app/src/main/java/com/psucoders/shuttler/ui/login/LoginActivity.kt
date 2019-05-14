@@ -28,7 +28,13 @@ class LoginActivity : AppCompatActivity() {
     private fun observeExistingUser() {
         loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
             if (userExists) {
-                startActivity(Intent(this, AuthenticationActivity::class.java))
+                loginViewModel.checkIfUserIsDriver()
+                loginViewModel.isDriver.observe(this, Observer { isDriver ->
+                    if (isDriver) {
+                        startActivity(Intent(this, DriverActivity::class.java))
+                    } else
+                        startActivity(Intent(this, AuthenticationActivity::class.java))
+                })
                 finish()
             }
         })
@@ -41,27 +47,16 @@ class LoginActivity : AppCompatActivity() {
 
     fun handleLogin(v: View) {
         btnSignIn.isEnabled = false
-        if (!isDriver(edtUser.text.toString(), edtPassword.text.toString())) {
-            loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
-            loginViewModel.validFields.observe(this, Observer { valid ->
-                if (valid != null && !valid) {
-                    Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
-                    loginViewModel.resetValidity()
-                }
-                if (valid != null && valid) {
-                    loginViewModel.checkIfUserExists()
-                }
-                btnSignIn.isEnabled = true
-            })
-        } else {
-            startActivity(Intent(this, DriverActivity::class.java))
-        }
-    }
-
-    private fun isDriver(email: String, password: String): Boolean {
-        if (email == "driver@gmail.com" && password == "driver") {
-            return true
-        }
-        return false
+        loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
+        loginViewModel.validFields.observe(this, Observer { valid ->
+            if (valid != null && !valid) {
+                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
+                loginViewModel.resetValidity()
+            }
+            if (valid != null && valid) {
+                loginViewModel.checkIfUserExists()
+            }
+            btnSignIn.isEnabled = true
+        })
     }
 }

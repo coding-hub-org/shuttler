@@ -3,6 +3,7 @@ package com.psucoders.shuttler.ui.settings
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.login.LoginActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SettingsFragment : Fragment() {
@@ -25,6 +22,8 @@ class SettingsFragment : Fragment() {
     private lateinit var locationsSpinner: Spinner
     private lateinit var cbEnableNotifications: Switch
     private lateinit var buttonLogout: Button
+    private lateinit var codingHubText: TextView
+    private lateinit var currentUserEmail: TextView
 
     companion object {
         fun newInstance() = SettingsFragment()
@@ -41,6 +40,8 @@ class SettingsFragment : Fragment() {
         locationsSpinner = view.findViewById(R.id.locationsSpinner)
         cbEnableNotifications = view.findViewById(R.id.switchEnableNotifications)
         buttonLogout = view.findViewById(R.id.button_logout)
+        codingHubText = view.findViewById(R.id.codingHubText)
+        currentUserEmail = view.findViewById(R.id.loggedInAs)
 
         loadSpinnerData()
         fetchCurrentSettingsFromSharedPreferences()
@@ -58,14 +59,10 @@ class SettingsFragment : Fragment() {
                 // your code here
             }
         }
-
-//        val sendNotif = view.findViewById<Button>(R.id.sendNotifTest)
-
         return view
     }
 
     private fun fetchCurrentSettingsFromSharedPreferences() {
-
         val sharedPreferences = activity!!.getSharedPreferences("_", MODE_PRIVATE)
         val myAdapter = locationsSpinner.adapter as ArrayAdapter<String>
         val spinnerPosition = myAdapter.getPosition(sharedPreferences.getString("notifyLocation", "Walmart"))
@@ -78,6 +75,13 @@ class SettingsFragment : Fragment() {
     }
 
     private fun loadSpinnerData() {
+        codingHubText.movementMethod = LinkMovementMethod.getInstance()
+
+        settingsViewModel.getCurrentUserEmail.observe(this, Observer { email ->
+            currentUserEmail.text = email
+        })
+        settingsViewModel.fetchCurrentUser()
+
         ArrayAdapter.createFromResource(
                 context!!,
                 R.array.locations_array,

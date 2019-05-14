@@ -48,6 +48,7 @@ class AuthenticationActivity : AppCompatActivity() {
             Log.d("Verified status", "" + verified)
             if (verified != null && verified) {
                 startActivity(Intent(this, DashboardActivity::class.java))
+                finish()
             }
         })
     }
