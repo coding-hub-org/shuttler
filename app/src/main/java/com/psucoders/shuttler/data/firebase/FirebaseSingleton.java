@@ -226,16 +226,12 @@ public class FirebaseSingleton {
                     public void onEvent(@Nullable QuerySnapshot snapshots,
                                         @Nullable FirebaseFirestoreException e) {
                         if (e != null) {
-                            Log.w(logTag, "listen:error", e);
                             return;
                         }
 
                         if (snapshots != null) {
-                            Log.d(logTag, "size: " + snapshots.getDocumentChanges().size());
                             for (DocumentChange dc : snapshots.getDocumentChanges()) {
                                 if (dc.getType() == DocumentChange.Type.ADDED) {
-                                    Log.d(logTag, "New city: " + dc.getDocument().getData());
-
                                     String[] splitDate = Objects.requireNonNull(dc.getDocument().getData().get("date")).toString().split(" ");
                                     String date = splitDate[1] + " " + splitDate[2];
                                     notificationsList.add(new NotificationFragmentModel(Objects.requireNonNull(dc.getDocument().getData().get("title")).toString(), Objects.requireNonNull(dc.getDocument().getData().get("description")).toString(), date));
