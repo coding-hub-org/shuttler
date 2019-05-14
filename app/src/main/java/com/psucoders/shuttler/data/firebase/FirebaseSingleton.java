@@ -17,9 +17,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.psucoders.shuttler.data.model.NotificationFragmentModel;
 import com.psucoders.shuttler.data.model.NotificationsModel;
 import com.psucoders.shuttler.data.model.UserModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FirebaseSingleton {
@@ -37,6 +39,8 @@ public class FirebaseSingleton {
     private MutableLiveData<Boolean> _registrationSuccess;
     private MutableLiveData<Boolean> _logout;
 
+    private MutableLiveData<ArrayList<NotificationFragmentModel>> _notifications;
+
     private MutableLiveData<String> _fcmToken;
 
     public MutableLiveData<String> getFcmToken() {
@@ -44,6 +48,13 @@ public class FirebaseSingleton {
             _fcmToken = new MutableLiveData<>();
         }
         return _fcmToken;
+    }
+
+    public MutableLiveData<ArrayList<NotificationFragmentModel>> getNotifications() {
+        if (_notifications == null) {
+            _notifications = new MutableLiveData<>();
+        }
+        return _notifications;
     }
 
     public MutableLiveData<Boolean> loginSuccess() {
@@ -194,5 +205,9 @@ public class FirebaseSingleton {
             });
         }
 
+    }
+
+    public void fetchNotificationsFromFirestore(){
+        
     }
 }

@@ -47,7 +47,6 @@ class LoginActivity : AppCompatActivity() {
 
     fun handleLogin(v: View) {
         btnSignIn.isEnabled = false
-//        if (!isDriver(edtUser.text.toString(), edtPassword.text.toString())) {
         loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
         loginViewModel.validFields.observe(this, Observer { valid ->
             if (valid != null && !valid) {
@@ -58,16 +57,6 @@ class LoginActivity : AppCompatActivity() {
                 loginViewModel.checkIfUserExists()
             }
             btnSignIn.isEnabled = true
-//            })
-//        } else {
-//            startActivity(Intent(this, DriverActivity::class.java))
         })
-    }
-
-    private fun isDriver(email: String, password: String): Boolean {
-        if (email == "driver@gmail.com" && password == "driver") {
-            return true
-        }
-        return false
     }
 }
