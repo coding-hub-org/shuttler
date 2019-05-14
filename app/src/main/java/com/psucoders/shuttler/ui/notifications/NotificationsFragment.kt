@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,27 +26,29 @@ class NotificationsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.notifications_fragment, container, false)
+        viewModel = ViewModelProviders.of(this).get(NotificationsViewModel::class.java)
 
         val recyclerView = view.findViewById<RecyclerView>(R.id.notification_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
-        recyclerView.setHasFixedSize(true)
+        recyclerView.setHasFixedSize(false)
 
         val adapter = NotificationAdapter()
         recyclerView.adapter = adapter
 
-        val testList = ArrayList<NotificationFragmentModel>()
-        testList.add(NotificationFragmentModel("Shuttler Life", "No wife", "May 8"))
-        testList.add(NotificationFragmentModel("Shuttler Notif Title", "LOLLLL", "May 6"))
-        adapter.setNotifications(testList)
+        viewModel.fetchNotifications()
+//        val testList = ArrayList<NotificationFragmentModel>()
+//        testList.add(NotificationFragmentModel("Shuttler Life", "No wife", "May 8"))
+//        testList.add(NotificationFragmentModel("Shuttler Notif Title", "LOLLLL", "May 6"))
+        viewModel.allNotifications.observe(this, Observer { notifications ->
+            adapter.setNotifications(notifications)
+        })
 
         return view
     }
 
 
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(NotificationsViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

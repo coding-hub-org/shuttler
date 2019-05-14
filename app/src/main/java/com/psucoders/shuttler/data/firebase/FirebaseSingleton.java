@@ -3,6 +3,7 @@ package com.psucoders.shuttler.data.firebase;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -15,6 +16,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.psucoders.shuttler.data.model.NotificationFragmentModel;
@@ -23,6 +31,7 @@ import com.psucoders.shuttler.data.model.UserModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class FirebaseSingleton {
 
@@ -207,7 +216,36 @@ public class FirebaseSingleton {
 
     }
 
-    public void fetchNotificationsFromFirestore(){
-        
+    public void fetchNotificationsFromFirestore() {
+        FirebaseFirestore firestoreDb = FirebaseFirestore.getInstance();
+        final ArrayList<NotificationFragmentModel> notificationsList = new ArrayList<>();
+
+        firestoreDb.collection("notifications")
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots,
+                                        @Nullable FirebaseFirestoreException e) {
+                        if (e != null) {
+                            Log.w(logTag, "listen:error", e);
+                            return;
+                        }
+
+                        if (snapshots != null) {
+                            Log.d(logTag, "size: " + snapshots.getDocumentChanges().size());
+                            for (DocumentChange dc : snapshots.getDocumentChanges()) {
+                                if (dc.getType() == DocumentChange.Type.ADDED) {
+                                    Log.d(logTag, "New city: " + dc.getDocument().getData());
+
+                                    String[] splitDate = Objects.requireNonNull(dc.getDocument().getData().get("date")).toString().split(" ");
+                                    String date = splitDate[1] + " " + splitDate[2];
+                                    notificationsList.add(new NotificationFragmentModel(Objects.requireNonNull(dc.getDocument().getData().get("title")).toString(), Objects.requireNonNull(dc.getDocument().getData().get("description")).toString(), date));
+                                    _notifications.setValue(notificationsList);
+
+                                }
+                            }
+                        }
+
+                    }
+                });
     }
 }
