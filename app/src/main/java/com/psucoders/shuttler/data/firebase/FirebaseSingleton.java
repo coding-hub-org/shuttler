@@ -234,7 +234,7 @@ public class FirebaseSingleton {
                                 if (dc.getType() == DocumentChange.Type.ADDED) {
                                     String[] splitDate = Objects.requireNonNull(dc.getDocument().getData().get("date")).toString().split(" ");
                                     String date = splitDate[1] + " " + splitDate[2];
-                                    notificationsList.add(new NotificationFragmentModel(Objects.requireNonNull(dc.getDocument().getData().get("title")).toString(), Objects.requireNonNull(dc.getDocument().getData().get("description")).toString(), date));
+                                    notificationsList.add(new NotificationFragmentModel(Objects.requireNonNull(dc.getDocument().getData().get("title")).toString(), Objects.requireNonNull(dc.getDocument().getData().get("description")).toString(), date, Objects.requireNonNull(dc.getDocument().getData().get("date")).toString()));
                                     _notifications.setValue(notificationsList);
 
                                 }
