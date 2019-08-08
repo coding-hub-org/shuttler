@@ -158,7 +158,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
                             if (dc.document.data["active"] == true) {
                                 Toast.makeText(context, "STATUS ACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
-                                if (markersHashMap[dc.document.id] != null) {
+                                if (markersHashMap[dc.document.id] != null && dc.document.data["bearing"] != null) {
                                     markersHashMap[dc.document.id]!!.rotation = (dc.document.data["bearing"] as Double).toFloat()
                                     AnimationMarkerHelper.animateMarkerToGB(markersHashMap[dc.document.id]!!,
                                             LatLng((dc.document.data["location"] as GeoPoint).latitude,
