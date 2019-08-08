@@ -112,8 +112,10 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                 .get()
                 .addOnSuccessListener { result ->
                     for (document in result) {
-                        if (markersHashMap[document.id] != null && document.data["bearing"] != null) {
-                            markersHashMap[document.id]!!.rotation = (document.data["bearing"] as Double).toFloat()
+                        if (markersHashMap[document.id] != null) {
+
+//                            if (markersHashMap[document.id] != null && document.data["bearing"] != null) {
+//                            markersHashMap[document.id]!!.rotation = (document.data["bearing"] as Double).toFloat()
                             AnimationMarkerHelper.animateMarkerToGB(markersHashMap[document.id]!!,
                                     LatLng((document.data["location"] as GeoPoint).latitude,
                                             (document.data["location"] as GeoPoint).longitude),
@@ -158,8 +160,10 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
                             if (dc.document.data["active"] == true) {
                                 Toast.makeText(context, "STATUS ACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
-                                if (markersHashMap[dc.document.id] != null && dc.document.data["bearing"] != null) {
-                                    markersHashMap[dc.document.id]!!.rotation = (dc.document.data["bearing"] as Double).toFloat()
+                                if (markersHashMap[dc.document.id] != null) {
+
+//                                    if (markersHashMap[dc.document.id] != null && dc.document.data["bearing"] != null) {
+//                                    markersHashMap[dc.document.id]!!.rotation = (dc.document.data["bearing"] as Double).toFloat()
                                     AnimationMarkerHelper.animateMarkerToGB(markersHashMap[dc.document.id]!!,
                                             LatLng((dc.document.data["location"] as GeoPoint).latitude,
                                                     (dc.document.data["location"] as GeoPoint).longitude),
