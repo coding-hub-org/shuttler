@@ -112,7 +112,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                 .get()
                 .addOnSuccessListener { result ->
                     for (document in result) {
-                        if (markersHashMap[document.id] != null) {
+                        if (markersHashMap[document.id] != null && document.data["bearing"] != null) {
                             markersHashMap[document.id]!!.rotation = (document.data["bearing"] as Double).toFloat()
                             AnimationMarkerHelper.animateMarkerToGB(markersHashMap[document.id]!!,
                                     LatLng((document.data["location"] as GeoPoint).latitude,
