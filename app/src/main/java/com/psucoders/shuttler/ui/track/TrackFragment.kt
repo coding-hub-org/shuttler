@@ -159,7 +159,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                         if (dc.type == DocumentChange.Type.MODIFIED) {
 
                             if (dc.document.data["active"] == true) {
-                                Toast.makeText(context, "STATUS ACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
+//                                Toast.makeText(context, "STATUS ACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
                                 if (markersHashMap[dc.document.id] != null) {
 
 //                                    if (markersHashMap[dc.document.id] != null && dc.document.data["bearing"] != null) {
@@ -178,7 +178,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                                             .title("Stop"))
                                 }
                             } else {
-                                Toast.makeText(context, "STATUS INACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
+//                                Toast.makeText(context, "STATUS INACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
                                 if (markersHashMap[dc.document.id] != null) {
                                     markersHashMap[dc.document.id]!!.remove()
                                     markersHashMap.remove(dc.document.id)

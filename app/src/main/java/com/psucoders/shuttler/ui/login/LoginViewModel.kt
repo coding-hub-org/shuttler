@@ -44,7 +44,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    private fun validateAndLogin(email: String, password: String): Boolean {
+     private fun validateAndLogin(email: String, password: String): Boolean {
         return when {
             email.isEmpty() || password.isEmpty() -> false
             password.length < 6 -> false
