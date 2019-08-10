@@ -12,8 +12,9 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.ui.dashboard.DashboardActivity
 import com.psucoders.shuttler.ui.login.LoginActivity
 
 
@@ -34,7 +35,8 @@ class SettingsFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-        settingsViewModel = ViewModelProviders.of(this).get(SettingsViewModel::class.java)
+        settingsViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(SettingsViewModel::class.java)
+
         val view = inflater.inflate(R.layout.settings_fragment, container, false)
 
         locationsSpinner = view.findViewById(R.id.locationsSpinner)
@@ -42,6 +44,8 @@ class SettingsFragment : Fragment() {
         buttonLogout = view.findViewById(R.id.button_logout)
         codingHubText = view.findViewById(R.id.codingHubText)
         currentUserEmail = view.findViewById(R.id.loggedInAs)
+
+        (activity as DashboardActivity).supportActionBar?.title = getString(R.string.settings_fragment)
 
         loadSpinnerData()
         fetchCurrentSettingsFromSharedPreferences()

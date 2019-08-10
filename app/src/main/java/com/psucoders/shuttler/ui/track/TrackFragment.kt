@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.GoogleMap
@@ -31,6 +32,7 @@ import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.*
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.ui.dashboard.DashboardActivity
 import com.psucoders.shuttler.utils.adapters.StopAdapter
 import com.psucoders.shuttler.utils.helpers.AnimationMarkerHelper
 import com.psucoders.shuttler.utils.helpers.Spherical
@@ -50,7 +52,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mCurrentLocation: Location
 
 
-    private lateinit var viewModel: TrackViewModel
+    private lateinit var trackViewModel: TrackViewModel
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: View
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 2310
@@ -70,7 +72,8 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(TrackViewModel::class.java)
+
+        trackViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(TrackViewModel::class.java)
 
         // Recycler view
         val testArr = arrayListOf("Walmart", "Target", "Campus")
@@ -79,6 +82,8 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         recyclerView?.layoutManager = layoutManager
         val adapter = StopAdapter(testArr)
         recyclerView?.adapter = adapter
+
+        (activity as DashboardActivity).supportActionBar?.title = getString(R.string.title_activity_tracker)
 
         // LOCATION
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)

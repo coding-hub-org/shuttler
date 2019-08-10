@@ -44,4 +44,8 @@
     <string name="coding_hub">Developed with ❤ by <a href="https://coding-hub.com">Coding Hub</a></string>
     <string name="no_notifications">No Notifications</string>
 
+    <string name="track_fragment">Shuttle Status</string>
+    <string name="settings_fragment">Settings</string>
+    <string name="notifications_fragment">Notifications</string>
+
 </resources>
