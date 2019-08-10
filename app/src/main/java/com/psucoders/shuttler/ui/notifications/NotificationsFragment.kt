@@ -10,10 +10,12 @@ import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.ui.dashboard.DashboardActivity
 import com.psucoders.shuttler.utils.adapters.NotificationAdapter
 
 
@@ -34,7 +36,8 @@ class NotificationsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.notifications_fragment, container, false)
-        viewModel = ViewModelProviders.of(this).get(NotificationsViewModel::class.java)
+
+        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(NotificationsViewModel::class.java)
 
         recyclerView = view.findViewById(R.id.notification_recycler_view)
         noNotificationsLayout = view.findViewById(R.id.noNotificationLayout)
@@ -43,6 +46,8 @@ class NotificationsFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.visibility = View.GONE
         noNotificationsLayout.visibility = View.VISIBLE
+
+        (activity as DashboardActivity).supportActionBar?.title = getString(R.string.notifications_fragment)
 
         fetchData()
         return view
