@@ -7,7 +7,7 @@ import android.os.Build
 
 class App: Application() {
     companion object {
-        val CHANNEL_ID = "driverServiceChannel"
+        const val CHANNEL_ID = "driverServiceChannel"
     }
 
     override fun onCreate() {

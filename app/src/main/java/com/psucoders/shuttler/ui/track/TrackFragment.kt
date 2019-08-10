@@ -178,7 +178,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                                             .title("Stop"))
                                 }
                             } else {
-                                Toast.makeText(context, "STATUS INACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
+//                                Toast.makeText(context, "STATUS INACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
                                 if (markersHashMap[dc.document.id] != null) {
                                     markersHashMap[dc.document.id]!!.remove()
                                     markersHashMap.remove(dc.document.id)
