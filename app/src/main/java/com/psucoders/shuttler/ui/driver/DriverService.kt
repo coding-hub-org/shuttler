@@ -1,36 +1,28 @@
 package com.psucoders.shuttler.ui.driver
 
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Intent
-import androidx.core.app.NotificationCompat
-import com.psucoders.shuttler.utils.App.Companion.CHANNEL_ID
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import android.location.Location
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationResult
-import android.util.Log
-import android.app.*
 import android.content.pm.PackageManager
-import android.os.*
+import android.location.Location
+import android.os.IBinder
+import android.os.Looper
+import android.util.Log
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.firebase.geofire.GeoFire
 import com.firebase.geofire.GeoLocation
 import com.firebase.geofire.GeoQueryEventListener
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.GeoPoint
 import com.psucoders.shuttler.R
-import com.psucoders.shuttler.data.model.NotificationSentModel
+import com.psucoders.shuttler.utils.App.Companion.CHANNEL_ID
 import com.psucoders.shuttler.utils.notifications.MyFirebaseMessagingService
-import com.psucoders.shuttler.utils.notifications.NotificationService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class DriverService : Service() {
