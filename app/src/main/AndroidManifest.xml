@@ -66,6 +66,7 @@
         </activity>
 
         <activity android:name=".ui.authentication.AuthenticationActivity" />
+        <activity android:name=".ui.forgotPassword.ForgotPassword" />
 
         <uses-library
             android:name="org.apache.http.legacy"

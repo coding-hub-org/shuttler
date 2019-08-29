@@ -47,5 +47,9 @@
     <string name="track_fragment">Shuttle Status</string>
     <string name="settings_fragment">Settings</string>
     <string name="notifications_fragment">Notifications</string>
+    <string name="btn_forgot_password">Forgot password? <font color="#F2014B">Reset</font></string>
+    <string name="forgot_password_description">We will send you an email with a password reset link. Please enter your username.</string>
+    <string name="send_link">Email Link</string>
+    <string name="forgot_password_title">Forgot \nPassword</string>
 
 </resources>
