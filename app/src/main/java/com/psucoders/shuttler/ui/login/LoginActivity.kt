@@ -12,6 +12,7 @@ import com.psucoders.shuttler.ui.register.RegisterActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import androidx.lifecycle.ViewModelProvider
 import com.psucoders.shuttler.ui.driver.DriverActivity
+import com.psucoders.shuttler.ui.forgotPassword.ForgotPassword
 
 
 class LoginActivity : AppCompatActivity() {
@@ -43,6 +44,10 @@ class LoginActivity : AppCompatActivity() {
 
     fun registerUser(v: View) {
         startActivity(Intent(this, RegisterActivity::class.java))
+    }
+
+    fun forgotPassword(v: View){
+        startActivity(Intent(this, ForgotPassword::class.java))
     }
 
     fun handleLogin(v: View) {
