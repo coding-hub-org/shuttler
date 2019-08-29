@@ -12,7 +12,7 @@ Since SUNY Plattsburgh campus is far from places like Walmart, Target, the mall,
  
 ## Getting Started
 
-These are instrucitons on how to run the Shuttle App (Android) locally on your phone
+These are instructions on how to run the Shuttle App (Android) locally on your phone
 
 ### Prerequisites
 
@@ -24,7 +24,7 @@ In order to run the up, follow the following steps:
 ```
 1. On the terminal run: git clone https://github.com/coding-hub-org/shuttler.git
 2. Open Android Studio
-3. Click on "Open an existing Adroid Studio project" and select Shuttler
+3. Click on "Open an existing Android Studio project" and select Shuttler
 4. Once the project loads, click on 'Run App' (Green arrow) and choose whether you want to run the app on your phone or an Android Virtual Device (AVD)
 ```
 For more information on how to run Android apps locally read click [here](https://developer.android.com/training/basics/firstapp/running-app)
