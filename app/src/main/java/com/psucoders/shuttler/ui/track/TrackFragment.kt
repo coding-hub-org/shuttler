@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.location.Location
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
@@ -19,8 +18,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -33,10 +30,8 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.firebase.firestore.*
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.dashboard.DashboardActivity
-import com.psucoders.shuttler.utils.adapters.StopAdapter
 import com.psucoders.shuttler.utils.helpers.AnimationMarkerHelper
 import com.psucoders.shuttler.utils.helpers.Spherical
-import kotlinx.android.synthetic.main.track_fragment.*
 
 @Suppress("PrivatePropertyName")
 class TrackFragment : Fragment(), OnMapReadyCallback {
@@ -75,14 +70,6 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
 
         trackViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(TrackViewModel::class.java)
 
-        // Recycler view
-        val testArr = arrayListOf("Walmart", "Target", "Campus")
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        val recyclerView = view?.findViewById<RecyclerView>(R.id.recycler_view_stops)
-        recyclerView?.layoutManager = layoutManager
-        val adapter = StopAdapter(testArr)
-        recyclerView?.adapter = adapter
-
         (activity as DashboardActivity).supportActionBar?.title = getString(R.string.title_activity_tracker)
 
         // LOCATION
@@ -97,12 +84,6 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         // Access a Cloud Firestore instance from your Activity
         db = FirebaseFirestore.getInstance()
 
-        button_update_rv.setOnClickListener {
-            testArr.add(testArr.size ,testArr[0])
-            testArr.removeAt(0)
-            adapter.notifyItemRemoved(0)
-            adapter.notifyItemInserted(testArr.size)
-        }
         mapFragment.getMapAsync(this)
         // TODO: Use the ViewModel
     }
@@ -119,8 +100,6 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                     for (document in result) {
                         if (markersHashMap[document.id] != null) {
 
-//                            if (markersHashMap[document.id] != null && document.data["bearing"] != null) {
-//                            markersHashMap[document.id]!!.rotation = (document.data["bearing"] as Double).toFloat()
                             AnimationMarkerHelper.animateMarkerToGB(markersHashMap[document.id]!!,
                                     LatLng((document.data["location"] as GeoPoint).latitude,
                                             (document.data["location"] as GeoPoint).longitude),
@@ -153,6 +132,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         mMap = googleMap
         mMap.isIndoorEnabled = true
         mMap.uiSettings.isMyLocationButtonEnabled = true
+        mMap.uiSettings.isMapToolbarEnabled = false
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(44.698974, -73.477146), 14f))
         db.collection("drivers")
                 .addSnapshotListener(EventListener<QuerySnapshot> { snapshots, e ->
@@ -164,11 +144,8 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                         if (dc.type == DocumentChange.Type.MODIFIED) {
 
                             if (dc.document.data["active"] == true) {
-//                                Toast.makeText(context, "STATUS ACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
-                                if (markersHashMap[dc.document.id] != null) {
+                                 if (markersHashMap[dc.document.id] != null) {
 
-//                                    if (markersHashMap[dc.document.id] != null && dc.document.data["bearing"] != null) {
-//                                    markersHashMap[dc.document.id]!!.rotation = (dc.document.data["bearing"] as Double).toFloat()
                                     AnimationMarkerHelper.animateMarkerToGB(markersHashMap[dc.document.id]!!,
                                             LatLng((dc.document.data["location"] as GeoPoint).latitude,
                                                     (dc.document.data["location"] as GeoPoint).longitude),
@@ -183,7 +160,6 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
                                             .title("Stop"))
                                 }
                             } else {
-//                                Toast.makeText(context, "STATUS INACTIVE ${dc.document.data["active"]}", Toast.LENGTH_LONG).show()
                                 if (markersHashMap[dc.document.id] != null) {
                                     markersHashMap[dc.document.id]!!.remove()
                                     markersHashMap.remove(dc.document.id)
