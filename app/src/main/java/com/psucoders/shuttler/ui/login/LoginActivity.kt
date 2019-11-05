@@ -22,46 +22,46 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
-        loginViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(LoginViewModel::class.java)
-        observeExistingUser()
+//        loginViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(LoginViewModel::class.java)
+//        observeExistingUser()observeExistingUser
     }
 
-    private fun observeExistingUser() {
-        loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
-            if (userExists) {
-                loginViewModel.checkIfUserIsDriver()
-                loginViewModel.isDriver.observe(this, Observer { isDriver ->
-                    if (isDriver) {
-                        startActivity(Intent(this, DriverActivity::class.java))
-                    } else
-                        startActivity(Intent(this, AuthenticationActivity::class.java))
-                })
-                finish()
-            }
-        })
-        loginViewModel.checkIfUserExists()
-    }
-
-    fun registerUser(v: View) {
-        startActivity(Intent(this, RegisterActivity::class.java))
-    }
-
-    fun forgotPassword(v: View){
-        startActivity(Intent(this, ForgotPassword::class.java))
-    }
-
-    fun handleLogin(v: View) {
-        btnSignIn.isEnabled = false
-        loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
-        loginViewModel.validFields.observe(this, Observer { valid ->
-            if (valid != null && !valid) {
-                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
-                loginViewModel.resetValidity()
-            }
-            if (valid != null && valid) {
-                loginViewModel.checkIfUserExists()
-            }
-            btnSignIn.isEnabled = true
-        })
-    }
+//    private fun observeExistingUser() {
+//        loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
+//            if (userExists) {
+//                loginViewModel.checkIfUserIsDriver()
+//                loginViewModel.isDriver.observe(this, Observer { isDriver ->
+//                    if (isDriver) {
+//                        startActivity(Intent(this, DriverActivity::class.java))
+//                    } else
+//                        startActivity(Intent(this, AuthenticationActivity::class.java))
+//                })
+//                finish()
+//            }
+//        })
+//        loginViewModel.checkIfUserExists()
+//    }
+//
+//    fun registerUser(v: View) {
+//        startActivity(Intent(this, RegisterActivity::class.java))
+//    }
+//
+//    fun forgotPassword(v: View){
+//        startActivity(Intent(this, ForgotPassword::class.java))
+//    }
+//
+//    fun handleLogin(v: View) {
+//        btnSignIn.isEnabled = false
+//        loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
+//        loginViewModel.validFields.observe(this, Observer { valid ->
+//            if (valid != null && !valid) {
+//                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
+//                loginViewModel.resetValidity()
+//            }
+//            if (valid != null && valid) {
+//                loginViewModel.checkIfUserExists()
+//            }
+//            btnSignIn.isEnabled = true
+//        })
+//    }
 }
