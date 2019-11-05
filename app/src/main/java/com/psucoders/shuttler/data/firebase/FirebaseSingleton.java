@@ -235,11 +235,17 @@ public class FirebaseSingleton {
                         if (snapshots != null) {
                             for (DocumentChange dc : snapshots.getDocumentChanges()) {
                                 if (dc.getType() == DocumentChange.Type.ADDED) {
-                                    String[] splitDate = Objects.requireNonNull(dc.getDocument().getData().get("date")).toString().split(" ");
-                                    String date = splitDate[1] + " " + splitDate[2];
-                                    notificationsList.add(new NotificationFragmentModel(Objects.requireNonNull(dc.getDocument().getData().get("title")).toString(), Objects.requireNonNull(dc.getDocument().getData().get("description")).toString(), date, Objects.requireNonNull(dc.getDocument().getData().get("date")).toString()));
-                                    _notifications.setValue(notificationsList);
+                                    Log.d("FirebaseSingleton", dc.toString());
 
+                                    Object dateData = dc.getDocument().getData().get("date");
+                                    if (dateData !=  null) {
+                                        String[] splitDate = dateData.toString().split(" ");
+                                        String date = splitDate[1] + " " + splitDate[2];
+                                        notificationsList.add(new NotificationFragmentModel(Objects.requireNonNull(dc.getDocument().getData().get("title")).toString(), Objects.requireNonNull(dc.getDocument().getData().get("description")).toString(), date, Objects.requireNonNull(dc.getDocument().getData().get("date")).toString()));
+                                        _notifications.setValue(notificationsList);
+                                    }
+
+//
                                 }
                             }
                         }
