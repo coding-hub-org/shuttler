@@ -15,4 +15,8 @@
         <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
 
+    <style name="ToolbarColoredBackArrow" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/colorWhite</item>
+    </style>
+
 </resources>
