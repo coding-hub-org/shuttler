@@ -4,7 +4,6 @@
     android:id="@+id/loginRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
     tools:context=".ui.login.LoginActivity">
 
     <!--    <ImageView-->
@@ -168,91 +167,65 @@
     <!--        app:layout_constraintTop_toBottomOf="@+id/btnToRegister" />-->
 
 
-    <LinearLayout
+    <RelativeLayout
+        android:id="@+id/loginEmailLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/colorWhite"
+        android:layout_marginBottom="32dp"
+        android:background="@color/colorAccent"
         android:orientation="vertical"
         android:padding="20dp"
-        android:id="@+id/loginEmailLayout"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/loginPromptTextView"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline16">
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
+
+        <ImageView
+            android:id="@+id/imageView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="15dp"
-            android:text="Get Started with Shuttler"
-            android:transitionName="prompt"
-            android:textColor="@color/colorBlack"
-            android:id="@+id/loginPromptTextView"
-            android:textSize="24sp" />
-
-        <!--        <TextView-->
-        <!--            android:id="@+id/loginEmailTextView"-->
-        <!--            android:layout_width="wrap_content"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_marginBottom="15dp"-->
-        <!--            android:text="Enter your email"-->
-        <!--            android:textColor="@color/colorHint"-->
-        <!--            android:maxLines="1"-->
-        <!--            android:textSize="20sp" />-->
-
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Plattsburgh email"
-            android:textSize="20sp"
-            android:maxLines="1"
-            android:layout_marginBottom="15dp"
-            android:textColorHint="#BEBEBE"
-             android:paddingBottom="18dp"
-            android:theme="@style/EditTextTheme"
-        />
-
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:text="We will send you a one time link to your email"
-            android:transitionName="prompt"
-            android:textColor="#BEBEBE"
-            android:textSize="16sp"
-            android:textAlignment="center"
-            android:layout_gravity="center"
-            android:lineSpacingExtra="2dp" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/loginFAB"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            app:backgroundTint="@color/colorWhite"
-            app:elevation="6dp"
-            app:srcCompat="@drawable/ic_navigate_next"
-            app:rippleColor="#F96276"
-            android:layout_gravity="center"/>
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/shuttler_logo_round" />
 
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline16"
-        android:layout_width="wrap_content"
+    <TextView
+        android:id="@+id/loginPromptTextView"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
-
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/loginEmailLayout"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:text="Get Started with Shuttler"
+        android:textColor="@color/colorBlack"
+        android:textSize="24sp"
+        android:transitionName="prompt"
+        app:layout_constraintBottom_toTopOf="@+id/emailEditText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/shuttler_logo_round" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/emailEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="48dp"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:hint="Plattsburgh email"
+        android:inputType="textEmailAddress"
+        android:maxLines="1"
+        android:paddingBottom="18dp"
+        android:textColorHint="#BEBEBE"
+        android:textSize="20sp"
+        android:transitionName="email"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/loginPromptTextView"
+        app:layout_constraintStart_toStartOf="@+id/loginPromptTextView" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

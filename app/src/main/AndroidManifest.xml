@@ -24,8 +24,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".EmailActivity"
+            android:windowSoftInputMode="stateVisible"
+            android:screenOrientation="portrait"/>
         <activity android:name=".ui.driver.DriverActivity" />
+
         <service android:name=".ui.driver.DriverService" />
         <service
             android:name=".utils.notifications.MyFirebaseMessagingService"
@@ -44,7 +47,6 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
@@ -52,24 +54,23 @@
         <activity
             android:name=".ui.dashboard.DashboardActivity"
             android:label="@string/title_activity_dashboard"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-        <activity android:name=".ui.login.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.login.LoginActivity"
             android:screenOrientation="portrait">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
+                <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
                 <data
                     android:host="shuttler.page.link"
-                    android:scheme="https"/>
+                    android:scheme="https" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.authentication.AuthenticationActivity" />
         <activity android:name=".ui.forgotPassword.ForgotPassword" />
 
