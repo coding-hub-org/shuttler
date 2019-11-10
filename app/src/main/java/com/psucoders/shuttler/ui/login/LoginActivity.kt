@@ -1,5 +1,6 @@
 package com.psucoders.shuttler.ui.login
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -27,8 +28,10 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.login_activity)
 
 
+        val sharedPreferences = getSharedPreferences(EmailActivity.preferences, Context.MODE_PRIVATE)
+
         Toast.makeText(context, FirebaseAuth.getInstance().currentUser.toString(), Toast.LENGTH_LONG).show()
-//        FirebaseAuth.getInstance().signOut()
+        FirebaseAuth.getInstance().signOut()
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
@@ -49,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
                         val emailLink = intent.data!!.toString()
                         if (FirebaseAuth.getInstance().isSignInWithEmailLink(emailLink)) {
                             // Retrieve this from wherever you stored it
-                            val email = "greye003@plattsburgh.edu"
+                            val email = sharedPreferences.getString(EmailActivity.emailKey, "notFound")!!
 
                             // The client SDK will parse the code from the link for you.
                             FirebaseAuth.getInstance().signInWithEmailLink(email, emailLink)

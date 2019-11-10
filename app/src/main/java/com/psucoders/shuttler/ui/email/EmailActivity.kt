@@ -1,6 +1,7 @@
 package com.psucoders.shuttler.ui.email
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
@@ -14,7 +15,13 @@ import kotlinx.android.synthetic.main.activity_email.*
 
 
 class EmailActivity : AppCompatActivity() {
-    val context = this;
+    companion object {
+        const val preferences = "shuttlerPreferences"
+        const val emailKey = "emailKey"
+    }
+
+    lateinit var sharedPreferences: SharedPreferences
+    val context = this
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_email)
@@ -27,6 +34,8 @@ class EmailActivity : AppCompatActivity() {
         manager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
         setSupportActionBar(findViewById(R.id.my_toolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        sharedPreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE)
 
         // Firebase auth
         val actionCodeSettings = ActionCodeSettings.newBuilder()
@@ -52,6 +61,9 @@ class EmailActivity : AppCompatActivity() {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             Toast.makeText(context, "Email sent. to $email", Toast.LENGTH_LONG).show()
+                            val editor = sharedPreferences.edit()
+                            editor.putString(emailKey, email.toString())
+                            editor.apply()
                         }
                     }
 //            Toast.makeText(context, "Email sent. to ${email.toString()}", Toast.LENGTH_LONG).show()
