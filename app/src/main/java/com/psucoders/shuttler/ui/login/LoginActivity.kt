@@ -26,7 +26,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-        FirebaseAuth.getInstance().signOut()
+
+        Toast.makeText(context, FirebaseAuth.getInstance().currentUser.toString(), Toast.LENGTH_LONG).show()
+//        FirebaseAuth.getInstance().signOut()
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
@@ -36,7 +38,6 @@ class LoginActivity : AppCompatActivity() {
                     if (pendingDynamicLinkData != null) {
                         deepLink = pendingDynamicLinkData.link
                     }
-
                     // Handle the deep link. For example, open the linked
                     // content, or apply promotional credit to the user's
                     // account.
@@ -45,9 +46,31 @@ class LoginActivity : AppCompatActivity() {
                     // [START_EXCLUDE]
                     // Display deep link in the UI
                     if (deepLink != null) {
-                        Toast.makeText(context, "Found deep link!", Toast.LENGTH_LONG).show()
+                        val emailLink = intent.data!!.toString()
+                        if (FirebaseAuth.getInstance().isSignInWithEmailLink(emailLink)) {
+                            // Retrieve this from wherever you stored it
+                            val email = "greye003@plattsburgh.edu"
+
+                            // The client SDK will parse the code from the link for you.
+                            FirebaseAuth.getInstance().signInWithEmailLink(email, emailLink)
+                                    .addOnCompleteListener { task ->
+                                        if (task.isSuccessful) {
+                                            val result = task.result
+                                            Toast.makeText(context, "Logged In SUCCESS", Toast.LENGTH_LONG).show()
+                                            // You can access the new user via result.getUser()
+                                            // Additional user info profile *not* available via:
+                                            // result.getAdditionalUserInfo().getProfile() == null
+                                            // You can check if the user is new or existing:
+                                            // result.getAdditionalUserInfo().isNewUser()
+                                        } else {
+                                            Toast.makeText(context, "Logged In FAILED", Toast.LENGTH_LONG).show()
+                                            Log.e("LoginActivity", "Error signing in with email link", task.exception)
+                                        }
+                                    }
+                        }
+
                     } else {
-                        Toast.makeText(context, "ERRRR, NOT FOUND Found deep link!", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(context, "ERRRR, NOT FOUND Found deep link!", Toast.LENGTH_LONG).show()
                     }
                     // [END_EXCLUDE]
                 }
