@@ -1,6 +1,7 @@
 package com.psucoders.shuttler.ui.email
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.widget.Toast
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
 import kotlinx.android.synthetic.main.activity_email.*
 
 
@@ -18,6 +20,7 @@ class EmailActivity : AppCompatActivity() {
     companion object {
         const val preferences = "shuttlerPreferences"
         const val emailKey = "emailKey"
+        const val isSignedInKey = "isSignedIn"
     }
 
     lateinit var sharedPreferences: SharedPreferences
@@ -37,41 +40,42 @@ class EmailActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences(preferences, Context.MODE_PRIVATE)
 
-        // Firebase auth
-        val actionCodeSettings = ActionCodeSettings.newBuilder()
-                // URL you want to redirect back to. The domain (www.example.com) for this
-                // URL must be whitelisted in the Firebase Console.
-                .setUrl("https://shuttler.page.link/androidAuth")
-                // This must be true
-                .setHandleCodeInApp(true)
-                .setAndroidPackageName(
-                        "com.psucoders.shuttler",
-                        true, /* installIfNotAvailable */
-                        "12" /* minimumVersion */)
-                .build()
-
+        val actionCodeSettings = buildActionCodeSettings()
 
         // Get email from editText
         val email = editText.text
-        val auth = FirebaseAuth.getInstance()
 
         // TODO: Check input email
         floatingActionButton.setOnClickListener {
-            auth.sendSignInLinkToEmail(email.toString(), actionCodeSettings)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(context, "Email sent. to $email", Toast.LENGTH_LONG).show()
-                            val editor = sharedPreferences.edit()
-                            editor.putString(emailKey, email.toString())
-                            editor.apply()
-                        }
-                    }
-//            Toast.makeText(context, "Email sent. to ${email.toString()}", Toast.LENGTH_LONG).show()
-
+            sendSignInLink(email.toString(), actionCodeSettings)
         }
     }
 
+    private fun buildActionCodeSettings(): ActionCodeSettings {
+        // [START auth_build_action_code_settings]
+       return ActionCodeSettings.newBuilder()
+               .setUrl("https://shuttler.page.link/androidAuth")
+               .setHandleCodeInApp(true)
+               .setAndroidPackageName(
+                       "com.psucoders.shuttler",
+                       true,
+                       "12" /* minimumVersion */)
+               .build()
+    }
 
+    private fun sendSignInLink(email: String, actionCodeSettings: ActionCodeSettings) {
+        val auth = FirebaseAuth.getInstance()
+        auth.sendSignInLinkToEmail(email, actionCodeSettings)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Email sent. to $email", Toast.LENGTH_LONG).show()
+                    val editor = sharedPreferences.edit()
+                    editor.putString(emailKey, email)
+                    editor.apply()
+                    startActivity(Intent(this, AuthenticationActivity::class.java))
+                }
+            }
+    }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item != null) {

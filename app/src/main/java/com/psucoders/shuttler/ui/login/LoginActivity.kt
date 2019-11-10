@@ -32,6 +32,9 @@ class LoginActivity : AppCompatActivity() {
 
         Toast.makeText(context, FirebaseAuth.getInstance().currentUser.toString(), Toast.LENGTH_LONG).show()
         FirebaseAuth.getInstance().signOut()
+        val editor = sharedPreferences.edit()
+        editor.putBoolean(EmailActivity.isSignedInKey, true)
+        editor.apply()
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
@@ -59,7 +62,13 @@ class LoginActivity : AppCompatActivity() {
                                     .addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
                                             val result = task.result
-                                            Toast.makeText(context, "Logged In SUCCESS", Toast.LENGTH_LONG).show()
+                                            val editor2 = sharedPreferences.edit()
+                                            editor2.putBoolean(EmailActivity.isSignedInKey, true)
+                                            editor2.apply()
+                                            FirebaseAuth.getInstance().currentUser!!.delete()
+                                            FirebaseAuth.getInstance().signInAnonymously()
+                                            Log.d("LoginActivity", result.toString())
+                                            Toast.makeText(context, "Logged In SUCCESS $result", Toast.LENGTH_LONG).show()
                                             // You can access the new user via result.getUser()
                                             // Additional user info profile *not* available via:
                                             // result.getAdditionalUserInfo().getProfile() == null
@@ -75,7 +84,6 @@ class LoginActivity : AppCompatActivity() {
                     } else {
 //                        Toast.makeText(context, "ERRRR, NOT FOUND Found deep link!", Toast.LENGTH_LONG).show()
                     }
-                    // [END_EXCLUDE]
                 }
                 .addOnFailureListener(this) { e -> Log.w("LoginActivity", "getDynamicLink:onFailure", e) }
 
@@ -93,42 +101,44 @@ class LoginActivity : AppCompatActivity() {
 //        observeExistingUser()observeExistingUser
     }
 
-//    private fun observeExistingUser() {
-//        loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
-//            if (userExists) {
-//                loginViewModel.checkIfUserIsDriver()
-//                loginViewModel.isDriver.observe(this, Observer { isDriver ->
-//                    if (isDriver) {
-//                        startActivity(Intent(this, DriverActivity::class.java))
-//                    } else
-//                        startActivity(Intent(this, AuthenticationActivity::class.java))
-//                })
-//                finish()
-//            }
-//        })
-//        loginViewModel.checkIfUserExists()
-//    }
-//
-//    fun registerUser(v: View) {
-//        startActivity(Intent(this, RegisterActivity::class.java))
-//    }
-//
-//    fun forgotPassword(v: View){
-//        startActivity(Intent(this, ForgotPassword::class.java))
-//    }
-//
-//    fun handleLogin(v: View) {
-//        btnSignIn.isEnabled = false
-//        loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
-//        loginViewModel.validFields.observe(this, Observer { valid ->
-//            if (valid != null && !valid) {
-//                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
-//                loginViewModel.resetValidity()
-//            }
-//            if (valid != null && valid) {
-//                loginViewModel.checkIfUserExists()
-//            }
-//            btnSignIn.isEnabled = true
-//        })
-//    }
+
+    /**private fun observeExistingUser() {
+        loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
+            if (userExists) {
+                loginViewModel.checkIfUserIsDriver()
+                loginViewModel.isDriver.observe(this, Observer { isDriver ->
+                    if (isDriver) {
+                        startActivity(Intent(this, DriverActivity::class.java))
+                    } else
+                        startActivity(Intent(this, AuthenticationActivity::class.java))
+                })
+                finish()
+            }
+        })
+        loginViewModel.checkIfUserExists()
+    }
+
+    fun registerUser(v: View) {
+        startActivity(Intent(this, RegisterActivity::class.java))
+    }
+
+    fun forgotPassword(v: View){
+        startActivity(Intent(this, ForgotPassword::class.java))
+    }
+
+    fun handleLogin(v: View) {
+        btnSignIn.isEnabled = false
+        loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
+        loginViewModel.validFields.observe(this, Observer { valid ->
+            if (valid != null && !valid) {
+                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
+                loginViewModel.resetValidity()
+            }
+            if (valid != null && valid) {
+                loginViewModel.checkIfUserExists()
+            }
+            btnSignIn.isEnabled = true
+        })
+    }
+    */
 }
