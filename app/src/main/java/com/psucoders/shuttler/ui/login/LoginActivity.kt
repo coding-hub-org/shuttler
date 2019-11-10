@@ -1,37 +1,57 @@
 package com.psucoders.shuttler.ui.login
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.core.util.Pair
 import android.view.View
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
-import androidx.lifecycle.Observer
-import com.google.android.material.snackbar.Snackbar
-import com.psucoders.shuttler.R
-import com.psucoders.shuttler.ui.authentication.AuthenticationActivity
-import com.psucoders.shuttler.ui.register.RegisterActivity
-import kotlinx.android.synthetic.main.login_activity.*
-import androidx.lifecycle.ViewModelProvider
-import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
-import com.psucoders.shuttler.EmailActivity
-import com.psucoders.shuttler.ui.driver.DriverActivity
-import com.psucoders.shuttler.ui.forgotPassword.ForgotPassword
+import com.psucoders.shuttler.R
+import kotlinx.android.synthetic.main.login_activity.*
+import com.psucoders.shuttler.ui.email.EmailActivity
 
 
 class LoginActivity : AppCompatActivity() {
-
     private lateinit var loginViewModel: LoginViewModel
     private val context = this
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
+
+        FirebaseAuth.getInstance().signOut()
+
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(intent)
+                .addOnSuccessListener(this) { pendingDynamicLinkData ->
+                    // Get deep link from result (may be null if no link is found)
+                    var deepLink: Uri? = null
+                    if (pendingDynamicLinkData != null) {
+                        deepLink = pendingDynamicLinkData.link
+                    }
+
+                    // Handle the deep link. For example, open the linked
+                    // content, or apply promotional credit to the user's
+                    // account.
+                    // ...
+
+                    // [START_EXCLUDE]
+                    // Display deep link in the UI
+                    if (deepLink != null) {
+                        Toast.makeText(context, "Found deep link!", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, "ERRRR, NOT FOUND Found deep link!", Toast.LENGTH_LONG).show()
+                    }
+                    // [END_EXCLUDE]
+                }
+                .addOnFailureListener(this) { e -> Log.w("LoginActivity", "getDynamicLink:onFailure", e) }
 
         emailEditText.setOnClickListener {
             val loginPromptTextView = findViewById<TextView>(R.id.loginPromptTextView)

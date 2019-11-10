@@ -23,6 +23,4 @@ class DashboardActivity : AppCompatActivity() {
             NavigationUI.setupWithNavController(it, navController)
         }
     }
-
-
 }
