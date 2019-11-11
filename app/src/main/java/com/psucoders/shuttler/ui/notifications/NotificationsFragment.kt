@@ -55,7 +55,7 @@ class NotificationsFragment : Fragment() {
 
     private fun fetchData() {
         viewModel.fetchNotifications()
-        viewModel.allNotifications.observe(this, Observer { notifications ->
+        viewModel.allNotifications.observe(viewLifecycleOwner, Observer { notifications ->
             Log.d("LOG LIFE", "size: " + notifications.size)
             if (notifications.size == 0) {
                 recyclerView.visibility = View.GONE

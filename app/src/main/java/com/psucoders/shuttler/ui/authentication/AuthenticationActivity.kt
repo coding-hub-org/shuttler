@@ -17,8 +17,6 @@ import com.psucoders.shuttler.ui.email.EmailActivity
 
 class AuthenticationActivity : AppCompatActivity() {
 
-    private lateinit var authenticationViewModel: AuthenticationViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
@@ -31,38 +29,8 @@ class AuthenticationActivity : AppCompatActivity() {
                         "if you didn't receive it please check in spam. If you already " +
                         "authenticated your account please click on the button below"
         confirmationTextView.text = customText
-
-//        authenticationViewModel = ViewModelProviders.of(this).get(AuthenticationViewModel::class.java)
-
-//        checkIfAlreadyVerified()
-
     }
 
-    private fun observeEmailAddress() {
-        authenticationViewModel.getEmail()
-        authenticationViewModel.email.observe(this, Observer { email ->
-            val customText =
-                    "We've send you a confirmation email to $email, " +
-                            "if you didn't receive it please check in spam. If you already " +
-                            "authenticated your account please click on the button below"
-            confirmationTextView.text = customText
-        })
-
-
-    }
-
-    private fun checkIfAlreadyVerified() {
-        authenticationViewModel.checkVerification()
-        observeEmailAddress()
-
-        authenticationViewModel.verification.observe(this, Observer { verified ->
-            Log.d("Verified status", "" + verified)
-            if (verified != null && verified) {
-                startActivity(Intent(this, DashboardActivity::class.java))
-                finish()
-            }
-        })
-    }
 
     fun editEmail(v: View) {
         super.onBackPressed()

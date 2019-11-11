@@ -52,7 +52,6 @@ class EmailActivity : AppCompatActivity() {
     }
 
     private fun buildActionCodeSettings(): ActionCodeSettings {
-        // [START auth_build_action_code_settings]
        return ActionCodeSettings.newBuilder()
                .setUrl("https://shuttler.page.link/androidAuth")
                .setHandleCodeInApp(true)

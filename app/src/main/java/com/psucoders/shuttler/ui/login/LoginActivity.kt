@@ -2,6 +2,7 @@ package com.psucoders.shuttler.ui.login
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -15,6 +16,7 @@ import androidx.core.app.ActivityOptionsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.ui.dashboard.DashboardActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import com.psucoders.shuttler.ui.email.EmailActivity
 
@@ -22,19 +24,20 @@ import com.psucoders.shuttler.ui.email.EmailActivity
 class LoginActivity : AppCompatActivity() {
     private lateinit var loginViewModel: LoginViewModel
     private val context = this
+    private lateinit var sharedPreferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
 
-        val sharedPreferences = getSharedPreferences(EmailActivity.preferences, Context.MODE_PRIVATE)
+        sharedPreferences = getSharedPreferences(EmailActivity.preferences, Context.MODE_PRIVATE)
 
         Toast.makeText(context, FirebaseAuth.getInstance().currentUser.toString(), Toast.LENGTH_LONG).show()
-        FirebaseAuth.getInstance().signOut()
-        val editor = sharedPreferences.edit()
-        editor.putBoolean(EmailActivity.isSignedInKey, true)
-        editor.apply()
+//        FirebaseAuth.getInstance().signOut()
+//        val editor = sharedPreferences.edit()
+//        editor.putBoolean(EmailActivity.isSignedInKey, false)
+//        editor.apply()
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
@@ -99,6 +102,13 @@ class LoginActivity : AppCompatActivity() {
 
 //        loginViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(LoginViewModel::class.java)
 //        observeExistingUser()observeExistingUser
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (sharedPreferences.getBoolean(EmailActivity.isSignedInKey, false)) {
+            startActivity(Intent(this, DashboardActivity::class.java))
+        }
     }
 
 
