@@ -1,4 +1,4 @@
-package com.psucoders.shuttler
+package com.codinghub.shuttler.mobile
 
 import org.junit.Test
 

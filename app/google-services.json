@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:571374342123:android:bb4a9807efa520f1",
         "android_client_info": {
-          "package_name": "com.psucoders.shuttler"
+          "package_name": "com.codinghub.shuttler.mobile"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "571374342123-fjivgfhs9mo3v9h34772j3vku72cfk9p.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.psucoders.shuttler",
+            "package_name": "com.codinghub.shuttler.mobile",
             "certificate_hash": "2b2a1a573db3a74285fae80cd835979f4b624441"
           }
         },
@@ -26,7 +26,7 @@
           "client_id": "571374342123-sugsvhmucv42bph9eaaqfldb0n001f5m.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.psucoders.shuttler",
+            "package_name": "com.codinghub.shuttler.mobile",
             "certificate_hash": "39fd46f585d861594dbaf8a466b9630342f741d7"
           }
         },

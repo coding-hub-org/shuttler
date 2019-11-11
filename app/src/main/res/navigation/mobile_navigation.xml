@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/destination_track"
-        android:name="com.psucoders.shuttler.ui.track.TrackFragment"
+        android:name="com.codinghub.shuttler.mobile.ui.track.TrackFragment"
         android:label="track_fragment"
         tools:layout="@layout/track_fragment" />
     <fragment
         android:id="@+id/destination_settings"
-        android:name="com.psucoders.shuttler.ui.settings.SettingsFragment"
+        android:name="com.codinghub.shuttler.mobile.ui.settings.SettingsFragment"
         android:label="settings_fragment"
         tools:layout="@layout/settings_fragment" />
     <fragment
         android:id="@+id/destination_notifications"
-        android:name="com.psucoders.shuttler.ui.notifications.NotificationsFragment"
+        android:name="com.codinghub.shuttler.mobile.ui.notifications.NotificationsFragment"
         android:label="notifications_fragment"
         tools:layout="@layout/notifications_fragment" />
 </navigation>
