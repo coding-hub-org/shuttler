@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Shuttler</string>
     <string name="title_activity_tracker">Map</string>
+    <string name="login_as_driver">Welcome to Shuttler! Login as a driver</string>
     <string name="miss_shuttle">Don\'t Miss The Shuttle Anymore!</string>
     <string name="login_content_description">Shuttler icon</string>
     <string name="hint_username">Username</string>

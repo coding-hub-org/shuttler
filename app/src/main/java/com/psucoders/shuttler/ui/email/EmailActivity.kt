@@ -1,14 +1,18 @@
 package com.psucoders.shuttler.ui.email
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
 import com.psucoders.shuttler.R
@@ -47,8 +51,41 @@ class EmailActivity : AppCompatActivity() {
 
         // TODO: Check input email
         floatingActionButton.setOnClickListener {
-            sendSignInLink(email.toString(), actionCodeSettings)
+            if (validEmail(email.toString()))
+                sendSignInLink(email.toString(), actionCodeSettings)
+            else {
+                Snackbar.make(emailConstraintLayout, "Invalid Email", Snackbar.LENGTH_LONG)
+                        .setAction("More", View.OnClickListener {
+                            // build alert dialog
+                            val dialogBuilder = AlertDialog.Builder(this)
+
+                            val msg = "Seems like you've entered an invalid email. Check that you used a valid Plattsburgh email and" +
+                                    " that the input field is not empty"
+                            // set message of alert dialog
+                            dialogBuilder.setMessage(msg)
+                                    // if the dialog is cancelable
+                                    .setCancelable(false)
+                                    // positive button text and action
+                                    .setPositiveButton("Got it", DialogInterface.OnClickListener {
+                                        dialog, id -> finish()
+                                    })
+
+                            // create dialog box
+                            val alert = dialogBuilder.create()
+                            // set title for alert dialog box
+                            alert.setTitle("AlertDialogExample")
+                            // show alert dialog
+                            alert.show()
+                        }).show()
+            }
         }
+    }
+
+    private fun validEmail(email: String): Boolean {
+        if (email.isNotEmpty() && email.contains("@plattsburgh.edu")) {
+            return true
+        }
+        return false
     }
 
     private fun buildActionCodeSettings(): ActionCodeSettings {
@@ -86,4 +123,5 @@ class EmailActivity : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
 }

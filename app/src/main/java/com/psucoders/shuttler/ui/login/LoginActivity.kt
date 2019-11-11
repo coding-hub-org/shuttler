@@ -16,6 +16,7 @@ import androidx.core.app.ActivityOptionsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.psucoders.shuttler.R
+import com.psucoders.shuttler.ui.driverLogin.DriverLoginAcitivity
 import com.psucoders.shuttler.ui.dashboard.DashboardActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import com.psucoders.shuttler.ui.email.EmailActivity
@@ -30,14 +31,9 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login_activity)
 
-
         sharedPreferences = getSharedPreferences(EmailActivity.preferences, Context.MODE_PRIVATE)
 
         Toast.makeText(context, FirebaseAuth.getInstance().currentUser.toString(), Toast.LENGTH_LONG).show()
-//        FirebaseAuth.getInstance().signOut()
-//        val editor = sharedPreferences.edit()
-//        editor.putBoolean(EmailActivity.isSignedInKey, false)
-//        editor.apply()
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
@@ -50,9 +46,7 @@ class LoginActivity : AppCompatActivity() {
                     // Handle the deep link. For example, open the linked
                     // content, or apply promotional credit to the user's
                     // account.
-                    // ...
 
-                    // [START_EXCLUDE]
                     // Display deep link in the UI
                     if (deepLink != null) {
                         val emailLink = intent.data!!.toString()
@@ -77,13 +71,13 @@ class LoginActivity : AppCompatActivity() {
                                             // result.getAdditionalUserInfo().getProfile() == null
                                             // You can check if the user is new or existing:
                                             // result.getAdditionalUserInfo().isNewUser()
+                                            redirectToDashboard()
                                         } else {
                                             Toast.makeText(context, "Logged In FAILED", Toast.LENGTH_LONG).show()
                                             Log.e("LoginActivity", "Error signing in with email link", task.exception)
                                         }
                                     }
                         }
-
                     } else {
 //                        Toast.makeText(context, "ERRRR, NOT FOUND Found deep link!", Toast.LENGTH_LONG).show()
                     }
@@ -100,55 +94,20 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, EmailActivity::class.java), options.toBundle())
         }
 
-//        loginViewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(LoginViewModel::class.java)
-//        observeExistingUser()observeExistingUser
+        driverButton.setOnClickListener {
+            startActivity(Intent(this, DriverLoginAcitivity::class.java))
+        }
+    }
+
+    private fun redirectToDashboard() {
+        startActivity(Intent(this, DashboardActivity::class.java))
+        finish()
     }
 
     override fun onStart() {
         super.onStart()
         if (sharedPreferences.getBoolean(EmailActivity.isSignedInKey, false)) {
-            startActivity(Intent(this, DashboardActivity::class.java))
+            redirectToDashboard()
         }
     }
-
-
-    /**private fun observeExistingUser() {
-        loginViewModel.userLoggedIn.observe(this, Observer { userExists ->
-            if (userExists) {
-                loginViewModel.checkIfUserIsDriver()
-                loginViewModel.isDriver.observe(this, Observer { isDriver ->
-                    if (isDriver) {
-                        startActivity(Intent(this, DriverActivity::class.java))
-                    } else
-                        startActivity(Intent(this, AuthenticationActivity::class.java))
-                })
-                finish()
-            }
-        })
-        loginViewModel.checkIfUserExists()
-    }
-
-    fun registerUser(v: View) {
-        startActivity(Intent(this, RegisterActivity::class.java))
-    }
-
-    fun forgotPassword(v: View){
-        startActivity(Intent(this, ForgotPassword::class.java))
-    }
-
-    fun handleLogin(v: View) {
-        btnSignIn.isEnabled = false
-        loginViewModel.loginUser(edtUser.text.toString(), edtPassword.text.toString())
-        loginViewModel.validFields.observe(this, Observer { valid ->
-            if (valid != null && !valid) {
-                Snackbar.make(loginRoot, "Invalid credentials. Please check your username / password", Snackbar.LENGTH_LONG).show()
-                loginViewModel.resetValidity()
-            }
-            if (valid != null && valid) {
-                loginViewModel.checkIfUserExists()
-            }
-            btnSignIn.isEnabled = true
-        })
-    }
-    */
 }

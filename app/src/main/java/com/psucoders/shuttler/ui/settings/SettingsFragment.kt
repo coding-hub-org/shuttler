@@ -2,6 +2,7 @@ package com.psucoders.shuttler.ui.settings
 
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.psucoders.shuttler.R
 import com.psucoders.shuttler.ui.dashboard.DashboardActivity
+import com.psucoders.shuttler.ui.email.EmailActivity
 import com.psucoders.shuttler.ui.login.LoginActivity
 
 
@@ -25,6 +27,7 @@ class SettingsFragment : Fragment() {
     private lateinit var buttonLogout: Button
     private lateinit var codingHubText: TextView
     private lateinit var currentUserEmail: TextView
+    private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
         fun newInstance() = SettingsFragment()
@@ -44,12 +47,14 @@ class SettingsFragment : Fragment() {
         buttonLogout = view.findViewById(R.id.button_logout)
         codingHubText = view.findViewById(R.id.codingHubText)
         currentUserEmail = view.findViewById(R.id.loggedInAs)
-
         (activity as DashboardActivity).supportActionBar?.title = getString(R.string.settings_fragment)
 
         loadSpinnerData()
         fetchCurrentSettingsFromSharedPreferences()
         listenForEvents()
+
+        sharedPreferences = this.activity!!.getSharedPreferences(EmailActivity.preferences, MODE_PRIVATE)
+
 
         locationsSpinner.onItemSelectedListener = object : OnItemSelectedListener {
             override fun onItemSelected(parentView: AdapterView<*>, selectedItemView: View, position: Int, id: Long) {
@@ -81,7 +86,7 @@ class SettingsFragment : Fragment() {
     private fun loadSpinnerData() {
         codingHubText.movementMethod = LinkMovementMethod.getInstance()
 
-        settingsViewModel.getCurrentUserEmail.observe(this, Observer { email ->
+        settingsViewModel.getCurrentUserEmail.observe(viewLifecycleOwner, Observer { email ->
             currentUserEmail.text = email
         })
         settingsViewModel.fetchCurrentUser()
@@ -109,13 +114,15 @@ class SettingsFragment : Fragment() {
         }
 
         buttonLogout.setOnClickListener {
-            settingsViewModel.getLogoutStatus.observe(this, Observer { status ->
+            settingsViewModel.getLogoutStatus.observe(viewLifecycleOwner, Observer { status ->
                 if (status) {
                     startActivity(Intent(activity, LoginActivity::class.java))
                 }
             })
             settingsViewModel.logout()
-
+            val editor = sharedPreferences.edit()
+            editor.putBoolean(EmailActivity.isSignedInKey, false)
+            editor.apply()
         }
 
     }
