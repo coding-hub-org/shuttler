@@ -24,7 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.driverLogin.DriverLoginAcitivity"></activity>
+        <activity android:name=".ui.driverLogin.DriverLoginAcitivity"/>
         <activity
             android:name=".ui.email.EmailActivity"
             android:screenOrientation="portrait"

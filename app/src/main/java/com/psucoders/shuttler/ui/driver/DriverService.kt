@@ -42,7 +42,8 @@ class DriverService : Service() {
         buildLocationRequest()
         buildLocationCallback()
         // get user id here
-        driver = "cdKOppgDPxGjj0roFfUG"
+        driver = "FkPpEp7wFPEQ2gFbTeWz"
+
         db.collection("drivers").document(driver).update("active", true)
         val drivers = FirebaseDatabase.getInstance().getReference("Drivers")
         geoFire = GeoFire(drivers)
@@ -108,7 +109,7 @@ class DriverService : Service() {
     override fun onDestroy() {
         super.onDestroy()
         fusedLocationProviderClient.removeLocationUpdates(locationCallback)
-        db.collection("drivers").document("cdKOppgDPxGjj0roFfUG").update("active", false)
+        db.collection("drivers").document("FkPpEp7wFPEQ2gFbTeWz").update("active", false)
         Toast.makeText(applicationContext, "destroyed", Toast.LENGTH_LONG).show()
     }
 

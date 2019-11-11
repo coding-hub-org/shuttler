@@ -134,6 +134,7 @@ class TrackFragment : Fragment(), OnMapReadyCallback {
         mMap.uiSettings.isMyLocationButtonEnabled = true
         mMap.uiSettings.isMapToolbarEnabled = false
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(44.698974, -73.477146), 14f))
+        mMap.setMinZoomPreference(13.5f)
         db.collection("drivers")
                 .addSnapshotListener(EventListener<QuerySnapshot> { snapshots, e ->
                     if (e != null) {
