@@ -12,7 +12,7 @@ import com.codinghub.shuttler.mobile.ui.driver.DriverActivity
 import com.codinghub.shuttler.mobile.ui.login.LoginViewModel
 import kotlinx.android.synthetic.main.activity_driver_login.*
 
-class DriverLoginAcitivity : AppCompatActivity() {
+class DriverLoginActivity : AppCompatActivity() {
 
     private lateinit var driverLoginViewModel: DriverLoginViewModel
 

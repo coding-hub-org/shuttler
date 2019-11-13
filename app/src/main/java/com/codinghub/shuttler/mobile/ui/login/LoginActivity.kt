@@ -16,7 +16,7 @@ import androidx.core.app.ActivityOptionsCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.codinghub.shuttler.mobile.R
-import com.codinghub.shuttler.mobile.ui.driverLogin.DriverLoginAcitivity
+import com.codinghub.shuttler.mobile.ui.driverLogin.DriverLoginActivity
 import com.codinghub.shuttler.mobile.ui.dashboard.DashboardActivity
 import kotlinx.android.synthetic.main.login_activity.*
 import com.codinghub.shuttler.mobile.ui.email.EmailActivity
@@ -95,7 +95,7 @@ class LoginActivity : AppCompatActivity() {
         }
 
         driverButton.setOnClickListener {
-            startActivity(Intent(this, DriverLoginAcitivity::class.java))
+            startActivity(Intent(this, DriverLoginActivity::class.java))
         }
     }
 

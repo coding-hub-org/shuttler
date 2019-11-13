@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/loginDriverRoot"
-    tools:context=".ui.driverLogin.DriverLoginAcitivity">
+    tools:context=".ui.driverLogin.DriverLoginActivity">
 
         <ImageView
             android:id="@+id/imageViewIcon"

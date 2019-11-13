@@ -24,14 +24,43 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.driverLogin.DriverLoginAcitivity"/>
+
+        <!-- Login Activity -->
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="shuttler.page.link"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
+
+        <!-- Email Activity -->
         <activity
             android:name=".ui.email.EmailActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
-        <activity android:name=".ui.driver.DriverActivity" />
 
+        <!-- Driver Login Activity -->
+        <activity android:name=".ui.driverLogin.DriverLoginActivity"/>
+
+        <!-- Driver Main Activity/Service -->
+        <activity android:name=".ui.driver.DriverActivity" />
         <service android:name=".ui.driver.DriverService" />
+
+        <!-- Dashboard Activity -->
+        <activity
+            android:name=".ui.dashboard.DashboardActivity"
+            android:label="@string/title_activity_dashboard"
+            android:screenOrientation="portrait" />
+
+        <!-- Meta data / Extras -->
         <service
             android:name=".utils.notifications.MyFirebaseMessagingService"
             android:exported="false">
@@ -43,46 +72,24 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
-        <activity android:name=".ui.register.RegisterActivity" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-
-        <activity
-            android:name=".ui.dashboard.DashboardActivity"
-            android:label="@string/title_activity_dashboard"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="shuttler.page.link"
-                    android:scheme="https" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".ui.authentication.AuthenticationActivity" />
-        <activity android:name=".ui.forgotPassword.ForgotPassword" />
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+        <!-- TODO: Safe delete these activities -->
+        <activity android:name=".ui.register.RegisterActivity" />
+        <activity android:name=".ui.authentication.AuthenticationActivity" />
+        <activity android:name=".ui.forgotPassword.ForgotPassword" />
     </application>
 
 </manifest>
