@@ -33,7 +33,7 @@ class LoginActivity : AppCompatActivity() {
 
         sharedPreferences = getSharedPreferences(EmailActivity.preferences, Context.MODE_PRIVATE)
 
-        Toast.makeText(context, FirebaseAuth.getInstance().currentUser.toString(), Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "User " + FirebaseAuth.getInstance().currentUser.toString(), Toast.LENGTH_LONG).show()
 
         FirebaseDynamicLinks.getInstance()
                 .getDynamicLink(intent)
