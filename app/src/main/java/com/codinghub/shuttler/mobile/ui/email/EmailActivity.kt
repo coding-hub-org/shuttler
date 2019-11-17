@@ -36,9 +36,9 @@ class EmailActivity : AppCompatActivity() {
         // Display keyboard by default
         // TODO: Fix display keyboard
         val editText = findViewById<EditText>(R.id.emailEditText)
-        editText.requestFocus()
-        val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        manager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+//        editText.requestFocus()
+//        val manager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//        manager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
         setSupportActionBar(findViewById(R.id.my_toolbar))
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
